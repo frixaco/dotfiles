@@ -1,5 +1,15 @@
 To setup the dotfiles, I used this blog: https://www.atlassian.com/git/tutorials/dotfiles
 
+## I'm using:
+
+* Tmux
+* Neovim (built from source)
+* i3
+* asdf (for node.js, golang, ruby)
+* Fish shell
+* Alacritty terminal
+* getnf (to install Nerf Fonts: JetBrainsMono Nerf Font)
+
 ## How to view via lazygit?
 
 ```bash
