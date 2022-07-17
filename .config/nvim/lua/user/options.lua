@@ -47,7 +47,7 @@ vim.opt.ignorecase = true
 -- Ignore case if searce pattern is lower case, case-sensitive otherwise
 vim.opt.smartcase = true
 -- Ignore files
-vim.opt.wildignore:append { '*.pyc', 'build', 'dist', 'node_modules', 'coverage', 'android', 'ios', '.git' }
+vim.opt.wildignore:append{'*.pyc', 'build', 'dist', 'node_modules', 'coverage', 'android', 'ios', '.git'}
 -- Nice menu when typing `:find *.py`
 vim.opt.wildmenu = true
 vim.opt.wildmode = 'longest,list,full'
