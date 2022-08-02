@@ -36,6 +36,13 @@ asdf plugin-add golang https://github.com/kennyp/asdf-golang.git
 asdf install golang 1.18.3
 ```
 
+### Java
+
+```bash
+asdf plugin-add java https://github.com/halcyon/asdf-java.git
+asdf install java adoptopenjdk-17.0.3+7
+```
+
 ### Ruby
 
 ```bash
