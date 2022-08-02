@@ -10,14 +10,6 @@ source ~/.config/fish/alias.fish
 # Remove greeting
 set -U fish_greeting
 
-# Enable Ctrl+Backspace/Delete word deletion
-function fish_user_key_bindings
-    # ctrl + backspace to delete previous word
-    bind \cH backward-kill-path-component
-    # ctrl + delete to to delete forward word
-    bind \[3\;5~ kill-word
-end
-
 # Vim
 function fish_user_key_bindings
   fish_vi_key_bindings
