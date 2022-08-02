@@ -2,15 +2,15 @@ require('packer').startup(function(use)
     use 'wbthomason/packer.nvim' -- Packer can manage itself
     use {"williamboman/nvim-lsp-installer", "neovim/nvim-lspconfig" -- LSP support
     }
-    use {
-        'ms-jpq/coq_nvim',
-        branch = 'coq'
-    } -- Autocompletion plugin
+    -- use {
+    --     'ms-jpq/coq_nvim',
+    --     branch = 'coq'
+    -- } -- Autocompletion plugin
 
-    -- use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
-    -- use 'hrsh7th/cmp-nvim-lsp' -- LSP source for nvim-cmp
-    -- use 'saadparwaiz1/cmp_luasnip' -- Snippets source for nvim-cmp
-    -- use 'L3MON4D3/LuaSnip' -- Snippets plugin
+    use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
+    use 'hrsh7th/cmp-nvim-lsp' -- LSP source for nvim-cmp
+    use 'saadparwaiz1/cmp_luasnip' -- Snippets source for nvim-cmp
+    use 'L3MON4D3/LuaSnip' -- Snippets plugin
 
     use {
         'nvim-telescope/telescope.nvim',
@@ -28,6 +28,8 @@ require('packer').startup(function(use)
         'luisiacc/gruvbox-baby',
         branch = 'main'
     } -- Colorscheme
+    use 'Mofiqul/vscode.nvim' -- VSCode colorscheme
+    use 'marko-cerovac/material.nvim' -- Material colorscheme
     use 'windwp/nvim-autopairs' -- Autopair
     use {
         'kyazdani42/nvim-tree.lua', -- File explorer
@@ -43,12 +45,20 @@ require('packer').startup(function(use)
         }
     }
     use 'unblevable/quick-scope' -- Left-Right movement
+    use {
+        'numToStr/Comment.nvim' -- Comment plugin
+    }
+    use {
+        'github/copilot.vim' -- Github Copilot
+    }
 end)
 
 require('gitsigns').setup {}
 require('lualine').setup {
     options = {
-        theme = 'gruvbox'
+        -- theme = 'gruvbox'
+        -- theme = 'vscode'
+        theme = 'material'
     }
 }
 
@@ -118,4 +128,40 @@ require('nvim-treesitter.configs').setup {
     }
 }
 
-vim.cmd [[colorscheme gruvbox-baby]]
+require('Comment').setup {}
+
+-- Material theme
+require('material').setup({
+	lualine_style = 'default' -- or 'stealth'
+})
+vim.g.material_style = "deep ocean"
+vim.cmd 'colorscheme material'
+
+-- VSCode theme
+-- vim.o.background = 'dark'
+-- local c = require('vscode.colors')
+-- require('vscode').setup({
+--     -- Enable transparent background
+--     transparent = true,
+-- 
+--     -- Enable italic comment
+--     italic_comments = true,
+-- 
+--     -- Disable nvim-tree background color
+--     disable_nvimtree_bg = true,
+-- 
+--     -- Override colors (see ./lua/vscode/colors.lua)
+--     color_overrides = {
+--         vscLineNumber = '#FFFFFF',
+--     },
+-- 
+--     -- Override highlight groups (see ./lua/vscode/theme.lua)
+--     group_overrides = {
+--         -- this supports the same val table as vim.api.nvim_set_hl
+--         -- use colors from this colorscheme by requiring vscode.colors!
+--         Cursor = { fg=c.vscDarkBlue, bg=c.vscLightGreen, bold=true },
+--     }
+-- })
+
+-- Gruvbox theme
+-- vim.cmd [[colorscheme gruvbox-baby]]

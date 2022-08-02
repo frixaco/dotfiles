@@ -16,10 +16,6 @@ require('nvim-lsp-installer').setup({
 })
 local lspconfig = require("lspconfig")
 
--- Autocomplete
-vim.cmd("let g:coq_settings = { 'auto_start': v:true }")
-local coq = require("coq")
-
 -- Mappings
 local opts = {
     noremap = true,
@@ -58,8 +54,63 @@ local function on_attach(client, bufnr)
     -- vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
 end
 
-lspconfig['sumneko_lua'].setup(coq.lsp_ensure_capabilities({
+-- nvim-cmp autocomplete
+-- Add additional capabilities supported by nvim-cmp
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+-- luasnip setup
+local luasnip = require('luasnip')
+-- nvim-cmp setup
+local cmp = require('cmp')
+cmp.setup {
+    snippet = {
+        expand = function(args)
+            require('luasnip').lsp_expand(args.body)
+        end
+    },
+    mapping = {
+        ['<C-p>'] = cmp.mapping.select_prev_item(),
+        ['<C-n>'] = cmp.mapping.select_next_item(),
+        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        ['<C-Space>'] = cmp.mapping.complete(),
+        ['<C-e>'] = cmp.mapping.close(),
+        ['<CR>'] = cmp.mapping.confirm {
+            behavior = cmp.ConfirmBehavior.Replace,
+            select = true
+        },
+        ['<Tab>'] = function(fallback)
+            if cmp.visible() then
+                cmp.select_next_item()
+            elseif luasnip.expand_or_jumpable() then
+                luasnip.expand_or_jump()
+            else
+                fallback()
+            end
+        end,
+        ['<S-Tab>'] = function(fallback)
+            if cmp.visible() then
+                cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+                luasnip.jump(-1)
+            else
+                fallback()
+            end
+        end
+    },
+    sources = {{
+        name = 'nvim_lsp'
+    }, {
+        name = 'luasnip'
+    }, {
+        name = 'buffer'
+    }}
+}
+
+lspconfig['sumneko_lua'].setup({
     on_attach = on_attach,
+    capabilities = capabilities,
     settings = {
         Lua = {
             diagnostics = {
@@ -76,76 +127,32 @@ lspconfig['sumneko_lua'].setup(coq.lsp_ensure_capabilities({
             }
         }
     }
-}))
-lspconfig['rust_analyzer'].setup(coq.lsp_ensure_capabilities({
-    on_attach = on_attach
-}))
-lspconfig['emmet_ls'].setup(coq.lsp_ensure_capabilities({
-    on_attach = on_attach
-}))
-lspconfig['tsserver'].setup(coq.lsp_ensure_capabilities({
-    on_attach = on_attach
-}))
-lspconfig['gopls'].setup(coq.lsp_ensure_capabilities({
-    on_attach = on_attach
-}))
-lspconfig['solargraph'].setup(coq.lsp_ensure_capabilities({
-    on_attach = on_attach
-}))
-lspconfig['tailwindcss'].setup(coq.lsp_ensure_capabilities({
-    on_attach = on_attach
-}))
-
--- -- nvim-cmp autocomplete
--- -- Add additional capabilities supported by nvim-cmp
--- local capabilities = vim.lsp.protocol.make_client_capabilities()
--- capabilities.textDocument.completion.completionItem.snippetSupport = true
--- capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
--- -- luasnip setup
--- local luasnip = require('luasnip')
--- -- nvim-cmp setup
--- local cmp = require('cmp')
--- cmp.setup {
---     snippet = {
---         expand = function(args)
---             require('luasnip').lsp_expand(args.body)
---         end
---     },
---     mapping = {
---         ['<C-p>'] = cmp.mapping.select_prev_item(),
---         ['<C-n>'] = cmp.mapping.select_next_item(),
---         ['<C-d>'] = cmp.mapping.scroll_docs(-4),
---         ['<C-f>'] = cmp.mapping.scroll_docs(4),
---         ['<C-Space>'] = cmp.mapping.complete(),
---         ['<C-e>'] = cmp.mapping.close(),
---         ['<CR>'] = cmp.mapping.confirm {
---             behavior = cmp.ConfirmBehavior.Replace,
---             select = true
---         },
---         ['<Tab>'] = function(fallback)
---             if cmp.visible() then
---                 cmp.select_next_item()
---             elseif luasnip.expand_or_jumpable() then
---                 luasnip.expand_or_jump()
---             else
---                 fallback()
---             end
---         end,
---         ['<S-Tab>'] = function(fallback)
---             if cmp.visible() then
---                 cmp.select_prev_item()
---             elseif luasnip.jumpable(-1) then
---                 luasnip.jump(-1)
---             else
---                 fallback()
---             end
---         end
---     },
---     sources = {{
---         name = 'nvim_lsp'
---     }, {
---         name = 'luasnip'
---     }, {
---         name = 'buffer'
---     }}
--- }
+})
+lspconfig['rust_analyzer'].setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+lspconfig['emmet_ls'].setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+lspconfig['tsserver'].setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+lspconfig['gopls'].setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+lspconfig['solargraph'].setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+lspconfig['tailwindcss'].setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+lspconfig['eslint'].setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
