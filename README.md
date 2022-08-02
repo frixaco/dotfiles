@@ -57,3 +57,13 @@ git clone https://github.com/ronniedroid/getnf.git
 cd getnf
 ./getnf
 ```
+
+## Rust
+
+- Install Rustup: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+- Enable tab completions for Fish
+  ```bash
+  mkdir -p ~/.config/fish/completions
+  rustup completions fish > ~/.config/fish/completions/rustup.fish
+  ```
+- Add `rustup` to PATH: `set -Ua fish_user_paths $HOME/.cargo/bin`
