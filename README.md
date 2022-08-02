@@ -1,20 +1,24 @@
-To setup the dotfiles, I used this blog: https://www.atlassian.com/git/tutorials/dotfiles
+Initially, inspired by https://www.atlassian.com/git/tutorials/dotfiles.
 
 ## I'm using:
 
 - Tmux
 - Neovim (built from source)
 - i3
-- asdf (for node.js, golang, ruby)
+- asdf (for node.js, golang, ruby, java)
 - Fish shell
-- Alacritty terminal
-- getnf (to install Nerf Fonts: JetBrainsMono Nerf Font)
+- Kitty terminal (MacOS/Linux), Windows Terminal (WSL2)
+- getnf (to install Nerf Fonts: JetBrainsMono Nerf Font, MesloLGS NF, FiraCode Nerd Font)
 
-## How to view via lazygit?
+## Setup FISH shell
 
-```bash
-lazygit -g $HOME/.cfg/ -w $HOME
-```
+Install prompt manager using Fisher plugin manager: https://github.com/IlanCosman/tide
+
+## WSL2
+
+[Distrod](https://github.com/nullpo-head/wsl-distrod) - to install Arch Linux
+
+**Note**: If start on Windows startup command isn't working, run it `wsl -d Distrod`
 
 ## What asdf plugins are needed?
 
@@ -39,7 +43,7 @@ asdf plugin-add ruby https://github.com/asdf-vm/asdf-ruby.git
 asdf install ruby 3.1.2
 ```
 
-### How to install Nerd Fonts? (JetBrainsMono Nerd Font)
+## How to install Nerd Fonts? (JetBrainsMono Nerd Font)
 
 ```bash
 git clone https://github.com/ronniedroid/getnf.git
