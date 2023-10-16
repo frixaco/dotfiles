@@ -1,0 +1,28 @@
+- hosts: localhost
+  vars:
+  pre_tasks:
+    - name: Update Apt
+      become: true
+      apt:
+        force_apt_get: true
+        update_cache: true
+        state: present
+  # pre_tasks:
+  # - name: Update Homebrew
+  #   community.general.homebrew:
+  #     state: latest
+  #     update_homebrew: true
+  #     upgrade_all: true
+  #     upgrade_options: ignore-pinned
+  tasks:
+    - ansible.builtin.include_tasks: tasks/homebrew.yml
+    - ansible.builtin.include_tasks: tasks/zsh.yml
+
+    # - include: tasks/ssh.yml
+    # - include: tasks/git.yml
+    # - include: tasks/zsh.yml
+    # - include: tasks/asdf.yml
+    # - include: tasks/aws.yml
+    # - include: tasks/arc.yml
+    # - include: tasks/productivity-tools.yml
+    # - include: tasks/dotfiles.yml
