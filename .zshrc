@@ -73,7 +73,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -128,7 +128,7 @@ ADDITIONAL_PATHS=(
     $ANDROID_HOME/emulator
     $ANDROID_HOME/platform-tools
     $EMSDK/upstream/bin
-    $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin
+    $HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin
 )
 for path in "${ADDITIONAL_PATHS[@]}"; do
     if [[ -d $path && ! $NEW_PATH =~ (^|:)$path(:|$) ]]; then
