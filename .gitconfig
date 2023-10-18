@@ -1,0 +1,4 @@
+[includeIf "gitdir:~/personal/"]
+  path = ~/personal/.gitconfig-personal
+[includeIf "gitdir:~/vbrato/"]
+  path = ~/vbrato/.gitconfig-vbrato
