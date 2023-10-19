@@ -5,7 +5,11 @@
 export ZSH="$HOME/.oh-my-zsh"
 
 # HOMEBREW completions
-FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+# write a bash script: run command below if OSTYPE is darwin
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -111,6 +115,8 @@ NEW_PATH="$PATH"
 ADDITIONAL_PATHS=(
     $HOME/bin
     $HOME/go/bin
+    $HOME/.go
+    $HOME/.go/1.21.3/bin
     $HOME/.pyenv/shims
     $ANDROID_HOME/emulator
     $ANDROID_HOME/platform-tools
@@ -174,9 +180,6 @@ alias ls="eza"
 alias z="zoxide"
 
 source $HOME/.agent-bridge.sh
-
-# Generated for envman. Do not edit.
-# [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 eval "$(zoxide init zsh)"
 

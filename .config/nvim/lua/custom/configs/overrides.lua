@@ -33,8 +33,10 @@ M.mason = {
     "css-lsp",
     "html-lsp",
     "typescript-language-server",
-    "prettier_d",
+    "prettierd",
     "eslint-lsp",
+    "tailwindcss-language-server",
+    "emmet-language-server",
 
     -- c/cpp stuff
     "clangd",
@@ -42,6 +44,7 @@ M.mason = {
 
     -- python
     "blackd-client",
+    "ruff-lsp",
 
     -- golang
     "gopls",
