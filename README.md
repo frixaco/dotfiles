@@ -1,3 +1,5 @@
+`stow -d . -t /home/frixaco/ .`
+
 TODO:
 
 - [ ] Add scripts to automate app install, configuration, etc.
