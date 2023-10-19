@@ -103,20 +103,7 @@ fi
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-my_configs=(
-    "$HOME/.asdf/asdf.sh"
-)
-
-for f in $my_configs; do
-    . $f
-done
-
-# append completions to fpath
-fpath=(${ASDF_DIR}/completions ~/.zsh/completion $fpath)
-# initialise completions with ZSH's compinit
 autoload -Uz compinit && compinit
-
-. ~/.asdf/plugins/java/set-java-home.zsh
 
 export ANDROID_HOME=$HOME/Library/Android/sdk
 
@@ -136,11 +123,6 @@ for path in "${ADDITIONAL_PATHS[@]}"; do
     fi
 done
 export PATH="$NEW_PATH"
-
-# export PATH=$PATH:$HOME/.pyenv/shims
-# export PATH=$PATH:$ANDROID_HOME/emulator
-# export PATH=$PATH:$ANDROID_HOME/platform-tools
-# export PATH=$PATH:$EMSDK/upstream/bin
 
 export XDG_CONFIG_HOME="$HOME/.config"
 
@@ -184,19 +166,18 @@ lg_fn() {
 }
 alias lg=lg_fn
 
-alias z=zoxide
-alias x=xplr
+alias x="xplr"
 alias sz="source ~/.zshrc"
 alias ez="v ~/.zshrc"
-alias ls='eza'
+alias ls="eza"
 
-eval "$(starship init zsh)"
+alias z="zoxide"
+
+source $HOME/.agent-bridge.sh
+
+# Generated for envman. Do not edit.
+# [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 eval "$(zoxide init zsh)"
 
-# bun completions
-[ -s "/Users/frixaco/.bun/_bun" ] && source "/Users/frixaco/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
