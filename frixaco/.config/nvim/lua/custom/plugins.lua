@@ -126,10 +126,10 @@ local plugins = {
       }
     end,
   },
-  {
-    "christoomey/vim-tmux-navigator",
-    lazy = false,
-  },
+  -- {
+  --   "christoomey/vim-tmux-navigator",
+  --   lazy = false,
+  -- },
   {
     "olexsmir/gopher.nvim",
     ft = "go",
