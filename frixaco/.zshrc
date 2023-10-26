@@ -5,7 +5,6 @@
 export ZSH="$HOME/.oh-my-zsh"
 
 # HOMEBREW completions
-# write a bash script: run command below if OSTYPE is darwin
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
@@ -113,7 +112,6 @@ export ANDROID_HOME=$HOME/Library/Android/sdk
 
 NEW_PATH="$PATH"
 ADDITIONAL_PATHS=(
-    $HOME/bin
     $HOME/go/bin
     $HOME/.go
     $HOME/.go/1.21.3/bin
@@ -141,36 +139,6 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 alias v="nvim"
-# alias ve="fzf | cd | xargs nvim"
-ve_fn() {
-    local selected_path=$(fzf)
-    
-    # Check if the selected path is a valid directory or file
-    if [ -d "$selected_path" ] || [ -f "$selected_path" ]; then
-        # If it's a directory, cd into it and open nvim
-        if [ -d "$selected_path" ]; then
-            cd "$selected_path" && nvim
-        # If it's a file, open it with nvim directly
-        else
-            nvim "$selected_path"
-        fi
-    else
-        echo "Invalid selection"
-    fi
-}
-alias ve=ve_fn
-
-lg_fn() {
-    export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
-
-    lazygit "$@"
-
-    if [ -f $LAZYGIT_NEW_DIR_FILE ]; then
-            cd "$(cat $LAZYGIT_NEW_DIR_FILE)"
-            rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
-    fi
-}
-alias lg=lg_fn
 
 alias x="xplr"
 alias sz="source ~/.zshrc"
@@ -178,8 +146,6 @@ alias ez="v ~/.zshrc"
 alias ls="eza"
 
 alias z="zoxide"
-
-source $HOME/.agent-bridge.sh
 
 eval "$(zoxide init zsh)"
 
