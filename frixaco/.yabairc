@@ -13,7 +13,7 @@ sudo yabai --load-sa
 
 # global settings
 yabai -m config                                 \
-    mouse_follows_focus          on             \
+    mouse_follows_focus          off            \
     focus_follows_mouse          off            \
     window_origin_display        default        \
     window_placement             second_child   \
@@ -53,5 +53,6 @@ yabai -m rule --add app="^1Password$" manage=off layer=above
 yabai -m rule --add app="^CleanShot X$" manage=off layer=above
 yabai -m rule --add app="^CleanShot X$" manage=off layer=above
 yabai -m rule --add app="^Docker$" manage=off layer=above
+yabai -m rule --add app="^Outline$" manage=off layer=above
 
 echo "yabai configuration loaded.."
