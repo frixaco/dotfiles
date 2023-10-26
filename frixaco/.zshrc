@@ -135,7 +135,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export GPG_TTY=$(tty)
 
 # export FZF_DEFAULT_COMMAND='fd --follow --hidden --no-ignore --exclude .git --exclude node_modules --exclude Library --exclude .cache --exclude .gradle --exclude .vscode\/extensions'
-export FZF_DEFAULT_COMMAND='fd -L -H -I -E .aws-sam -E Library -E .cache -E .gradle -E .vscode\/extensions -E .git -E .pyenv -E .venv -E venv -E .npm -E .yarn -E node_modules -d 3'
+export FZF_DEFAULT_COMMAND='fd -L -H -I -E .aws-sam -E Library -E .cache -E .gradle -E .vscode\/extensions -E .git -E .pyenv -E .venv -E venv -E .npm -E .yarn -E node_modules -E .next -E .open-next -d 5'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
