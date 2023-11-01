@@ -128,6 +128,11 @@ for path in "${ADDITIONAL_PATHS[@]}"; do
 done
 export PATH="$NEW_PATH"
 
+# export PATH=$PATH:$HOME/.pyenv/shims
+# export PATH=$PATH:$ANDROID_HOME/emulator
+# export PATH=$PATH:$ANDROID_HOME/platform-tools
+# export PATH=$PATH:$EMSDK/upstream/bin
+
 export XDG_CONFIG_HOME="$HOME/.config"
 
 export GPG_TTY=$(tty)

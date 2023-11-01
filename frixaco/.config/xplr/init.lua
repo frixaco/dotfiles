@@ -20,7 +20,7 @@ require("fzf").setup({
 })
 
 require("dual-pane").setup({
-	active_pane_width = { Percentage = 70 },
-	inactive_pane_width = { Percentage = 30 },
+	active_pane_width = { Percentage = 60 },
+	inactive_pane_width = { Percentage = 40 },
 	layout = "horizontal",
 })

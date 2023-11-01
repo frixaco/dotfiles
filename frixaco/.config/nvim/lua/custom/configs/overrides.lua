@@ -34,7 +34,9 @@ M.mason = {
 		"css-lsp",
 		"html-lsp",
 		"typescript-language-server",
+		"emmet-language-server",
 		"prettierd",
+		"tailwindcss-language-server",
 		"eslint-lsp",
 
 		-- c/cpp stuff
