@@ -112,6 +112,7 @@ export ANDROID_HOME=$HOME/Library/Android/sdk
 
 NEW_PATH="$PATH"
 ADDITIONAL_PATHS=(
+    $HOME/.local/bin
     $HOME/go/bin
     $HOME/.go
     $HOME/.go/1.21.3/bin
@@ -144,13 +145,11 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 alias v="nvim"
-
-alias x="xplr"
+alias z=zoxide
+alias x=xplr
 alias sz="source ~/.zshrc"
 alias ez="v ~/.zshrc"
-alias ls="eza"
-
-alias z="zoxide"
+alias ls='eza'
 
 eval "$(zoxide init zsh)"
 
