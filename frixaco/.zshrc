@@ -144,11 +144,10 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-alias v="nvim"
 alias z=zoxide
 alias x=xplr
 alias sz="source ~/.zshrc"
-alias ez="v ~/.zshrc"
+alias ez="vl ~/.zshrc"
 alias ls='eza'
 
 eval "$(zoxide init zsh)"

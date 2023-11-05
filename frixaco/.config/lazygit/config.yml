@@ -1,3 +1,5 @@
+os:
+  edit: 'vl {{filename}}'
 gui:
   theme:
     activeBorderColor:
