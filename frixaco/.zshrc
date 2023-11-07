@@ -144,6 +144,18 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+lg()
+{
+    export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
+
+    lazygit "$@"
+
+    if [ -f $LAZYGIT_NEW_DIR_FILE ]; then
+            cd "$(cat $LAZYGIT_NEW_DIR_FILE)"
+            rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
+    fi
+}
+
 alias z=zoxide
 alias x=xplr
 alias sz="source ~/.zshrc"
