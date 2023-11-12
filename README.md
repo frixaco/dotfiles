@@ -1,30 +1,26 @@
-To install all dotfiles run:
+To install:
 
-```
-stow -d . -t /home/frixaco/ .`
-```
+1. `cd frixaco`
+2. `stow --adopt --simulate --verbose --no-folding .` (remove `--simulate` flag to actually apply changes)
 
 Requirements:
 
 - `Zsh + oh-my-zsh` - best shell
 - `Kitty` - best terminal (yes, better than Alacritty)
-- `Tmux` - ditched it in favor of Kitty that provides all the functionality that Tmux provides with much better perfofmance
-- `Neovim` - best code editor (yes, better than VSCode)
-    - `NvChad` - currently used "distro"
-    - `LazyVim` - added this to try it out someday
-- `Lazygit` - best TUI for working with Git
+- `Neovim` - best code editor (yes, better than VSCode). Finally managed to create my own config, so goodbye and thank you NvChad and LazyVim!
+- `Lazygit` - best tool for working with Git
 - `xplr` - good terminal file manager (not sure if it's the best)
-
-- `Yabai` - tiling wm for MacOS
+- `Yabai` - tiling WM for MacOS
 - `skhd` - hotkey manager for MacOS
 
-Additionally:
+(`tmux` - ditched it in favor of Kitty that provides all the functionality that Tmux provides with much better performance)
 
+Additionally:
 - `fzf, fd, eza, zoxide, ripgrep, stow`
 
 TODO:
 
-- [ ] Add scripts to automatically install all apps, configs, etc.
+- [ ] Fully understand how to use `stow`
 - [ ] Find a way to automate SSH keys setup
 - [ ] Find a way to automate AWS credentials setup
 
