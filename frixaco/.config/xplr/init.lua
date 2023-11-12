@@ -24,3 +24,12 @@ require("dual-pane").setup({
 	inactive_pane_width = { Percentage = 40 },
 	layout = "horizontal",
 })
+
+xplr.config.modes.builtin.default.key_bindings.on_key["e"] = {
+	help = "Edit in Neovim",
+	messages = {
+		{
+			BashExec = 'if [ -d "$XPLR_FOCUS_PATH" ]; then nvim; elif [ -f "$XPLR_FOCUS_PATH" ]; then nvim "$XPLR_FOCUS_PATH"; fi',
+		},
+	},
+}

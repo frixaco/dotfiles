@@ -4,3 +4,10 @@
   path = ~/vbrato/.gitconfig-vbrato
 [includeIf "gitdir:~/.dotfiles/"]
   path = ~/.dotfiles/.gitconfig-dotfiles
+
+[core]
+  editor = nvim
+[diff]
+  tool = nvimdiff
+[difftool "nvimdiff"]
+  cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
