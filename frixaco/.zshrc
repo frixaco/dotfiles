@@ -159,8 +159,9 @@ lg()
 alias z=zoxide
 alias x=xplr
 alias sz="source ~/.zshrc"
-alias ez="vl ~/.zshrc"
+alias ez="nvim ~/.zshrc"
 alias ls='eza'
+alias v='nvim'
 
 eval "$(zoxide init zsh)"
 

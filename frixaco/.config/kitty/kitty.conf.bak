@@ -6,7 +6,7 @@
 #: individual font faces and even specify special fonts for particular
 #: characters.
 
-font_family        JetBrainsMono Nerd Font
+font_family      JetbrainsMono Nerd Font
 # bold_font        auto
 # italic_font      auto
 # bold_italic_font auto
@@ -738,7 +738,7 @@ enable_audio_bell no
 #: suffix of "c" on the width/height values to have them interpreted
 #: as number of cells instead of pixels.
 
-enabled_layouts splits:split_axis=horizontal
+# enabled_layouts *
 
 #: The enabled window layouts. A comma separated list of layout names.
 #: The special value all means all layouts. The first listed layout
@@ -898,7 +898,7 @@ window_padding_width 0 8 4
 
 #: Tab bar {{{
 
-tab_bar_edge top
+# tab_bar_edge bottom
 
 #: The edge to show the tab bar on, top or bottom.
 
@@ -913,7 +913,7 @@ tab_bar_edge top
 #: The second number is the margin between the tab bar and the
 #: contents of the current tab.
 
-tab_bar_style custom
+# tab_bar_style fade
 
 #: The tab bar style, can be one of:
 
@@ -939,12 +939,12 @@ tab_bar_style custom
 #:     a mapping for the select_tab action which presents you with a list of
 #:     tabs and allows for easy switching to a tab.
 
-tab_bar_align center
+# tab_bar_align left
 
 #: The horizontal alignment of the tab bar, can be one of: left,
 #: center, right.
 
-tab_bar_min_tabs 1
+# tab_bar_min_tabs 2
 
 #: The minimum number of tabs that must exist before the tab bar is
 #: shown.
@@ -957,7 +957,7 @@ tab_bar_min_tabs 1
 #: closed tab. A value of right will switch to the tab to the right of
 #: the closed tab. A value of last will switch to the right-most tab.
 
-tab_fade 1
+# tab_fade 0.25 0.5 0.75 1
 
 #: Control how each tab fades into the background when using fade for
 #: the tab_bar_style. Each number is an alpha (between zero and one)
@@ -984,12 +984,12 @@ tab_fade 1
 #: leading or trailing spaces, surround the text with quotes. See
 #: tab_title_template for how this is rendered.
 
-tab_title_max_length 0
+# tab_title_max_length 0
 
 #: The maximum number of cells that can be used to render the text in
 #: a tab. A value of zero means that no limit is applied.
 
-tab_title_template "{activity_symbol}{index}: {title.split(':')[-1]}"
+# tab_title_template "{fmt.fg.red}{bell_symbol}{activity_symbol}{fmt.fg.tab}{title}"
 
 #: A template to render the tab title. The default just renders the
 #: title with optional symbols for bell and activity. If you wish to
@@ -1066,7 +1066,7 @@ tab_title_template "{activity_symbol}{index}: {title.split(':')[-1]}"
 
 #: The foreground and background colors.
 
-# background_opacity 0.97
+# background_opacity 1.0
 
 #: The opacity of the background. A number between zero and one, where
 #: one is opaque and zero is fully transparent. This will only work if
@@ -1281,7 +1281,7 @@ tab_title_template "{activity_symbol}{index}: {title.split(':')[-1]}"
 #: See rc_custom_auth <https://sw.kovidgoyal.net/kitty/remote-
 #: control/#rc-custom-auth> for details.
 
-allow_remote_control yes
+# allow_remote_control no
 
 #: Allow other programs to control kitty. If you turn this on, other
 #: programs can control all aspects of kitty, including sending text
@@ -1313,6 +1313,25 @@ allow_remote_control yes
 # listen_on none
 
 #: Listen to the specified UNIX socket for remote control connections.
+#: Note that this will apply to all kitty instances. It can be
+#: overridden by the kitty --listen-on command line option, which also
+#: supports listening on a TCP socket. This option accepts only UNIX
+#: sockets, such as unix:${TEMP}/mykitty or unix:@mykitty (on Linux).
+#: Environment variables are expanded and relative paths are resolved
+#: with respect to the temporary directory. If {kitty_pid} is present,
+#: then it is replaced by the PID of the kitty process, otherwise the
+#: PID of the kitty process is appended to the value, with a hyphen.
+#: See the help for kitty --listen-on for more details. Note that this
+#: will be ignored unless allow_remote_control is set to either: yes,
+#: socket or socket-only. Changing this option by reloading the config
+#: is not supported.
+
+# env
+
+#: Specify the environment variables to be set in all child processes.
+#: Using the name with an equal sign (e.g. env VAR=) will set it to
+#: the empty string. Specifying only the name (e.g. env VAR) will
+#: remove the variable from the child process' environment. Note that
 #: environment variables are expanded recursively, for example::
 
 #:     env VAR1=a
@@ -2322,29 +2341,3 @@ macos_option_as_alt yes
 #: }}}
 
 #: }}}
-
-
-# BEGIN_KITTY_THEME
-# Catppuccin-Mocha
-include themes/catppuccin-mocha.conf
-# END_KITTY_THEME
-
-# MAPPINGS
-
-# Pane focus
-map alt+h neighboring_window left
-map alt+l neighboring_window right
-map alt+k neighboring_window up
-map alt+j neighboring_window down
-
-map ctrl+shift+v launch --location=vsplit --cwd=current
-map ctrl+shift+h launch --location=hsplit --cwd=current
-map ctrl+shift+enter launch --location=vsplit --cwd=current
-
-map ctrl+1 goto_tab 1
-map ctrl+2 goto_tab 2
-map ctrl+3 goto_tab 3
-map ctrl+4 goto_tab 4
-map ctrl+5 goto_tab 5
-
-map cmd+t launch --cwd=current --type=tab
