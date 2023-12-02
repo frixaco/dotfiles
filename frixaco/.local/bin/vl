@@ -1,2 +1,0 @@
-#!/bin/sh
-exec env NVIM_APPNAME=nvim-lazyvim nvim "$@"

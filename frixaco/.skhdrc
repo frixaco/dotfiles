@@ -77,10 +77,10 @@
 # ############################################################### #
 
 # focus window
-shift + alt - h : yabai -m window --focus west
-shift + alt - j : yabai -m window --focus north
-shift + alt - k : yabai -m window --focus south
-shift + alt - l : yabai -m window --focus east
+alt - h : yabai -m window --focus west
+alt - j : yabai -m window --focus north
+alt - k : yabai -m window --focus south
+alt - l : yabai -m window --focus east
 
 # swap managed window
 shift + cmd - h : yabai -m window --swap west

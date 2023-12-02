@@ -25,11 +25,34 @@ require("dual-pane").setup({
 	layout = "horizontal",
 })
 
+require("zoxide").setup({
+	bin = "zoxide",
+	mode = "default",
+	key = "Z",
+})
+
 xplr.config.modes.builtin.default.key_bindings.on_key["e"] = {
 	help = "Edit in Neovim",
 	messages = {
 		{
 			BashExec = 'if [ -d "$XPLR_FOCUS_PATH" ]; then nvim; elif [ -f "$XPLR_FOCUS_PATH" ]; then nvim "$XPLR_FOCUS_PATH"; fi',
 		},
+	},
+}
+
+xplr.config.modes.builtin.selection_ops.key_bindings.on_key["c"] = {
+	help = "copy here",
+	messages = {
+		xplr.config.modes.builtin.selection_ops.key_bindings.on_key["c"].messages[1],
+		"ClearSelection",
+	},
+}
+
+xplr.config.modes.builtin.selection_ops.key_bindings.on_key["m"] = {
+	help = "move here",
+	messages = {
+		xplr.config.modes.builtin.selection_ops.key_bindings.on_key["m"].messages[1],
+		"ClearSelection",
+		"PopMode",
 	},
 }
