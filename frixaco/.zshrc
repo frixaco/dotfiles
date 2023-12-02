@@ -33,14 +33,16 @@ get_python_info() {
 }
 
 get_git_info() {
-    if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    # if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    if [[ -d .git ]] then
       local staged_files=$(git diff --cached --name-only | wc -l | sed 's/ //g')
       local unstaged_untracked_files=$(git status --porcelain --untracked-files=all | wc -l | sed 's/ //g')
-      local commits_not_pushed=$(git log origin/$(git rev-parse --abbrev-ref HEAD)..HEAD --oneline | wc -l | sed 's/ //g')
-      local commits_need_pull=$(git log HEAD..origin/$(git rev-parse --abbrev-ref HEAD) --oneline | wc -l | sed 's/ //g')
+      # local commits_not_pushed=$(git log origin/$(git rev-parse --abbrev-ref HEAD)..HEAD --oneline | wc -l | sed 's/ //g')
+      # local commits_need_pull=$(git log HEAD..origin/$(git rev-parse --abbrev-ref HEAD) --oneline | wc -l | sed 's/ //g')
       local branch_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
-      echo " \ue702 ($branch_name) +$staged_files *$unstaged_untracked_files \u2193$commits_not_pushed \u2191$commits_need_pull"
+      # echo " \ue702 ($branch_name) +$staged_files *$unstaged_untracked_files \u2193$commits_not_pushed \u2191$commits_need_pull"
+      echo " \ue702 ($branch_name) +$staged_files *$unstaged_untracked_files"
     fi
 }
 
