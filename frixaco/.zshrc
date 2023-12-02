@@ -1,4 +1,4 @@
-get_node_version() {
+get_node_info() {
     local node_version
     node_version=$(node -v)
     if [ -f package.json ]; then
@@ -6,7 +6,7 @@ get_node_version() {
     fi
 }
 
-get_go_version() {
+get_go_info() {
     local go_version
     go_version=$(go version)
     if [ -f go.mod ]; then
@@ -14,7 +14,7 @@ get_go_version() {
     fi
 }
 
-get_rust_version() {
+get_rust_info() {
     local rust_version
     rust_version=$(rustc --version)
     if [ -f Cargo.toml ]; then
@@ -22,7 +22,7 @@ get_rust_version() {
     fi
 }
 
-get_python_version() {
+get_python_info() {
     local python_version
     python_version=$(python3 -V | sed 's/Python //')
     local py_file_count=$(fd -d 1 -e .py | wc -l | sed 's/ //g')
@@ -44,8 +44,11 @@ get_git_info() {
     fi
 }
 
-precmd() { print -rP "%F{#F5C2E7}%B(%n)%b%f %F{#BAC2DE}%~%f%F{#F9E2AF}$(get_node_version)%f%F{#89B4FA}$(get_python_version)%f%F{#74C7EC}$(get_go_version)%f%F{#F38BA8}$(get_rust_version)%f%F{#A6E3A1}$(get_git_info)%f"; }
-PROMPT="%F{#CBA6F7}●%f "
+setopt prompt_subst
+precmd() {
+    local info="%F{#F5C2E7}%B(%n)%b%f%f%F{#F9E2AF}$(get_node_info)%f%F{#89B4FA}$(get_python_info)%f%F{#74C7EC}$(get_go_info)%f%F{#F38BA8}$(get_rust_info)%f%F{#A6E3A1}$(get_git_info)%f";
+    PROMPT="$info %F{#BAC2DE}%1~%f %F{#CBA6F7}●%f "
+}
 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
