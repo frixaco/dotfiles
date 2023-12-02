@@ -34,7 +34,7 @@ get_python_info() {
 
 get_git_info() {
     # if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    if [[ -d .git ]] then
+    if [[ -d .git ]] || [[ -f .git ]] then
       local staged_files=$(git diff --cached --name-only | wc -l | sed 's/ //g')
       local unstaged_untracked_files=$(git status --porcelain --untracked-files=all | wc -l | sed 's/ //g')
       # local commits_not_pushed=$(git log origin/$(git rev-parse --abbrev-ref HEAD)..HEAD --oneline | wc -l | sed 's/ //g')
