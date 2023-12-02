@@ -48,8 +48,8 @@ get_git_info() {
 
 setopt prompt_subst
 precmd() {
-    local info="%F{#F5C2E7}%B(%n)%b%f%f%F{#F9E2AF}$(get_node_info)%f%F{#89B4FA}$(get_python_info)%f%F{#74C7EC}$(get_go_info)%f%F{#F38BA8}$(get_rust_info)%f%F{#A6E3A1}$(get_git_info)%f";
-    PROMPT="$info %F{#BAC2DE}%1~%f %F{#CBA6F7}●%f "
+    local info="%F{#F9E2AF}$(get_node_info)%f%F{#89B4FA}$(get_python_info)%f%F{#74C7EC}$(get_go_info)%f%F{#F38BA8}$(get_rust_info)%f%F{#A6E3A1}$(get_git_info)%f";
+    PROMPT="%F{#F5C2E7}%B(%n)%b%f%f %F{#BAC2DE}%1~%f$info %F{#CBA6F7}●%f "
 }
 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
