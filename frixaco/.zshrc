@@ -1,103 +1,58 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+get_node_version() {
+    local node_version
+    node_version=$(node -v)
+    if [ -f package.json ]; then
+        echo " \ue718 $node_version" | sed 's/v//'
+    fi
+}
 
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+get_go_version() {
+    local go_version
+    go_version=$(go version)
+    if [ -f go.mod ]; then
+        echo " \ue724 $go_version" | sed 's/v//'
+    fi
+}
 
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
+get_rust_version() {
+    local rust_version
+    rust_version=$(rustc --version)
+    if [ -f Cargo.toml ]; then
+        echo " \ue7a8 $rust_version" | sed 's/v//'
+    fi
+}
+
+get_python_version() {
+    local python_version
+    python_version=$(python3 -V | sed 's/Python //')
+    local py_file_count=$(fd -d 1 -e .py | wc -l | sed 's/ //g')
+
+    if [ $py_file_count -gt 0 ]; then
+        echo " \ue73c $python_version" | sed 's/v//'
+    fi
+}
+
+get_git_info() {
+    if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+      local staged_files=$(git diff --cached --name-only | wc -l | sed 's/ //g')
+      local unstaged_untracked_files=$(git status --porcelain --untracked-files=all | wc -l | sed 's/ //g')
+      local commits_not_pushed=$(git log origin/$(git rev-parse --abbrev-ref HEAD)..HEAD --oneline | wc -l | sed 's/ //g')
+      local commits_need_pull=$(git log HEAD..origin/$(git rev-parse --abbrev-ref HEAD) --oneline | wc -l | sed 's/ //g')
+      local branch_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+      echo " \ue702 ($branch_name) +$staged_files *$unstaged_untracked_files \u2193$commits_not_pushed \u2191$commits_need_pull"
+    fi
+}
+
+precmd() { print -rP "%F{#F5C2E7}%B(%n)%b%f %F{#BAC2DE}%~%f%F{#F9E2AF}$(get_node_version)%f%F{#89B4FA}$(get_python_version)%f%F{#74C7EC}$(get_go_version)%f%F{#F38BA8}$(get_rust_version)%f%F{#A6E3A1}$(get_git_info)%f"; }
+PROMPT="%F{#CBA6F7}●%f "
+
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # HOMEBREW completions
-
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+if  [[ "$OSTYPE" == "darwin"* ]]; then
+    FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 fi
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="powerlevel10k/powerlevel10k"
-
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(
-    autoupdate
-    git
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-)
-
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -106,20 +61,20 @@ else
   export EDITOR='nvim'
 fi
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
+my_configs=(
+    "$HOME/.asdf/asdf.sh"
+)
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+for f in $my_configs; do
+    . $f
+done
 
+# append completions to fpath
+fpath=(${ASDF_DIR}/completions ~/.zsh/completion $fpath)
 # initialise completions with ZSH's compinit
 autoload -Uz compinit && compinit
+
+. ~/.asdf/plugins/java/set-java-home.zsh
 
 export ANDROID_HOME=$HOME/Library/Android/sdk
 
@@ -127,8 +82,6 @@ NEW_PATH="$PATH"
 ADDITIONAL_PATHS=(
     $HOME/.local/bin
     $HOME/go/bin
-    $HOME/.go
-    $HOME/.go/1.21.3/bin
     $HOME/.pyenv/shims
     $ANDROID_HOME/emulator
     $ANDROID_HOME/platform-tools
@@ -141,11 +94,6 @@ for path in "${ADDITIONAL_PATHS[@]}"; do
     fi
 done
 export PATH="$NEW_PATH"
-
-# export PATH=$PATH:$HOME/.pyenv/shims
-# export PATH=$PATH:$ANDROID_HOME/emulator
-# export PATH=$PATH:$ANDROID_HOME/platform-tools
-# export PATH=$PATH:$EMSDK/upstream/bin
 
 export XDG_CONFIG_HOME="$HOME/.config"
 
@@ -178,6 +126,9 @@ alias v='nvim'
 
 eval "$(zoxide init zsh)"
 
-export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# bun completions
+[ -s "/Users/frixaco/.bun/_bun" ] && source "/Users/frixaco/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

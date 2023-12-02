@@ -5,7 +5,7 @@ To install:
 
 Requirements:
 
-- `Zsh + oh-my-zsh + powerlevel10k` - best shell (make sure to install plugins)
+- `Zsh + manually installed plugins` - best shell (make sure to install plugins) (plugin go to `~/.zsh/`)
 - `Kitty` - best terminal (yes, better than Alacritty)
 - `Neovim` - best code editor (yes, better than VSCode). Finally managed to create my own config, so goodbye and thank you NvChad and LazyVim!
 - `Lazygit` - best tool for working with Git
