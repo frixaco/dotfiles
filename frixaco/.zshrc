@@ -1,25 +1,29 @@
 get_node_info() {
+    if [ ! -f package.json ]; then
+	return
+    fi
     local node_version
     node_version=$(node -v)
-    if [ -f package.json ]; then
-        echo " \ue718 $node_version" | sed 's/v//'
-    fi
+    echo " \ue718 $node_version" | sed 's/v//'
 }
 
 get_go_info() {
-    local go_version
-    go_version=$(go version)
-    if [ -f go.mod ]; then
-        echo " \ue724 $go_version" | sed 's/v//'
+    if [ ! -f go.mod ]; then
+        return
     fi
+    local go_version
+    go_version=$(go version 2>&1 | awk '{print $3}')
+
+    echo " \ue724 $go_version" | sed 's/go//'
 }
 
 get_rust_info() {
-    local rust_version
-    rust_version=$(rustc --version)
-    if [ -f Cargo.toml ]; then
-        echo " \ue7a8 $rust_version" | sed 's/v//'
+    if [ ! -f Cargo.toml ]; then
+	return
     fi
+    local rust_version
+    rust_version=$(rustc --version | awk '{print $2}')
+    echo " \ue7a8 $rust_version"
 }
 
 get_python_info() {
@@ -41,15 +45,17 @@ get_git_info() {
       # local commits_need_pull=$(git log HEAD..origin/$(git rev-parse --abbrev-ref HEAD) --oneline | wc -l | sed 's/ //g')
       local branch_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
-      # echo " \ue702 ($branch_name) +$staged_files *$unstaged_untracked_files \u2193$commits_not_pushed \u2191$commits_need_pull"
-      echo " \ue702 ($branch_name) +$staged_files *$unstaged_untracked_files"
+      # echo " \ue702 +$staged_files *$unstaged_untracked_files \u2193$commits_not_pushed \u2191$commits_need_pull"
+      echo " 󰘬 $branch_name +$staged_files *$unstaged_untracked_files"
     fi
 }
 
 setopt prompt_subst
 precmd() {
-    local info="%F{#F9E2AF}$(get_node_info)%f%F{#89B4FA}$(get_python_info)%f%F{#74C7EC}$(get_go_info)%f%F{#F38BA8}$(get_rust_info)%f%F{#A6E3A1}$(get_git_info)%f";
-    PROMPT="%F{#F5C2E7}%B(%n)%b%f%f %F{#BAC2DE}%1~%f$info %F{#CBA6F7}●%f "
+    # git: %F{#A6E3A1}$(get_git_info)%f
+    local info="%F{#F9E2AF}$(get_node_info)%f%F{#89B4FA}$(get_python_info)%f%F{#74C7EC}$(get_go_info)%f";
+    # username: %F{#F5C2E7}%B(%n)%b%f%f
+    PROMPT="%F{#F5C2E7}%B%1~%b%f$info %F{#CBA6F7}〉%f"
 }
 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -137,3 +143,6 @@ eval "$(zoxide init zsh)"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Added by Amplify CLI binary installer
+export PATH="$HOME/.amplify/bin:$PATH"

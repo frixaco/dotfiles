@@ -12,6 +12,8 @@ Requirements:
 - `xplr` - good terminal file manager (not sure if it's the best)
 - `Yabai` - tiling WM for MacOS
 - `skhd` - hotkey manager for MacOS
+- Python: `pipenv`, `pyenv`
+- Node, Rust, Go: `asdf`
 
 (`tmux` - ditched it in favor of Kitty that provides all the functionality that Tmux provides with much better performance)
 
