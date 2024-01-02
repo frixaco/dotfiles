@@ -1,0 +1,37 @@
+[2023-12-17 20:23:05.607] [info]  onDragEnter
+[2023-12-17 20:23:12.111] [info]  {"code":"MODULE_NOT_FOUND","requireStack":["/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js"]}
+[2023-12-17 20:23:12.112] [warn]  Error: Module "@svgr/plugin-svgo" missing. Maybe `npm install @svgr/plugin-svgo` could help!
+[2023-12-17 20:23:12.113] [warn]  ☠️ ERROR PROMPT SHOULD SHOW ☠️
+[2023-12-17 20:23:12.115] [warn]  Error: Module "@svgr/plugin-svgo" missing. Maybe `npm install @svgr/plugin-svgo` could help!
+    at loadPlugin (/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js:163:11)
+    at resolvePlugin (/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js:144:12)
+    at Array.map (<anonymous>)
+    at run (/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js:171:45)
+    at transform (/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js:180:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/frixaco/.kenv/scripts/svgr.ts:32:14
+[2023-12-17 20:24:28.500] [info]  onDragEnter
+[2023-12-17 20:24:32.754] [info]  {"code":"MODULE_NOT_FOUND","requireStack":["/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js"]}
+[2023-12-17 20:24:32.754] [warn]  Error: Module "@svgr/plugin-jsx" missing. Maybe `npm install @svgr/plugin-jsx` could help!
+[2023-12-17 20:24:32.754] [warn]  ☠️ ERROR PROMPT SHOULD SHOW ☠️
+[2023-12-17 20:24:32.755] [warn]  Error: Module "@svgr/plugin-jsx" missing. Maybe `npm install @svgr/plugin-jsx` could help!
+    at loadPlugin (/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js:163:11)
+    at resolvePlugin (/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js:144:12)
+    at Array.map (<anonymous>)
+    at run (/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js:171:45)
+    at transform (/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js:180:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/frixaco/.kenv/scripts/svgr.ts:32:14
+[2023-12-17 20:24:55.530] [info]  onDragEnter
+[2023-12-17 20:24:57.867] [info]  {"code":"MODULE_NOT_FOUND","requireStack":["/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js"]}
+[2023-12-17 20:24:57.867] [warn]  Error: Module "@svgr/plugin-prettier" missing. Maybe `npm install @svgr/plugin-prettier` could help!
+[2023-12-17 20:24:57.867] [warn]  ☠️ ERROR PROMPT SHOULD SHOW ☠️
+[2023-12-17 20:24:57.867] [warn]  Error: Module "@svgr/plugin-prettier" missing. Maybe `npm install @svgr/plugin-prettier` could help!
+    at loadPlugin (/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js:163:11)
+    at resolvePlugin (/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js:144:12)
+    at Array.map (<anonymous>)
+    at run (/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js:171:45)
+    at transform (/Users/frixaco/.kenv/node_modules/@svgr/core/dist/index.js:180:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///Users/frixaco/.kenv/scripts/svgr.ts:32:14
+[2023-12-17 20:26:01.076] [info]  onDragEnter

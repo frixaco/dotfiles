@@ -53,9 +53,9 @@ get_git_info() {
 setopt prompt_subst
 precmd() {
     # git: %F{#A6E3A1}$(get_git_info)%f
-    local info="%F{#F9E2AF}$(get_node_info)%f%F{#89B4FA}$(get_python_info)%f%F{#74C7EC}$(get_go_info)%f";
+    local info="%F{#A6E3A1}$(get_git_info)%f%F{#F9E2AF}$(get_node_info)%f%F{#89B4FA}$(get_python_info)%f%F{#74C7EC}$(get_go_info)%f";
     # username: %F{#F5C2E7}%B(%n)%b%f%f
-    PROMPT="%F{#F5C2E7}%B%1~%b%f$info %F{#CBA6F7}〉%f"
+    PROMPT=" %F{#F5C2E7}%B%1~%b%f$info %F{#CBA6F7}〉%f"
 }
 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh

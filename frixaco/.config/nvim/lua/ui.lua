@@ -15,7 +15,8 @@ return {
     -- See `:help lualine.txt`
     opts = {
       options = {
-        icons_enabled = false,
+        icons_enabled = true,
+        globalstatus = true,
         -- catppuccin supporst it by default, no need to set
         -- theme = 'catppuccin',
         component_separators = '|',
@@ -39,19 +40,14 @@ return {
           },
         },
         lualine_x = { 'filetype' },
-      },
-      inactive_sections = {
         lualine_y = {},
       },
     },
   },
 
   {
-    -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help ibl`
-    main = 'ibl',
+    'echasnovski/mini.indentscope',
+    version = '*',
     opts = {},
   },
 }

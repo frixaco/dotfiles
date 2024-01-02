@@ -1,0 +1,9 @@
+#!/bin/sh
+
+NODE_NO_WARNINGS=1 \
+KENV=$(cd "$(dirname ${BASH_SOURCE[0]})"/.. &> /dev/null && pwd) \
+/Users/frixaco/.knode/bin/node \
+--experimental-loader /Users/frixaco/.kit/build/loader.js \
+/Users/frixaco/.kit/run/terminal.js \
+/Users/frixaco/.kenv/scripts/watch-tutorials.js \
+"$@"

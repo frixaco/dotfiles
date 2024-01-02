@@ -5,8 +5,8 @@ To install:
 
 Requirements:
 
-- `Zsh + manually installed plugins` - best shell (make sure to install plugins) (plugin go to `~/.zsh/`)
-- `Kitty` - best terminal (yes, better than Alacritty)
+- `Zsh + manually installed plugins` - best shell (make sure to install plugins) (plugins go to `~/.zsh/`)
+- `WezTerm` - best terminal (yes, better than Alacritty and Kitty), awesome author
 - `Neovim` - best code editor (yes, better than VSCode). Finally managed to create my own config, so goodbye and thank you NvChad and LazyVim!
 - `Lazygit` - best tool for working with Git
 - `xplr` - good terminal file manager (not sure if it's the best)
@@ -15,7 +15,7 @@ Requirements:
 - Python: `pipenv`, `pyenv`
 - Node, Rust, Go: `asdf`
 
-(`tmux` - ditched it in favor of Kitty that provides all the functionality that Tmux provides with much better performance)
+(`tmux` - ditched in favor of terminal panes+tabs, don't see the use at the moment, maybe will return if provides more efficiency)
 
 Additionally:
 - `fzf, fd, eza, zoxide, ripgrep, stow`

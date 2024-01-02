@@ -293,6 +293,10 @@ vim.defer_fn(function()
       },
     },
   }
+
+  vim.o.foldenable = false
+  vim.o.foldmethod = 'expr'
+  vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 end, 0)
 
 -- [[ Configure LSP ]]

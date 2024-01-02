@@ -1,9 +1,7 @@
-[includeIf "gitdir:~/personal/"]
+[includeIf "gitdir:~/dev/personal/"]
   path = ~/personal/.gitconfig-personal
-[includeIf "gitdir:~/vbrato/"]
+[includeIf "gitdir:~/dev/vbrato/"]
   path = ~/vbrato/.gitconfig-vbrato
-[includeIf "gitdir:~/.dotfiles/"]
-  path = ~/.dotfiles/.gitconfig-dotfiles
 
 [core]
   editor = nvim
@@ -13,4 +11,4 @@
   cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
 
 [init]
-	defaultBranch = main
+  defaultBranch = main
