@@ -1,17 +1,7 @@
 return {
   {
-    'catppuccin/nvim',
-    lazy = false,
-    name = 'catppuccin',
-    priority = 1000,
-    opts = {
-      transparent_background = true,
-    },
-  },
-
-  {
-    -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
+    event = 'VeryLazy',
     -- See `:help lualine.txt`
     opts = {
       options = {
@@ -43,11 +33,5 @@ return {
         lualine_y = {},
       },
     },
-  },
-
-  {
-    'echasnovski/mini.indentscope',
-    version = '*',
-    opts = {},
   },
 }

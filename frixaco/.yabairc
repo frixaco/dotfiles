@@ -51,8 +51,9 @@ yabai -m config                                 \
 yabai -m rule --add app="^System Settings$" manage=off layer=above
 yabai -m rule --add app="^1Password$" manage=off layer=above
 yabai -m rule --add app="^CleanShot X$" manage=off layer=above
-yabai -m rule --add app="^CleanShot X$" manage=off layer=above
 yabai -m rule --add app="^Docker$" manage=off layer=above
 yabai -m rule --add app="^Outline$" manage=off layer=above
+yabai -m rule --add app="^Raycast$" manage=off layer=above
+yabai -m rule --add app="^Notes$" manage=off layer=above
 
 echo "yabai configuration loaded.."
