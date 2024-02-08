@@ -1,6 +1,54 @@
 return {
+  -- {
+  --   'WhoIsSethDaniel/mason-tool-installer.nvim',
+  --   opts = {
+  --
+  --     -- a list of all tools you want to ensure are installed upon
+  --     -- start
+  --     ensure_installed = {
+  --       'stylua',
+  --       'isort',
+  --       'black',
+  --       'prettier',
+  --       'clang-format',
+  --       'goimports',
+  --       'shfmt',
+  --       'shellcheck',
+  --     },
+  --
+  --     -- if set to true this will check each tool for updates. If updates
+  --     -- are available the tool will be updated. This setting does not
+  --     -- affect :MasonToolsUpdate or :MasonToolsInstall.
+  --     -- Default: false
+  --     auto_update = false,
+  --
+  --     -- automatically install / update on startup. If set to false nothing
+  --     -- will happen on startup. You can use :MasonToolsInstall or
+  --     -- :MasonToolsUpdate to install tools and check for updates.
+  --     -- Default: true
+  --     run_on_start = true,
+  --
+  --     -- set a delay (in ms) before the installation starts. This is only
+  --     -- effective if run_on_start is set to true.
+  --     -- e.g.: 5000 = 5 second delay, 10000 = 10 second delay, etc...
+  --     -- Default: 0
+  --     start_delay = 3000, -- 3 second delay
+  --
+  --     -- Only attempt to install if 'debounce_hours' number of hours has
+  --     -- elapsed since the last time Neovim was started. This stores a
+  --     -- timestamp in a file named stdpath('data')/mason-tool-installer-debounce.
+  --     -- This is only relevant when you are using 'run_on_start'. It has no
+  --     -- effect when running manually via ':MasonToolsInstall' etc....
+  --     -- Default: nil
+  --     debounce_hours = 5, -- at least 5 hours between attempts to install/update
+  --   },
+  -- },
+
   {
     'williamboman/mason.nvim',
+    cmd = 'Mason',
+    keys = { { '<leader>cm', '<cmd>Mason<cr>', desc = 'Mason' } },
+    build = ':MasonUpdate',
     opts = {
       ensure_installed = {
         'stylua',
@@ -13,20 +61,29 @@ return {
         'shellcheck',
       },
     },
+    ---@param opts MasonSettings | {ensure_installed: string[]}
     config = function(_, opts)
       require('mason').setup(opts)
-
-      local mason_registry = require('mason-registry')
+      local mr = require('mason-registry')
+      mr:on('package:install:success', function()
+        vim.defer_fn(function()
+          -- trigger FileType event to possibly load this newly installed LSP server
+          require('lazy.core.handler.event').trigger({
+            event = 'FileType',
+            buf = vim.api.nvim_get_current_buf(),
+          })
+        end, 100)
+      end)
       local function ensure_installed()
         for _, tool in ipairs(opts.ensure_installed) do
-          local p = mason_registry.get_package(tool)
+          local p = mr.get_package(tool)
           if not p:is_installed() then
             p:install()
           end
         end
       end
-      if mason_registry.refresh then
-        mason_registry.refresh(ensure_installed)
+      if mr.refresh then
+        mr.refresh(ensure_installed)
       else
         ensure_installed()
       end
@@ -39,7 +96,8 @@ return {
     dependencies = {
       { 'folke/neodev.nvim', opts = {} },
 
-      { 'williamboman/mason.nvim', config = true },
+      'williamboman/mason.nvim',
+      -- 'mason.nvim',
       'williamboman/mason-lspconfig.nvim',
 
       {
@@ -195,7 +253,7 @@ return {
         local server_opts = {
           capabilities = capabilities,
           on_attach = on_attach,
-          filetypes = (servers[server] or {}).filetypes,
+          filetypes = (servers[server_name] or {}).filetypes,
         }
         lspconfig[server_name].setup(server_opts)
       end
