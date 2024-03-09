@@ -1,7 +1,7 @@
-[includeIf "gitdir:~/dev/my/"]
-  path = ~/dev/my/.gitconfig-my
-[includeIf "gitdir:~/dev/vbrato/"]
-  path = ~/dev/vbrato/.gitconfig-vbrato
+[includeIf "gitdir:~/personal/"]
+  path = ~/personal/.gitconfig-personal
+[includeIf "gitdir:~/vbrato/"]
+  path = ~/vbrato/.gitconfig-vbrato
 
 [core]
   editor = nvim
@@ -24,4 +24,4 @@
 [branch]
 	sort = -committerdate
 [maintenance]
-	repo = /Users/frixaco/dev/vbrato/vbrato-api
+	repo = /Users/frixaco/vbrato/vbrato-api

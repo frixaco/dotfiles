@@ -1,4 +1,7 @@
-/opt/homebrew/bin/brew shellenv | source
+switch (uname)
+  case Darwin
+    /opt/homebrew/bin/brew shellenv | source
+end
 
 if status is-interactive
     # Commands to run in interactive sessions can go here
@@ -12,9 +15,16 @@ else
     set -gx EDITOR nvim
 end
 
-set -gx ANDROID_HOME ~/Library/Android/sdk
-set -gx NDK_HOME ~/Library/Android/sdk/ndk/25.2.9519653
-set -gx JAVA_HOME /Applications/Android\ Studio.app/Contents/jbr/Contents/Home
+switch (uname)
+  case Darwin
+    set -gx ANDROID_HOME ~/Library/Android/sdk
+    set -gx NDK_HOME ~/Library/Android/sdk/ndk/25.2.9519653
+    set -gx JAVA_HOME /Applications/Android\ Studio.app/Contents/jbr/Contents/Home
+  case Linux
+    set -gx ANDROID_HOME ~/Android/sdk
+    fish_add_path $ANDROID_HOME/emulator $ANDROID_HOME/platform-tools
+end
+
 set -gx XDG_CONFIG_HOME ~/.config
 set -gx GPG_TTY (tty)
 

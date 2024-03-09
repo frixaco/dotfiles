@@ -7,7 +7,15 @@ if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
-config.default_prog = { "/opt/homebrew/bin/fish", "-l" }
+local is_linux = function()
+	return wezterm.target_triple:find("linux") ~= nil
+end
+
+local is_darwin = function()
+	return wezterm.target_triple:find("darwin") ~= nil
+end
+
+config.default_prog = is_darwin() and { "/opt/homebrew/bin/fish", "-l" } or { "/usr/bin/fish", "-l" }
 
 config.window_padding = {
 	left = 16,
@@ -191,14 +199,14 @@ end
 
 table.insert(config.keys, {
 	key = "h",
-	mods = "CTRL|SHIFT",
+	mods = is_linux() and "ALT|SHIFT" or "CTRL|SHIFT",
 	action = act.SplitVertical({
 		domain = "CurrentPaneDomain",
 	}),
 })
 table.insert(config.keys, {
 	key = "v",
-	mods = "CTRL|SHIFT",
+	mods = is_linux() and "ALT|SHIFT" or "CTRL|SHIFT",
 	action = act.SplitHorizontal({
 		domain = "CurrentPaneDomain",
 	}),
