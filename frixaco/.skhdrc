@@ -116,6 +116,8 @@ alt - 4 : yabai -m space --focus 4 && yabai -m query --windows --space | jq -er 
 	|| yabai -m window --focus mouse
 alt - 5 : yabai -m space --focus 5 && yabai -m query --windows --space | jq -er 'map(select(.focused == 1)) | length > 0' \
 	|| yabai -m window --focus mouse
+alt - 6 : yabai -m space --focus 6 && yabai -m query --windows --space | jq -er 'map(select(.focused == 1)) | length > 0' \
+	|| yabai -m window --focus mouse
 
 # send window to desktop and follow focus
 ctrl + cmd - 1 : yabai -m window --space  1; yabai -m space --focus 1
@@ -123,8 +125,11 @@ ctrl + cmd - 2 : yabai -m window --space  2; yabai -m space --focus 2
 ctrl + cmd - 3 : yabai -m window --space  3; yabai -m space --focus 3
 ctrl + cmd - 4 : yabai -m window --space  4; yabai -m space --focus 4
 ctrl + cmd - 5 : yabai -m window --space  5; yabai -m space --focus 5
+ctrl + cmd - 6 : yabai -m window --space  6; yabai -m space --focus 6
 
-ctrl + cmd - return : /Applications/WezTerm.app/Contents/MacOS/wezterm start
+# https://github.com/koekeishiya/yabai/issues/1858#issuecomment-1904805563
+# ctrl + cmd - t : /Applications/WezTerm.app/Contents/MacOS/wezterm start
+ctrl + cmd - t : ~/startWezterm.sh
 
 # focus monitor
 # ctrl + alt - z  : yabai -m display --focus prev
@@ -161,6 +166,3 @@ shift + alt - s : yabai -m window --resize right:20:0
 
 # toggle sticky(+float), topmost, picture-in-picture
 # alt - p : yabai -m window --toggle sticky --toggle topmost --toggle pip
-
-# https://github.com/koekeishiya/yabai/issues/1858#issuecomment-1904805563
-# cmd + shift - t : (LABEL=$(uuidgen) && yabai -m signal --add event="window_created" label="$LABEL" app="^WezTerm$" action="yabai -m window \$YABAI_WINDOW_ID --focus && yabai -m signal --remove $LABEL") && (/Applications/WezTerm.app/Contents/MacOS/wezterm start)

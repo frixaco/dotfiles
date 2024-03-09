@@ -1,0 +1,10 @@
+[tools]
+go = "1.22"
+python = "3.12"
+node = "20"
+ruby = "2.7.6"
+java = "zulu-17"
+
+[settings]
+python_venv_auto_create = true
+experimental = true

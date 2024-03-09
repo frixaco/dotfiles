@@ -217,15 +217,17 @@ return {
           vim.keymap.set('n', keys, func, { buffer = bufnr, noremap = true, desc = desc })
         end
 
-        nnoremap('<leader>dm', vim.diagnostic.open_float, 'Open floating [d]iagnostic [m]essage')
-        nnoremap('gp', vim.diagnostic.goto_prev, '[G]o to [p]revious diagnostic message')
-        nnoremap('gn', vim.diagnostic.goto_next, '[G]o to [n]ext diagnostic message')
-        nnoremap('<leader>dl', vim.diagnostic.setloclist, 'Open [d]iagnostics [l]ist')
+        nnoremap('[d', vim.diagnostic.goto_prev, 'Go to previous diagnostic message')
+        nnoremap(']d', vim.diagnostic.goto_next, 'Go to next diagnostic message')
+        nnoremap('<leader>e', vim.diagnostic.open_float, 'Open floating diagnostic message')
+        nnoremap('<leader>q', vim.diagnostic.setloclist, 'Open diagnostics list')
 
-        nnoremap('gd', vim.lsp.buf.definition, '[G]oto [d]efinition')
-        nnoremap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-        nnoremap('gi', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
-        nnoremap('gr', vim.lsp.buf.references, '[G]oto [R]eferences')
+        nnoremap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+        nnoremap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+        nnoremap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [d]efinition')
+        nnoremap('gD', require('telescope.builtin').lsp_type_definitions, '[G]oto [D]eclaration')
+        nnoremap('gi', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+        nnoremap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
         nnoremap('K', vim.lsp.buf.hover, 'Hover documentation')
         -- nnoremap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
         nnoremap('<space>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
@@ -235,16 +237,11 @@ return {
         end, 'List [W]orkspace [F]olders')
         nnoremap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
         nnoremap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
-        nnoremap('<leader>f', function()
-          vim.lsp.buf.format({ async = true })
-        end, 'Format current buffer')
+        -- nnoremap('<leader>f', function()
+        --   vim.lsp.buf.format({ async = true })
+        -- end, 'Format current buffer')
         vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, noremap = true, desc = 'LSP:  [C]ode [A]ction' })
       end
-
-      vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-      vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-      vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-      vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
       local lspconfig = require('lspconfig')
       local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -284,6 +281,13 @@ return {
         on_attach = on_attach,
         capabilities = capabilities,
         filetypes = { 'gd', 'gdscript', 'gdscript3' },
+      })
+
+      -- Full build should be installed, via Cargo e.g.
+      require('lspconfig').taplo.setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+        filetypes = { 'toml' },
       })
 
       -- Autocompletion

@@ -176,7 +176,11 @@ return {
         replace_engine = {
           ['sed'] = {
             cmd = 'sed',
-            args = nil,
+            args = { -- works only on MacOS
+              '-i',
+              '',
+              '-E',
+            },
             options = {
               ['ignore-case'] = {
                 value = '--ignore-case',

@@ -29,6 +29,9 @@ vim.o.wrap = false
 -- See `:help 'clipboard'`
 vim.o.clipboard = 'unnamedplus'
 
+-- Don't show the mode, since it's already in the statusline
+vim.o.showmode = false
+
 -- Enable break indent
 vim.o.breakindent = true
 
@@ -46,6 +49,10 @@ vim.wo.signcolumn = 'yes'
 vim.o.updatetime = 250
 vim.o.timeoutlen = 300
 
+-- Configure how new splits should be opened
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
@@ -62,3 +69,6 @@ vim.opt.expandtab = true
 vim.o.pumblend = 0
 -- Sets the transparency of windows when they are in a non-current split. Like pumblend, the value can be between 0 and 100
 vim.o.winblend = 0
+
+-- Minimal number of screen lines to keep above and below the cursor.
+vim.opt.scrolloff = 10

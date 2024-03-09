@@ -15,6 +15,10 @@ return {
     },
     build = ':TSUpdate',
     config = function()
+      -- local function ts_disable(_, bufnr)
+      --   return vim.api.nvim_buf_line_count(bufnr) > 5000
+      -- end
+
       -- See `:help nvim-treesitter`
       require('nvim-treesitter.configs').setup({
         -- Enable `nvim-ts-autotag`
@@ -59,7 +63,21 @@ return {
         -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
         auto_install = true,
 
-        highlight = { enable = true, additional_vim_regex_highlighting = false },
+        highlight = {
+          enable = true,
+
+          -- disable = function(lang, bufnr)
+          --   return ts_disable(lang, bufnr)
+          -- end,
+          -- disable = function(lang, buf)
+          --   local max_filesize = 3000 * 1024 -- 100 KB
+          --   local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+          --   if ok and stats and stats.size > max_filesize then
+          --     return true
+          --   end
+          -- end,
+          additional_vim_regex_highlighting = false,
+        },
         indent = { enable = true },
         incremental_selection = {
           enable = true,

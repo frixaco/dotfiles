@@ -7,11 +7,11 @@ return {
         formatters_by_ft = {
           lua = { 'stylua' },
           python = function(bufnr)
-            if require('conform').get_formatter_info('ruff_format', bufnr).available then
-              return { 'ruff_format' }
-            else
-              return { 'isort', 'black' }
-            end
+            -- if require('conform').get_formatter_info('ruff_format', bufnr).available then
+            --   return { 'ruff_format' }
+            -- else
+            return { 'isort', 'black' }
+            -- end
           end,
           javascript = { { 'prettier' } },
           typescript = { { 'prettier' } },
@@ -27,6 +27,7 @@ return {
           css = { { 'prettier' } },
           shell = { 'shfmt', 'shellcheck' },
           zsh = { 'shfmt', 'shellcheck' },
+          markdown = { 'prettier' },
         },
         format_on_save = {
           lsp_fallback = true,

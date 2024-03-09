@@ -1,7 +1,7 @@
-[includeIf "gitdir:~/dev/personal/"]
-  path = ~/personal/.gitconfig-personal
+[includeIf "gitdir:~/dev/my/"]
+  path = ~/dev/my/.gitconfig-my
 [includeIf "gitdir:~/dev/vbrato/"]
-  path = ~/vbrato/.gitconfig-vbrato
+  path = ~/dev/vbrato/.gitconfig-vbrato
 
 [core]
   editor = nvim
@@ -11,4 +11,17 @@
   cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
 
 [init]
-  defaultBranch = main
+	defaultBranch = main
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[alias]
+	cl = !~/github-clone.sh
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[maintenance]
+	repo = /Users/frixaco/dev/vbrato/vbrato-api
