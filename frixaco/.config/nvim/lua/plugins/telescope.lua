@@ -54,6 +54,12 @@ return {
       end
 
       require('telescope').setup({
+        pickers = {
+          find_files = {
+            hidden = true,
+            follow = true,
+          },
+        },
         defaults = {
           layout_config = { prompt_position = 'top' },
           sorting_strategy = 'ascending',
