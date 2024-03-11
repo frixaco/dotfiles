@@ -15,7 +15,16 @@ local is_darwin = function()
 	return wezterm.target_triple:find("darwin") ~= nil
 end
 
-config.default_prog = is_darwin() and { "/opt/homebrew/bin/fish", "-l" } or { "/usr/bin/fish", "-l" }
+local is_windows = function()
+	return wezterm.target_triple:find("windows") ~= nil
+end
+
+if not is_windows() then
+	config.default_prog = is_darwin() and { "/opt/homebrew/bin/fish", "-l" } or { "/usr/bin/fish", "-l" }
+end
+if is_windows() then
+	config.default_domain = 'WSL:Arch'
+end
 
 config.window_padding = {
 	left = 16,
