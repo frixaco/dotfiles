@@ -54,16 +54,10 @@ return {
       end
 
       require('telescope').setup({
-        pickers = {
-          find_files = {
-            hidden = true,
-            follow = true,
-          },
-        },
         defaults = {
           layout_config = { prompt_position = 'top' },
           sorting_strategy = 'ascending',
-          file_ignore_patterns = { 'node_modules', '.git' },
+          file_ignore_patterns = { 'node_modules', '.git/', '.venv', '.next' },
           mappings = {
             i = {
               ['<C-j>'] = function(bufnr)
@@ -152,7 +146,10 @@ return {
         '<leader>p',
         mode = { 'n' },
         function()
-          require('telescope.builtin').find_files({ hidden = true })
+          require('telescope.builtin').find_files({
+            hidden = true,
+            follow = true,
+          })
         end,
         desc = 'Find Files',
       },
@@ -170,7 +167,11 @@ return {
         '<leader>fg',
         mode = { 'n' },
         function()
-          require('telescope.builtin').live_grep()
+          require('telescope.builtin').live_grep({
+            additional_args = function()
+              return { '--hidden', '--follow' }
+            end,
+          })
         end,
         desc = 'Search by Grep',
       },

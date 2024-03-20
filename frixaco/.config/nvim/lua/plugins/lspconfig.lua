@@ -143,6 +143,7 @@ return {
         eslint = {},
         rust_analyzer = {},
         tsserver = {},
+        svelte = {},
         html = {},
         emmet_language_server = {},
         graphql = {},
