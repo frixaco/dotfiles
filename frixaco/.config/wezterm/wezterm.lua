@@ -23,7 +23,7 @@ if not is_windows() then
 	config.default_prog = is_darwin() and { "/opt/homebrew/bin/fish", "-l" } or { "/usr/bin/fish", "-l" }
 end
 if is_windows() then
-	config.default_domain = 'WSL:Arch'
+	config.default_domain = "WSL:Arch"
 end
 
 config.window_padding = {
@@ -208,14 +208,14 @@ end
 
 table.insert(config.keys, {
 	key = "h",
-	mods = is_linux() and "ALT|SHIFT" or "CTRL|SHIFT",
+	mods = (is_linux() or is_windows()) and "ALT|SHIFT" or "CTRL|SHIFT",
 	action = act.SplitVertical({
 		domain = "CurrentPaneDomain",
 	}),
 })
 table.insert(config.keys, {
 	key = "v",
-	mods = is_linux() and "ALT|SHIFT" or "CTRL|SHIFT",
+	mods = (is_linux() or is_windows()) and "ALT|SHIFT" or "CTRL|SHIFT",
 	action = act.SplitHorizontal({
 		domain = "CurrentPaneDomain",
 	}),
