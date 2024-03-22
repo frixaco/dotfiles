@@ -19,6 +19,7 @@ return {
           typescriptreact = { { 'prettier' } },
           graphql = { { 'prettier' } },
           yaml = { { 'prettier' } },
+          toml = { { 'taplo' } },
           json = { { 'prettier' } },
           jsonc = { { 'prettier' } },
           go = { 'goimports', 'gofmt' },
