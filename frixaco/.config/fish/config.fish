@@ -35,7 +35,7 @@ set -gx BUN_INSTALL ~/.bun
 
 fish_add_path $BUN_INSTALL/bin ~/.amplify/bin ~/.local/bin $ANDROID_HOME/emulator $ANDROID_HOME/platform-tools $EMSDK/upstream/bin ~/.cargo/bin
 
-alias ls="eza"
+alias l="eza --color=always --icons --all --long --time modified --sort modified --no-permissions --octal-permissions --git --smart-group"
 alias z="zoxide"
 alias v="nvim"
 alias en="cd ~/.config/nvim && nvim"
@@ -59,3 +59,6 @@ end
 starship init fish | source
 zoxide init fish | source
 ~/.local/bin/mise activate fish | source
+
+# sst
+fish_add_path /Users/frixaco/.sst/bin
