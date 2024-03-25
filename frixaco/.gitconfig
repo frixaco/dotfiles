@@ -18,8 +18,8 @@
 	process = git-lfs filter-process
 	required = true
 [alias]
-	cl = !~/github-clone.sh
-  bl = !~/bare-clone.sh
+	cl = !~/github-clone.fish
+  bl = !~/bare-clone.fish
 [column]
 	ui = auto
 [branch]
