@@ -293,7 +293,7 @@ return {
         },
       })
 
-      vim.api.nvim_set_keymap('n', '\\', ':Neotree toggle<cr>', { noremap = true })
+      vim.api.nvim_set_keymap('n', '\\', ':Neotree float toggle<cr>', { noremap = true })
     end,
   },
 }

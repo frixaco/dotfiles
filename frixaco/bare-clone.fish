@@ -23,3 +23,6 @@ git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 
 echo "Checking out main branch ..."
 git worktree add main main
+
+echo "cd to main ..."
+cd main
