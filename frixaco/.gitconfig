@@ -19,6 +19,7 @@
 	required = true
 [alias]
 	cl = !~/github-clone.sh
+  bl = !~/bare-clone.sh
 [column]
 	ui = auto
 [branch]
