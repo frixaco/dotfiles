@@ -44,9 +44,15 @@ alias sf="source ~/.config/fish/config.fish"
 alias c="clear"
 alias ef="nvim ~/.config/fish/config.fish"
 
+function mpy
+  echo -e "[tools]\npython = { version=\"3.12\", virtualenv=\".venv\" }" > .mise.toml
+end
+
 function lg
   set -gx LAZYGIT_NEW_DIR_FILE ~/.lazygit/newdir
 
+  # sudo lazygit $argv
+  # with sudo lazygit i keep getting confirmation prompts
   lazygit $argv
 
   if test -f $LAZYGIT_NEW_DIR_FILE
@@ -59,6 +65,3 @@ end
 starship init fish | source
 zoxide init fish | source
 ~/.local/bin/mise activate fish | source
-
-# sst
-fish_add_path /Users/frixaco/.sst/bin
