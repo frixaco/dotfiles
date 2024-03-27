@@ -56,12 +56,8 @@ wezterm.on("update-right-status", function(window, pane)
 	window:set_right_status(" " .. window:active_workspace() .. " ")
 end)
 
-function tab_title(tab_info)
-	local title = tab_info.tab_title
-	if title and #title > 0 then
-		return title
-	end
-	return tab_info.active_pane.title
+function basename(s)
+	return string.gsub(s, "(.*[/\\])(.*)", "%2")
 end
 
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
@@ -76,7 +72,12 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 		foreground = "#909090"
 	end
 
-	local title = tab_title(tab)
+	local pane = tab.active_pane
+	local title = tab.tab_index + 1 .. ":" .. basename(pane.foreground_process_name)
+	if tab.active_pane.pane_index > 0 then
+		title = title .. ":" .. tab.active_pane.pane_index
+	end
+
 	return {
 		{ Background = { Color = background } },
 		{ Foreground = { Color = foreground } },
