@@ -32,6 +32,7 @@ config.window_padding = {
 	top = 8,
 	bottom = 8,
 }
+-- on Windows, use "Fira Code"
 config.font = wezterm.font("FiraCode Nerd Font")
 config.font_size = 13.0
 config.color_scheme = "Catppuccin Mocha"
@@ -41,6 +42,7 @@ config.macos_window_background_blur = 20
 config.show_new_tab_button_in_tab_bar = false
 
 config.window_frame = {
+	-- on Windows, use "Fira Code"
 	font = wezterm.font({ family = "FiraCode Nerd Font", weight = "Bold" }),
 	font_size = 12.0,
 	active_titlebar_bg = "#1e1e2e",
