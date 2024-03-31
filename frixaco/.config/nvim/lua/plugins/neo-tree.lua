@@ -193,7 +193,7 @@ return {
             },
           },
           follow_current_file = {
-            enabled = true, -- This will find and focus the file in the active buffer every time
+            enabled = false, -- This will find and focus the file in the active buffer every time
             --               -- the current file is changed while the tree is open.
             leave_dirs_open = false, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
           },
@@ -293,7 +293,7 @@ return {
         },
       })
 
-      vim.api.nvim_set_keymap('n', '\\', ':Neotree float toggle<cr>', { noremap = true })
+      vim.api.nvim_set_keymap('n', '\\', ':Neotree float reveal_force_cwd<cr>', { noremap = true })
     end,
   },
 }
