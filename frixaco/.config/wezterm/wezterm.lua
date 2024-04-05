@@ -32,6 +32,7 @@ config.window_padding = {
 	top = 8,
 	bottom = 8,
 }
+-- config.font = wezterm.font("Monaspace Krypton")
 -- on Windows, use "Fira Code"
 config.font = wezterm.font("FiraCode Nerd Font")
 config.font_size = 13.0
