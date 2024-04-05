@@ -27,9 +27,6 @@ return {
       -- },
     },
     config = function()
-      -- Starter page
-      require('mini.starter').setup()
-
       -- Better Around/Inside textobjects
       --
       -- Examples:
