@@ -48,7 +48,7 @@ function mpy
   echo -e "[tools]\npython = { version=\"3.12\", virtualenv=\".venv\" }" > .mise.toml
 end
 
-function lg
+function g
   set -gx LAZYGIT_NEW_DIR_FILE ~/.lazygit/newdir
 
   # sudo lazygit $argv
