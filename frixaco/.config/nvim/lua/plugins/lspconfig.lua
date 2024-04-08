@@ -117,6 +117,8 @@ return {
           'L3MON4D3/LuaSnip', -- Snippet Engine &
           'saadparwaiz1/cmp_luasnip', -- its associated nvim-cmp source
           'hrsh7th/cmp-nvim-lsp', -- Adds LSP completion capabilities
+          'hrsh7th/cmp-cmdline',
+          -- 'hrsh7th/cmp-buffer',
         },
       },
     },
@@ -342,6 +344,25 @@ return {
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
         },
+      })
+      -- cmp.setup.cmdline('/', {
+      --   mapping = cmp.mapping.preset.cmdline(),
+      --   sources = {
+      --     { name = 'buffer' },
+      --   },
+      -- })
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = 'path' },
+        }, {
+          {
+            name = 'cmdline',
+            option = {
+              ignore_cmds = { 'Man', '!' },
+            },
+          },
+        }),
       })
     end,
   },
