@@ -143,6 +143,8 @@ return {
         pyright = {},
         ruff_lsp = {},
         eslint = {},
+        tflint = {},
+        terraformls = {},
         rust_analyzer = {},
         tsserver = {},
         svelte = {},
@@ -220,9 +222,9 @@ return {
           vim.keymap.set('n', keys, func, { buffer = bufnr, noremap = true, desc = desc })
         end
 
-        nnoremap('[d', vim.diagnostic.goto_prev, 'Go to previous diagnostic message')
-        nnoremap(']d', vim.diagnostic.goto_next, 'Go to next diagnostic message')
-        nnoremap('<leader>e', vim.diagnostic.open_float, 'Open floating diagnostic message')
+        nnoremap('<leader>e', vim.diagnostic.goto_prev, 'Go to previous diagnostic message')
+        nnoremap('<leader>n', vim.diagnostic.goto_next, 'Go to next diagnostic message')
+        nnoremap('<leader>E', vim.diagnostic.open_float, 'Open floating diagnostic message')
         nnoremap('<leader>q', vim.diagnostic.setloclist, 'Open diagnostics list')
 
         nnoremap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
