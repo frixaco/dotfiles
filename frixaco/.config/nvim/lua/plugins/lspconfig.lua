@@ -114,7 +114,7 @@ return {
       {
         'hrsh7th/nvim-cmp',
         dependencies = {
-          'L3MON4D3/LuaSnip', -- Snippet Engine &
+          { 'L3MON4D3/LuaSnip', build = 'make install_jsregexp' }, -- Snippet Engine &
           'saadparwaiz1/cmp_luasnip', -- its associated nvim-cmp source
           'hrsh7th/cmp-nvim-lsp', -- Adds LSP completion capabilities
           'hrsh7th/cmp-cmdline',
@@ -353,6 +353,7 @@ return {
       --     { name = 'buffer' },
       --   },
       -- })
+
       cmp.setup.cmdline(':', {
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources({
