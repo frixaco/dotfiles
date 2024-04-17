@@ -28,7 +28,7 @@ end
 set -gx XDG_CONFIG_HOME ~/.config
 set -gx GPG_TTY (tty)
 
-set -gx FZF_DEFAULT_COMMAND 'fd --follow --hidden --no-ignore --exclude .aws-sam --exclude Library --exclude .cache --exclude .gradle --exclude .vscode/extensions --exclude .git/ --exclude .pyenv --exclude .venv --exclude .npm --exclude .yarn --exclude node_modules --exclude .next --exclude .open-next'
+set -gx FZF_DEFAULT_COMMAND 'fd --follow --hidden --no-ignore --exclude .aws-sam --exclude Library --exclude .cache --exclude .gradle --exclude .vscode/extensions --exclude .git/ --exclude .pyenv --exclude .venv --exclude .npm --exclude .yarn --exclude node_modules --exclude .next/ --exclude .open-next/'
 set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
 
 set -gx BUN_INSTALL ~/.bun
