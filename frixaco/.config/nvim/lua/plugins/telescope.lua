@@ -2,7 +2,6 @@ return {
   {
     'nvim-telescope/telescope.nvim',
     event = 'VeryLazy',
-    tag = '0.1.6',
     dependencies = {
       'nvim-lua/plenary.nvim',
       {
@@ -57,7 +56,7 @@ return {
         defaults = {
           layout_config = { prompt_position = 'top' },
           sorting_strategy = 'ascending',
-          file_ignore_patterns = { 'node_modules', '.git/', '.venv', '.next' },
+          file_ignore_patterns = { 'node_modules', '.git/', '.venv/', '.next/' },
           mappings = {
             i = {
               ['<C-j>'] = function(bufnr)
