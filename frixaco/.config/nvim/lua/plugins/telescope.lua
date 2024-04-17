@@ -52,7 +52,14 @@ return {
         previewer:scroll_fn(1 * direction)
       end
 
-      require('telescope').setup({
+      local open_with_trouble = require('trouble.sources.telescope').open
+
+      -- Use this to add more results without clearing the trouble list
+      local add_to_trouble = require('trouble.sources.telescope').add
+
+      local telescope = require('telescope')
+
+      telescope.setup({
         defaults = {
           layout_config = { prompt_position = 'top' },
           sorting_strategy = 'ascending',
@@ -66,6 +73,10 @@ return {
                 slow_scroll(bufnr, -1)
               end,
               ['<C-w>'] = 'which_key',
+              ['<c-t>'] = open_with_trouble,
+            },
+            n = {
+              ['<c-t>'] = open_with_trouble,
             },
           },
         },
