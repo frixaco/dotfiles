@@ -1,7 +1,7 @@
 To install:
 
 0. Install all required software: [Notion page](https://frixaco.notion.site/System-Setup-1395a0964d914e6e92442fafbf6334a5?pvs=74)
-1. `cd frixaco`
+1. `cd .dotfiles/frixaco`
 2. `stow --adopt --simulate --verbose --no-folding . -t $HOME` (remove `--simulate` flag to actually apply changes)
 
 Requirements:
