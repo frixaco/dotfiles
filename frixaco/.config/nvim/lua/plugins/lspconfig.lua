@@ -1,49 +1,4 @@
 return {
-  -- {
-  --   'WhoIsSethDaniel/mason-tool-installer.nvim',
-  --   opts = {
-  --
-  --     -- a list of all tools you want to ensure are installed upon
-  --     -- start
-  --     ensure_installed = {
-  --       'stylua',
-  --       'isort',
-  --       'black',
-  --       'prettier',
-  --       'clang-format',
-  --       'goimports',
-  --       'shfmt',
-  --       'shellcheck',
-  --     },
-  --
-  --     -- if set to true this will check each tool for updates. If updates
-  --     -- are available the tool will be updated. This setting does not
-  --     -- affect :MasonToolsUpdate or :MasonToolsInstall.
-  --     -- Default: false
-  --     auto_update = false,
-  --
-  --     -- automatically install / update on startup. If set to false nothing
-  --     -- will happen on startup. You can use :MasonToolsInstall or
-  --     -- :MasonToolsUpdate to install tools and check for updates.
-  --     -- Default: true
-  --     run_on_start = true,
-  --
-  --     -- set a delay (in ms) before the installation starts. This is only
-  --     -- effective if run_on_start is set to true.
-  --     -- e.g.: 5000 = 5 second delay, 10000 = 10 second delay, etc...
-  --     -- Default: 0
-  --     start_delay = 3000, -- 3 second delay
-  --
-  --     -- Only attempt to install if 'debounce_hours' number of hours has
-  --     -- elapsed since the last time Neovim was started. This stores a
-  --     -- timestamp in a file named stdpath('data')/mason-tool-installer-debounce.
-  --     -- This is only relevant when you are using 'run_on_start'. It has no
-  --     -- effect when running manually via ':MasonToolsInstall' etc....
-  --     -- Default: nil
-  --     debounce_hours = 5, -- at least 5 hours between attempts to install/update
-  --   },
-  -- },
-
   {
     'williamboman/mason.nvim',
     cmd = 'Mason',
@@ -123,7 +78,7 @@ return {
       },
     },
     opts = {
-      inlay_hints = { enabled = true },
+      inlay_hints = { enabled = false },
       diagnostics = {
         virtual_text = true,
         virtual_lines = true,
@@ -222,9 +177,10 @@ return {
           vim.keymap.set('n', keys, func, { buffer = bufnr, noremap = true, desc = desc })
         end
 
-        nnoremap('<leader>e', vim.diagnostic.goto_prev, 'Go to previous diagnostic message')
-        nnoremap('<leader>n', vim.diagnostic.goto_next, 'Go to next diagnostic message')
-        nnoremap('<leader>E', vim.diagnostic.open_float, 'Open floating diagnostic message')
+        -- TODO: Find good alternative for Colemak layout
+        nnoremap('[d', vim.diagnostic.goto_prev, 'Go to previous diagnostic message')
+        nnoremap(']d', vim.diagnostic.goto_next, 'Go to next diagnostic message')
+        nnoremap('<leader>e', vim.diagnostic.open_float, 'Open floating diagnostic message')
         nnoremap('<leader>q', vim.diagnostic.setloclist, 'Open diagnostics list')
 
         nnoremap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
