@@ -36,9 +36,16 @@ config.window_padding = {
 -- on Windows, use "Fira Code"
 config.font = wezterm.font("FiraCode Nerd Font")
 config.font_size = 13.0
-config.color_scheme = "Catppuccin Mocha"
+function scheme_for_appearance(appearance)
+	if appearance:find("Dark") then
+		return "Catppuccin Mocha"
+	else
+		return "Catppuccin Latte"
+	end
+end
+config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
 config.window_decorations = "INTEGRATED_BUTTONS"
-config.window_background_opacity = 0.98
+-- config.window_background_opacity = 0.98
 config.macos_window_background_blur = 20
 config.show_new_tab_button_in_tab_bar = false
 
@@ -56,7 +63,11 @@ config.inactive_pane_hsb = {
 
 wezterm.on("update-right-status", function(window, pane)
 	window:set_left_status("")
-	window:set_right_status(" " .. window:active_workspace() .. " ")
+	window:set_right_status(wezterm.format({
+		{ Background = { Color = "#cba6f7" } },
+		{ Foreground = { Color = "#11111b" } },
+		{ Text = " " .. window:active_workspace() .. " " },
+	}))
 end)
 
 function basename(s)
