@@ -6,25 +6,25 @@ return {
       'nvim-tree/nvim-web-devicons',
     },
     keys = {
-      {
-        '\\',
-        function()
-          local path = vim.api.nvim_buf_get_name(0)
-          if path:match('Starter$') then
-            require('mini.files').open(nil, false)
-          else
-            require('mini.files').open(path, true)
-          end
-        end,
-        desc = 'Open mini.files (directory of current file)',
-      },
-      {
-        '<leader>fm',
-        function()
-          require('mini.files').open(nil, false)
-        end,
-        desc = 'Open mini.files (cwd)',
-      },
+      -- {
+      --   '\\',
+      --   function()
+      --     local path = vim.api.nvim_buf_get_name(0)
+      --     if path:match('Starter$') then
+      --       require('mini.files').open(nil, false)
+      --     else
+      --       require('mini.files').open(path, true)
+      --     end
+      --   end,
+      --   desc = 'Open mini.files (directory of current file)',
+      -- },
+      -- {
+      --   '<leader>fm',
+      --   function()
+      --     require('mini.files').open(nil, false)
+      --   end,
+      --   desc = 'Open mini.files (cwd)',
+      -- },
     },
     config = function()
       -- Better Around/Inside textobjects
@@ -47,34 +47,31 @@ return {
       --  and try some other statusline plugin
       require('mini.statusline').setup()
 
-      require('mini.files').setup({
-        options = {
-          use_as_default_explorer = true,
-        },
-      })
-
-      local show_dotfiles = true
-      local filter_show = function(fs_entry)
-        return true
-      end
-      local filter_hide = function(fs_entry)
-        return not vim.startswith(fs_entry.name, '.')
-      end
-
-      local toggle_dotfiles = function()
-        show_dotfiles = not show_dotfiles
-        local new_filter = show_dotfiles and filter_show or filter_hide
-        require('mini.files').refresh({ content = { filter = new_filter } })
-      end
-
-      vim.api.nvim_create_autocmd('User', {
-        pattern = 'MiniFilesBufferCreate',
-        callback = function(args)
-          local buf_id = args.data.buf_id
-          -- Tweak left-hand side of mapping to your liking
-          vim.keymap.set('n', 'g.', toggle_dotfiles, { buffer = buf_id })
-        end,
-      })
+      -- require('mini.files').setup({
+      --   options = {
+      --     use_as_default_explorer = true,
+      --   },
+      -- })
+      -- local show_dotfiles = true
+      -- local filter_show = function(fs_entry)
+      --   return true
+      -- end
+      -- local filter_hide = function(fs_entry)
+      --   return not vim.startswith(fs_entry.name, '.')
+      -- end
+      -- local toggle_dotfiles = function()
+      --   show_dotfiles = not show_dotfiles
+      --   local new_filter = show_dotfiles and filter_show or filter_hide
+      --   require('mini.files').refresh({ content = { filter = new_filter } })
+      -- end
+      -- vim.api.nvim_create_autocmd('User', {
+      --   pattern = 'MiniFilesBufferCreate',
+      --   callback = function(args)
+      --     local buf_id = args.data.buf_id
+      --     -- Tweak left-hand side of mapping to your liking
+      --     vim.keymap.set('n', 'g.', toggle_dotfiles, { buffer = buf_id })
+      --   end,
+      -- })
 
       require('mini.pairs').setup()
 
