@@ -97,7 +97,6 @@ return {
         gopls = {},
         pyright = {},
         ruff_lsp = {},
-        eslint = {},
         tflint = {},
         terraformls = {},
         rust_analyzer = {},
