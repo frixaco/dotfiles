@@ -7,25 +7,25 @@ return {
         formatters_by_ft = {
           lua = { 'stylua' },
           python = function(bufnr)
-            -- if require('conform').get_formatter_info('ruff_format', bufnr).available then
-            --   return { 'ruff_format' }
-            -- else
-            return { 'isort', 'black' }
-            -- end
+            if require('conform').get_formatter_info('ruff_format', bufnr).available then
+              return { 'ruff_format' }
+            else
+              return { 'isort', 'black' }
+            end
           end,
-          javascript = { { 'prettier' } },
-          typescript = { { 'prettier' } },
-          javascriptreact = { { 'prettier' } },
-          typescriptreact = { { 'prettier' } },
-          graphql = { { 'prettier' } },
-          yaml = { { 'prettier' } },
-          toml = { { 'taplo' } },
-          json = { { 'prettier' } },
-          jsonc = { { 'prettier' } },
+          javascript = { 'prettier' },
+          typescript = { 'prettier' },
+          javascriptreact = { 'prettier' },
+          typescriptreact = { 'prettier' },
+          graphql = { 'prettier' },
+          yaml = { 'prettier' },
+          toml = { 'taplo' },
+          json = { 'prettier' },
+          jsonc = { 'prettier' },
           go = { 'goimports', 'gofmt' },
           c = { 'clang_format' },
-          html = { { 'prettier' } },
-          css = { { 'prettier' } },
+          html = { 'prettier' },
+          css = { 'prettier' },
           shell = { 'shfmt', 'shellcheck' },
           zsh = { 'shfmt', 'shellcheck' },
           markdown = { 'prettier' },
