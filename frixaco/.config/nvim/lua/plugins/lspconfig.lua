@@ -7,8 +7,6 @@ return {
     opts = {
       ensure_installed = {
         'stylua',
-        'isort',
-        'black',
         'prettier',
         'clang-format',
         'goimports',
@@ -97,6 +95,7 @@ return {
         gopls = {},
         pyright = {},
         ruff_lsp = {},
+        eslint = {},
         tflint = {},
         terraformls = {},
         rust_analyzer = {},
