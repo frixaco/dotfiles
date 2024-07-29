@@ -10,10 +10,12 @@ Requirements:
 
 TODO:
 
+- [ ] Fix duplicate diagnostics in Neovim
 - [ ] Add video demo of my setup
 - [ ] SSH keys setup (1Passwod seems to work)
 - [ ] AWS credentials setup
 - [ ] Yabai auto-updater
+- [ ] Easier setup between macOS, Windows, Linux
 
 List of app, OS settings, etc.: [Notion page](https://frixaco.notion.site/System-Setup-1395a0964d914e6e92442fafbf6334a5?pvs=74)
 
