@@ -12,6 +12,7 @@ return {
         'goimports',
         'shfmt',
         'shellcheck',
+        'sonarlint-language-server',
       },
     },
     ---@param opts MasonSettings | {ensure_installed: string[]}
@@ -72,6 +73,18 @@ return {
           'hrsh7th/cmp-nvim-lsp', -- Adds LSP completion capabilities
           'hrsh7th/cmp-cmdline',
           -- 'hrsh7th/cmp-buffer',
+        },
+      },
+
+      {
+        'https://gitlab.com/schrieveslaach/sonarlint.nvim.git',
+        opts = {
+          filetypes = {
+            'javascript',
+            'typescript',
+            'typescriptreact',
+            'javascriptreact',
+          },
         },
       },
     },
