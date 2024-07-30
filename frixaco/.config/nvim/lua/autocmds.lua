@@ -23,10 +23,3 @@ if vim.fn.executable(clip) == 1 then
     end,
   })
 end
-
--- Run nvim-lint on save
-vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost' }, {
-  callback = function()
-    require('lint').try_lint()
-  end,
-})
