@@ -75,18 +75,6 @@ return {
           -- 'hrsh7th/cmp-buffer',
         },
       },
-
-      {
-        'https://gitlab.com/schrieveslaach/sonarlint.nvim.git',
-        opts = {
-          filetypes = {
-            'javascript',
-            'typescript',
-            'typescriptreact',
-            'javascriptreact',
-          },
-        },
-      },
     },
     opts = {
       inlay_hints = { enabled = false },
