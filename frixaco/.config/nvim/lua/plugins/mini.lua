@@ -45,7 +45,22 @@ return {
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
-      require('mini.statusline').setup()
+      -- require('mini.statusline').setup({
+      --   -- Content of statusline as functions which return statusline string. See
+      --   -- `:h statusline` and code of default contents (used instead of `nil`).
+      --   content = {
+      --     -- Content for active window
+      --     active = nil,
+      --     -- Content for inactive window(s)
+      --     inactive = nil,
+      --   },
+      --
+      --   -- Whether to use icons by default
+      --   use_icons = true,
+      --
+      --   -- Whether to set Vim's settings for statusline (make it always shown)
+      --   set_vim_settings = true,
+      -- })
 
       -- require('mini.files').setup({
       --   options = {

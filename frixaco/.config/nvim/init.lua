@@ -1,4 +1,6 @@
 # TODO: REWRITE WITH FULL WHICH_KEY SUPPORT AND NO OVERMAPS
+require('settings')
+require('keymaps')
 
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -55,8 +57,6 @@ require('lazy').setup('plugins', {
   },
 })
 
-require('settings')
-require('keymaps')
 require('autocmds')
 
 
