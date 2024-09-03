@@ -1,9 +1,7 @@
 [tools]
-go = "1.22"
+go = "latest"
 python = "3.12"
 node = "20"
-ruby = "2.7.6"
-java = "zulu-17"
 bun = "latest"
 
 [settings]
