@@ -66,3 +66,14 @@ end
 starship init fish | source
 zoxide init fish | source
 ~/.local/bin/mise activate fish | source
+
+
+switch (uname)
+  case Darwin
+    # pnpm
+    set -gx PNPM_HOME "/Users/frixaco/Library/pnpm"
+    if not string match -q -- $PNPM_HOME $PATH
+      set -gx PATH "$PNPM_HOME" $PATH
+    end
+    # pnpm end
+end
