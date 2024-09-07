@@ -5,10 +5,14 @@
 
 [core]
   editor = nvim
+  pager = delta
 [diff]
   tool = nvimdiff
+  colorMoved = default
 [difftool "nvimdiff"]
   cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[interactive]
+  diffFilter = delta --color-only
 
 [init]
 	defaultBranch = main
@@ -26,3 +30,16 @@
 	sort = -committerdate
 [maintenance]
 	repo = /Users/frixaco/vbrato/vbrato-api
+
+
+[delta]
+  navigate = true    # use n and N to move between diff sections
+
+  # delta detects terminal colors automatically; set one of these to disable auto-detection
+  # dark = true
+  # light = true
+  side-by-side = false
+  line-numbers = true
+
+[merge]
+  conflictstyle = diff3
