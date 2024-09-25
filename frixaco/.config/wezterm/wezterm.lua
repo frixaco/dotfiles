@@ -34,7 +34,7 @@ config.window_padding = {
 }
 -- config.font = wezterm.font("Monaspace Krypton")
 -- on Windows, use "Fira Code"
-config.font = wezterm.font("FiraCode Nerd Font")
+config.font = is_windows() and wezterm.font("Fira Code") or wezterm.font("FiraCode Nerd Font")
 config.font_size = 13.0
 function scheme_for_appearance(appearance)
 	if appearance:find("Dark") then
