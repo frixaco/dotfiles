@@ -1,12 +1,12 @@
 To install:
 
-0. Install all required software: [Notion page](https://frixaco.notion.site/System-Setup-1395a0964d914e6e92442fafbf6334a5?pvs=74)
+0. Install all required software: [Heptabase map]([https://frixaco.notion.site/System-Setup-1395a0964d914e6e92442fafbf6334a5?pvs=74](https://app.heptabase.com/w/5f446947094a1d734c06e5a6bbc983b79075e6a3a00ddbf433345dbc509e7ec5))
 1. `cd .dotfiles/frixaco`
 2. `stow --adopt --simulate --verbose --no-folding . -t $HOME` (remove `--simulate` flag to actually apply changes)
 
 Requirements:
 
-- See: [Notion page](https://frixaco.notion.site/System-Setup-1395a0964d914e6e92442fafbf6334a5?pvs=74)
+- See: [Heptabase map]([https://frixaco.notion.site/System-Setup-1395a0964d914e6e92442fafbf6334a5?pvs=74](https://app.heptabase.com/w/5f446947094a1d734c06e5a6bbc983b79075e6a3a00ddbf433345dbc509e7ec5))
 
 TODO:
 
@@ -14,10 +14,9 @@ TODO:
 - [ ] Add video demo of my setup
 - [ ] SSH keys setup (1Passwod seems to work)
 - [ ] AWS credentials setup
-- [ ] Yabai auto-updater
 - [ ] Easier setup between macOS, Windows, Linux
 
-List of app, OS settings, etc.: [Notion page](https://frixaco.notion.site/System-Setup-1395a0964d914e6e92442fafbf6334a5?pvs=74)
+List of app, OS settings, etc.: [Heptabase map]([https://frixaco.notion.site/System-Setup-1395a0964d914e6e92442fafbf6334a5?pvs=74](https://app.heptabase.com/w/5f446947094a1d734c06e5a6bbc983b79075e6a3a00ddbf433345dbc509e7ec5))
 
 ### Yabai
 
