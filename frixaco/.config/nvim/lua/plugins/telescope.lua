@@ -135,14 +135,14 @@ return {
       -- vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<CR>', { desc = '[S]earch by [G]rep on Git Root' })
     end,
     keys = {
-      {
-        '<space><space>',
-        mode = { 'n' },
-        function()
-          require('telescope.builtin').buffers()
-        end,
-        desc = 'Find Buffers',
-      },
+      -- {
+      --   '<space><space>',
+      --   mode = { 'n' },
+      --   function()
+      --     require('telescope.builtin').buffers()
+      --   end,
+      --   desc = 'Find Buffers',
+      -- },
 
       {
         '<leader>\\',

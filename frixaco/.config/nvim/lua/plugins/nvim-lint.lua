@@ -11,9 +11,9 @@ return {
       }
 
       -- Run nvim-lint on save
-      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost' }, {
+      vim.api.nvim_create_autocmd({ 'BufWritePost' }, {
         callback = function()
-          require('lint').try_lint()
+          pcall(require, 'lint.try_lint')
         end,
       })
     end,

@@ -5,9 +5,6 @@ vim.g.maplocalleader = ' '
 -- Disable startup screen
 -- vim.opt.shortmess:append({ I = true })
 
--- Easier switch to command mode
-vim.keymap.set('n', ';', ':')
-
 -- Set highlight on search
 vim.o.hlsearch = false
 
