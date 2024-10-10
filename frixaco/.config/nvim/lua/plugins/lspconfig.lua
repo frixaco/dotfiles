@@ -12,7 +12,7 @@ return {
         'goimports',
         'shfmt',
         'shellcheck',
-        'sonarlint-language-server',
+        -- 'sonarlint-language-server',
       },
     },
     ---@param opts MasonSettings | {ensure_installed: string[]}
