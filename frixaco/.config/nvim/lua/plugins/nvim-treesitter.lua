@@ -35,6 +35,8 @@ return {
         ensure_installed = {
           'c',
           'cpp',
+          'css',
+          'xml',
           'go',
           'lua',
           'python',
@@ -55,6 +57,8 @@ return {
           'markdown',
           'markdown_inline',
           'sql',
+          'git_config',
+          'gitignore',
         },
 
         sync_install = false,
