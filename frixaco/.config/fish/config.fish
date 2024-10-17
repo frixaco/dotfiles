@@ -33,8 +33,9 @@ set -gx FZF_DEFAULT_COMMAND 'fd --follow --hidden --no-ignore --exclude .aws-sam
 set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
 
 set -gx BUN_INSTALL ~/.bun
+set -gx DENO_INSTALL $HOME/.deno
 
-fish_add_path $BUN_INSTALL/bin ~/.amplify/bin ~/.local/bin $ANDROID_HOME/emulator $ANDROID_HOME/platform-tools $EMSDK/upstream/bin ~/.cargo/bin
+fish_add_path $DENO_INSTALL/bin $BUN_INSTALL/bin ~/.amplify/bin ~/.local/bin $ANDROID_HOME/emulator $ANDROID_HOME/platform-tools $EMSDK/upstream/bin ~/.cargo/bin
 
 alias l="eza --color=always --icons --all --long --time modified --sort modified --no-permissions --octal-permissions --git --smart-group"
 alias z="zoxide"
