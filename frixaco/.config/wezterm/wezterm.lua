@@ -26,6 +26,7 @@ if is_windows() then
 	config.default_domain = "WSL:Arch"
 end
 
+config.max_fps = 120
 config.window_padding = {
 	left = 10,
 	right = 10,
@@ -45,7 +46,7 @@ function scheme_for_appearance(appearance)
 end
 config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
 config.window_decorations = "INTEGRATED_BUTTONS"
--- config.window_background_opacity = 0.98
+config.window_background_opacity = 0.98
 config.macos_window_background_blur = 20
 config.show_new_tab_button_in_tab_bar = false
 
