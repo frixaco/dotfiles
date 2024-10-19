@@ -37,7 +37,7 @@ config.window_padding = {
 -- on Windows, use "Fira Code"
 config.font = is_windows() and wezterm.font("Fira Code") or wezterm.font("FiraCode Nerd Font")
 config.font_size = 13.0
-function scheme_for_appearance(appearance)
+local function scheme_for_appearance(appearance)
 	if appearance:find("Dark") then
 		return "Catppuccin Mocha"
 	else
@@ -71,7 +71,7 @@ wezterm.on("update-right-status", function(window, pane)
 	}))
 end)
 
-function basename(s)
+local function basename(s)
 	return string.gsub(s, "(.*[/\\])(.*)", "%2")
 end
 
@@ -100,49 +100,7 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 	}
 end)
 
-local function is_inside_vim(pane)
-	local tty = pane:get_tty_name()
-	if tty == nil then
-		return false
-	end
-
-	local success, stdout, stderr = wezterm.run_child_process({
-		"sh",
-		"-c",
-		"ps -o state= -o comm= -t"
-			.. wezterm.shell_quote_arg(tty)
-			.. " | "
-			.. "grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|l?n?vim?x?)(diff)?$'",
-	})
-
-	return success
-end
-
-local function is_outside_vim(pane)
-	return not is_inside_vim(pane)
-end
-
-local function bind_if(cond, key, mods, action)
-	local function callback(win, pane)
-		if cond(pane) then
-			win:perform_action(action, pane)
-		else
-			win:perform_action(act.SendKey({ key = key, mods = mods }), pane)
-		end
-	end
-
-	return { key = key, mods = mods, action = wezterm.action_callback(callback) }
-end
-
 config.keys = {
-	{ key = "s", mods = "CTRL|SHIFT", action = act.AdjustPaneSize({ "Right", 5 }) },
-	{ key = "a", mods = "CTRL|SHIFT", action = act.AdjustPaneSize({ "Left", 5 }) },
-
-	bind_if(is_outside_vim, "h", "CTRL", act.ActivatePaneDirection("Left")),
-	bind_if(is_outside_vim, "l", "CTRL", act.ActivatePaneDirection("Right")),
-	bind_if(is_outside_vim, "k", "CTRL", act.ActivatePaneDirection("Up")),
-	bind_if(is_outside_vim, "j", "CTRL", act.ActivatePaneDirection("Down")),
-
 	{
 		key = "R",
 		mods = "CTRL|SHIFT",
@@ -165,6 +123,7 @@ config.keys = {
 			end),
 		}),
 	},
+
 	{
 		key = "N",
 		mods = "CTRL|SHIFT",
