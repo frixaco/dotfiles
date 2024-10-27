@@ -6,6 +6,7 @@
 [core]
   editor = nvim
   pager = delta
+	hooksPath = /home/frixaco/.githooks
 [diff]
   tool = nvimdiff
   colorMoved = default
@@ -22,14 +23,13 @@
 	process = git-lfs filter-process
 	required = true
 [alias]
-	cl = !~/github-clone.fish
   bl = !~/bare-clone.fish
 [column]
 	ui = auto
 [branch]
 	sort = -committerdate
 [maintenance]
-	repo = /Users/frixaco/vbrato/vbrato-api
+	repo = ~/vbrato/vbrato-api
 
 
 [delta]
