@@ -40,6 +40,8 @@ return {
           'go',
           'lua',
           'python',
+          'astro',
+          'svelte',
           'rust',
           'hcl',
           'tsx',
