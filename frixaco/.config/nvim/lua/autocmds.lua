@@ -23,3 +23,11 @@ if vim.fn.executable(clip) == 1 then
     end,
   })
 end
+
+-- C purist
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'c', 'cpp' },
+  callback = function()
+    vim.cmd.syntax('off')
+  end,
+})

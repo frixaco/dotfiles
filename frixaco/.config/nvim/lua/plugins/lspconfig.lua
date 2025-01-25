@@ -8,7 +8,7 @@ return {
       ensure_installed = {
         'stylua',
         'prettier',
-        'clang-format',
+        -- 'clang-format',
         'goimports',
         'shfmt',
         'shellcheck',
@@ -92,13 +92,11 @@ return {
         },
       },
       servers = {
-        clangd = {},
+        -- clangd = {},
         gopls = {},
         basedpyright = {},
         ruff = {},
         eslint = {},
-        tflint = {},
-        terraformls = {},
         rust_analyzer = {},
         ts_ls = {},
         svelte = {},

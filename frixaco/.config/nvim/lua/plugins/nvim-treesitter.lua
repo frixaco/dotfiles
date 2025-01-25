@@ -82,6 +82,7 @@ return {
           --     return true
           --   end
           -- end,
+          disable = { 'c', 'cpp' },
           additional_vim_regex_highlighting = false,
         },
         indent = { enable = true },
