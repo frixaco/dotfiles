@@ -1,7 +1,7 @@
 [tools]
 go = "latest"
 python = "3.12"
-node = "20"
+node = "22"
 bun = "latest"
 
 [settings]
