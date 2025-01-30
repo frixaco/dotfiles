@@ -31,3 +31,12 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.cmd.syntax('off')
   end,
 })
+
+vim.api.nvim_create_user_command('CompRun', function()
+  local file = vim.fn.expand('%')
+  local file_without_ext = vim.fn.expand('%<')
+  vim.cmd(string.format('!gcc -Wall -Wextra -std=c2x -pedantic -o %s %s && ./%s', file_without_ext, file, file_without_ext))
+end, {
+  bang = true,
+})
+vim.api.nvim_set_keymap('n', '<F5>', ':CompRun<CR>', { noremap = true })
