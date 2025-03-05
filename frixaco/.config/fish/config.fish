@@ -47,9 +47,10 @@ alias sf="source ~/.config/fish/config.fish"
 alias c="clear"
 alias ef="nvim ~/.config/fish/config.fish"
 
-function mpy
-  echo -e "[tools]\npython = { version=\"3.12\", virtualenv=\".venv\" }" > .mise.toml
-end
+# Switched to uv, will keep for now
+# function mpy
+#   echo -e "[tools]\npython = { version=\"3.12\", virtualenv=\".venv\" }" > .mise.toml
+# end
 
 function g
   set -gx LAZYGIT_NEW_DIR_FILE ~/.lazygit/newdir
