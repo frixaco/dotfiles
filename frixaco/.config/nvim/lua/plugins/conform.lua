@@ -23,7 +23,7 @@ return {
           json = { 'prettier' },
           jsonc = { 'prettier' },
           go = { 'goimports', 'gofmt' },
-          -- c = { 'clang_format' },
+          c = { 'clang_format' },
           html = { 'prettier' },
           css = { 'prettier' },
           shell = { 'shfmt', 'shellcheck' },
