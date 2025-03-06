@@ -4,7 +4,3 @@ python = "3.12"
 node = "22"
 bun = "latest"
 zig = "latest"
-
-[settings]
-python_venv_auto_create = true
-experimental = true
