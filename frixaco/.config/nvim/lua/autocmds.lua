@@ -40,3 +40,5 @@ end, {
   bang = true,
 })
 vim.api.nvim_set_keymap('n', '<F5>', ':CompRun<CR>', { noremap = true })
+
+vim.api.nvim_create_user_command('C', ':CodeCompanionChat', {})

@@ -96,7 +96,7 @@ return {
         gopls = {},
         basedpyright = {},
         ruff = {},
-        eslint = {},
+        -- eslint = {},
         rust_analyzer = {},
         ts_ls = {},
         svelte = {},
