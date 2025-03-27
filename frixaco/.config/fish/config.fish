@@ -66,6 +66,10 @@ function g
   end
 end
 
+if test -f ~/.config/fish/env.fish 
+  source ~/.config/fish/env.fish
+end
+
 starship init fish | source
 zoxide init fish | source
 ~/.local/bin/mise activate fish | source
