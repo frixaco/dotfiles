@@ -218,10 +218,12 @@ return {
       end
 
       local lspconfig = require('lspconfig')
+      local util = require('lspconfig.util')
+      local capabilities = require('blink.cmp').get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities())
 
       local function setup(server_name)
         local server_opts = {
-          capabilities = require('blink.cmp').get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities()),
+          capabilities = capabilities,
           on_attach = on_attach,
           filetypes = (servers[server_name] or {}).filetypes,
         }
@@ -263,22 +265,27 @@ return {
         filetypes = { 'toml' },
       })
 
-      local root_dir = function(fname)
-        local root_files = {
-          'pyrightconfig.json',
+      local function custom_root_dir(fname)
+        -- Then pyrightconfig.json
+        local pyright_config_root = util.root_pattern('pyrightconfig.json')(fname)
+        if pyright_config_root then
+          return pyright_config_root
+        end
+
+        -- Prioritize .git
+        local git_root = util.find_git_ancestor(fname)
+        if git_root then
+          return git_root
+        end
+
+        -- Fallback markers (no .git needed here)
+        local fallback_markers = {
           'requirements.txt',
           'pyproject.toml',
-          'setup.py',
-          'setup.cfg',
-          'Pipfile',
         }
-
-        local path = require('lspconfig.util').root_pattern(unpack(root_files))(fname)
-          or require('lspconfig.util').find_git_ancestor(fname)
-          or vim.fn.fnamemodify(fname, ':h')
+        return util.root_pattern(unpack(fallback_markers))(fname) or util.path.dirname(fname)
       end
-      print('path', path)
-      require('lspconfig').pyright.setup({ root_dir = root_dir })
+      require('lspconfig').pyright.setup({ root_dir = custom_root_dir })
     end,
   },
 }
