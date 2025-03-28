@@ -65,16 +65,17 @@ return {
         },
       },
 
-      {
-        'hrsh7th/nvim-cmp',
-        dependencies = {
-          { 'L3MON4D3/LuaSnip', build = 'make install_jsregexp' }, -- Snippet Engine &
-          'saadparwaiz1/cmp_luasnip', -- its associated nvim-cmp source
-          'hrsh7th/cmp-nvim-lsp', -- Adds LSP completion capabilities
-          'hrsh7th/cmp-cmdline',
-          -- 'hrsh7th/cmp-buffer',
-        },
-      },
+      -- {
+      --   'hrsh7th/nvim-cmp',
+      --   dependencies = {
+      --     { 'L3MON4D3/LuaSnip', build = 'make install_jsregexp' }, -- Snippet Engine &
+      --     'saadparwaiz1/cmp_luasnip', -- its associated nvim-cmp source
+      --     'hrsh7th/cmp-nvim-lsp', -- Adds LSP completion capabilities
+      --     'hrsh7th/cmp-cmdline',
+      --     -- 'hrsh7th/cmp-buffer',
+      --   },
+      -- },
+      'saghen/blink.cmp',
     },
     opts = {
       inlay_hints = { enabled = false },
@@ -87,14 +88,15 @@ return {
       capabilities = {
         workspace = {
           didChangeWatchedFiles = {
-            dynamicRegistration = false,
+            dynamicRegistration = true,
           },
         },
       },
       servers = {
         clangd = {},
         gopls = {},
-        basedpyright = {},
+        -- basedpyright = {},
+        pyright = {},
         ruff = {},
         -- eslint = {},
         rust_analyzer = {},
@@ -216,11 +218,10 @@ return {
       end
 
       local lspconfig = require('lspconfig')
-      local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
       local function setup(server_name)
         local server_opts = {
-          capabilities = capabilities,
+          capabilities = require('blink.cmp').get_lsp_capabilities(vim.lsp.protocol.make_client_capabilities()),
           on_attach = on_attach,
           filetypes = (servers[server_name] or {}).filetypes,
         }
@@ -262,60 +263,22 @@ return {
         filetypes = { 'toml' },
       })
 
-      -- Autocompletion
-      -- local cmp = require('cmp')
-      -- local luasnip = require('luasnip')
-      -- luasnip.config.setup({})
-      --
-      -- cmp.setup({
-      --   window = {
-      --     completion = cmp.config.window.bordered(),
-      --     documentation = cmp.config.window.bordered(),
-      --   },
-      --   snippet = {
-      --     expand = function(args)
-      --       luasnip.lsp_expand(args.body)
-      --     end,
-      --   },
-      --   completion = {
-      --     completeopt = 'menu,menuone,noinsert',
-      --   },
-      --   mapping = cmp.mapping.preset.insert({
-      --     ['<C-n>'] = cmp.mapping.select_next_item(),
-      --     ['<C-p>'] = cmp.mapping.select_prev_item(),
-      --     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-      --     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-      --     ['<C-Space>'] = cmp.mapping.complete({}),
-      --     ['<CR>'] = cmp.mapping.confirm({
-      --       behavior = cmp.ConfirmBehavior.Replace,
-      --       select = true,
-      --     }),
-      --   }),
-      --   sources = {
-      --     { name = 'nvim_lsp' },
-      --     { name = 'luasnip' },
-      --   },
-      -- })
-      -- cmp.setup.cmdline('/', {
-      --   mapping = cmp.mapping.preset.cmdline(),
-      --   sources = {
-      --     { name = 'buffer' },
-      --   },
-      -- })
-      --
-      -- cmp.setup.cmdline(':', {
-      --   mapping = cmp.mapping.preset.cmdline(),
-      --   sources = cmp.config.sources({
-      --     { name = 'path' },
-      --   }, {
-      --     {
-      --       name = 'cmdline',
-      --       option = {
-      --         ignore_cmds = { 'Man', '!' },
-      --       },
-      --     },
-      --   }),
-      -- })
+      local root_dir = function(fname)
+        local root_files = {
+          'pyrightconfig.json',
+          'requirements.txt',
+          'pyproject.toml',
+          'setup.py',
+          'setup.cfg',
+          'Pipfile',
+        }
+
+        local path = require('lspconfig.util').root_pattern(unpack(root_files))(fname)
+          or require('lspconfig.util').find_git_ancestor(fname)
+          or vim.fn.fnamemodify(fname, ':h')
+      end
+      print('path', path)
+      require('lspconfig').pyright.setup({ root_dir = root_dir })
     end,
   },
 }
