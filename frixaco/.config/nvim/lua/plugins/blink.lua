@@ -3,7 +3,9 @@ return {
     'saghen/blink.cmp',
     event = 'VeryLazy',
     -- optional: provides snippets for the snippet source
-    -- dependencies = 'rafamadriz/friendly-snippets',
+    dependencies = {
+      'Kaiser-Yang/blink-cmp-avante',
+    }, -- 'rafamadriz/friendly-snippets',
 
     -- use a release tag to download pre-built binaries
     version = '*',
@@ -70,7 +72,16 @@ return {
 
       sources = {
         -- Remove 'buffer' if you don't want text completions, by default it's only enabled when LSP returns no items
-        default = { 'lsp', 'path', 'snippets', 'buffer' },
+        default = { 'avante', 'lsp', 'path', 'snippets', 'buffer' },
+        providers = {
+          avante = {
+            module = 'blink-cmp-avante',
+            name = 'Avante',
+            opts = {
+              -- options for blink-cmp-avante
+            },
+          },
+        },
       },
 
       -- Use a preset for snippets, check the snippets documentation for more information
