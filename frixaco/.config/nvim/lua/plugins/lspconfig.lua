@@ -119,6 +119,7 @@ return {
         html = {},
         emmet_language_server = {},
         graphql = {},
+        cssls = {},
         tailwindcss = {
           root_dir = function(fname)
             return require('lspconfig').util.root_pattern('.git')(fname) or require('lspconfig').util.path.dirname(fname)
@@ -167,6 +168,10 @@ return {
               {
                 fileMatch = { 'pyrightconfig.json' },
                 url = 'https://raw.githubusercontent.com/microsoft/pyright/main/packages/vscode-pyright/schemas/pyrightconfig.schema.json',
+              },
+              {
+                fileMatch = { 'manifest.json' },
+                url = 'https://json.schemastore.org/chrome-manifest',
               },
             },
           },
