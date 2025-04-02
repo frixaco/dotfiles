@@ -39,10 +39,10 @@ return {
 
         -- Disable auto brackets
         -- NOTE: some LSPs may add auto brackets themselves anyway
-        accept = { auto_brackets = { enabled = false } },
+        accept = { auto_brackets = { enabled = true } },
 
         -- Don't select by default, auto insert on selection
-        list = { selection = { preselect = false, auto_insert = true } },
+        list = { selection = { preselect = true, auto_insert = true } },
         -- or set via a function
         -- list = { selection = {
         --   preselect = function(ctx)
