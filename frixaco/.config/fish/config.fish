@@ -28,10 +28,6 @@ end
 set -gx XDG_CONFIG_HOME ~/.config
 set -gx GPG_TTY (tty)
 
-fzf --fish | source
-set -gx FZF_DEFAULT_COMMAND 'fd --follow --hidden --no-ignore --exclude .aws-sam --exclude Library --exclude .cache --exclude .gradle --exclude .vscode/extensions --exclude .git/ --exclude .pyenv --exclude .venv --exclude .npm --exclude .yarn --exclude node_modules --exclude .next/ --exclude .open-next/'
-set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
-
 set -gx BUN_INSTALL ~/.bun
 set -gx DENO_INSTALL $HOME/.deno
 
@@ -39,7 +35,6 @@ fish_add_path /opt/homebrew/opt/grep/libexec/gnubin
 fish_add_path $HOME/.orbstack/bin $HOME/stuff/flutter/bin $DENO_INSTALL/bin $BUN_INSTALL/bin ~/.amplify/bin ~/.local/bin $ANDROID_HOME/emulator $ANDROID_HOME/platform-tools $EMSDK/upstream/bin ~/.cargo/bin
 
 alias l="eza --color=always --icons --all --long --time modified --sort modified --no-permissions --octal-permissions --git --smart-group"
-alias z="zoxide"
 alias v="nvim"
 alias en="cd ~/.config/nvim && nvim"
 alias y="yazi"
@@ -71,7 +66,13 @@ if test -f ~/.config/fish/env.fish
 end
 
 starship init fish | source
+
+fzf --fish | source
+set -gx FZF_DEFAULT_COMMAND 'fd --follow --hidden --no-ignore --exclude .aws-sam --exclude Library --exclude .cache --exclude .gradle --exclude .vscode/extensions --exclude .git/ --exclude .pyenv --exclude .venv --exclude .npm --exclude .yarn --exclude node_modules --exclude .next/ --exclude .open-next/'
+set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
+
 zoxide init fish | source
+# jumper shell fish | source
 ~/.local/bin/mise activate fish | source
 
 switch (uname)
