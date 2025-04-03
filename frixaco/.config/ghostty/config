@@ -1,0 +1,14 @@
+theme = dark:catppuccin-mocha,light:catppuccin-mocha
+font-family = "FiraCode Nerd Font Mono"
+shell-integration = fish
+window-padding-x = 8
+window-padding-y = 8
+window-padding-balance = true
+mouse-hide-while-typing = true
+keybind = ctrl+shift+v=new_split:right
+keybind = ctrl+shift+h=new_split:down
+keybind = alt+shift+l=goto_split:right
+keybind = alt+shift+h=goto_split:left
+window-decoration = auto
+macos-titlebar-style = hidden
+font-size = 14
