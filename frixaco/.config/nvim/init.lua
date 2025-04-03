@@ -194,8 +194,54 @@ require("lazy").setup({
 				"saghen/blink.cmp",
 			},
 			opts = {
+				inlay_hints = { enabled = false },
+				diagnostics = {
+					virtual_text = true,
+					virtual_lines = true,
+					signs = true,
+					underline = false,
+				},
+				capabilities = {
+					workspace = {
+						didChangeWatchedFiles = {
+							dynamicRegistration = true,
+						},
+					},
+				},
 				servers = {
+					gopls = {},
+					-- basedpyright = {},
+					pyright = {},
+					ruff = {},
 					lua_ls = {},
+					ts_ls = {},
+					html = {},
+					emmet_language_server = {},
+					graphql = {},
+					cssls = {},
+					tailwindcss = {
+						-- root_dir = function(fname)
+						-- 	return require("lspconfig").util.root_pattern(".git")(fname)
+						-- 		or require("lspconfig").util.path.dirname(fname)
+						-- end,
+						-- tailwindCSS = {
+						-- 	classAttributes = {
+						-- 		"class",
+						-- 		"className",
+						-- 		"class:list",
+						-- 		"classList",
+						-- 		"ngClass",
+						-- 		"containerClassname",
+						-- 	},
+						-- 	validate = true,
+						-- 	experimental = {
+						-- 		classRegex = {
+						-- 			{ "cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
+						-- 			{ "cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
+						-- 		},
+						-- 	},
+						-- },
+					},
 				},
 			},
 			config = function(_, opts)
@@ -212,6 +258,10 @@ require("lazy").setup({
 						"stylua",
 						"prettier",
 						"eslint_d",
+						"clang-format",
+						"goimports",
+						"shfmt",
+						"shellcheck",
 					},
 					auto_update = true,
 					run_on_start = true,
@@ -247,6 +297,29 @@ require("lazy").setup({
 				end,
 				formatters_by_ft = {
 					lua = { "stylua" },
+					python = function(bufnr)
+						if require("conform").get_formatter_info("ruff_format", bufnr).available then
+							return { "ruff_format" }
+						else
+							return { "isort", "black" }
+						end
+					end,
+					javascript = { "prettier" },
+					typescript = { "prettier" },
+					javascriptreact = { "prettier" },
+					typescriptreact = { "prettier" },
+					graphql = { "prettier" },
+					yaml = { "prettier" },
+					toml = { "taplo" },
+					json = { "prettier" },
+					jsonc = { "prettier" },
+					go = { "goimports", "gofmt" },
+					c = { "clang_format" },
+					html = { "prettier" },
+					css = { "prettier" },
+					shell = { "shfmt", "shellcheck" },
+					zsh = { "shfmt", "shellcheck" },
+					markdown = { "prettier" },
 				},
 			},
 		},
@@ -575,6 +648,11 @@ require("lazy").setup({
 			version = false, -- Never set this value to "*"! Never!
 			opts = {
 				provider = "openrouter",
+				cursor_applying_provider = "groq",
+				behaviour = {
+					enable_cursor_planning_mode = true,
+					auto_apply_diff_after_generation = false,
+				},
 				vendors = {
 					openrouter = {
 						__inherited_from = "openai",
@@ -583,6 +661,13 @@ require("lazy").setup({
 						-- model = "google/gemini-2.5-pro-exp-03-25",
 						-- model = "deepseek/deepseek-chat-v3-0324",
 						model = "anthropic/claude-3.5-sonnet",
+					},
+					groq = {
+						__inherited_from = "openai",
+						api_key_name = "GROK_API_KEY",
+						endpoint = "https://api.groq.com/openai/v1/",
+						model = "llama-3.3-70b-versatile",
+						max_tokens = 32768,
 					},
 				},
 			},
