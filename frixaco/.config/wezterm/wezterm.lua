@@ -1,7 +1,12 @@
 local wezterm = require("wezterm")
+local mux = wezterm.mux
 
 local act = wezterm.action
 local config = {}
+
+wezterm.on("gui-startup", function(cmd)
+	mux.rename_workspace(mux.get_active_workspace(), "1")
+end)
 
 if wezterm.config_builder then
 	config = wezterm.config_builder()
@@ -37,14 +42,15 @@ config.window_padding = {
 -- on Windows, use "Fira Code"
 config.font = is_windows() and wezterm.font("Fira Code") or wezterm.font("FiraCode Nerd Font")
 config.font_size = 14.0
-local function scheme_for_appearance(appearance)
-	if appearance:find("Dark") then
-		return "Catppuccin Mocha"
-	else
-		return "Catppuccin Latte"
-	end
-end
-config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
+-- local function scheme_for_appearance(appearance)
+-- 	if appearance:find("Dark") then
+-- 		return "Catppuccin Mocha"
+-- 	else
+-- 		return "Catppuccin Latte"
+-- 	end
+-- end
+-- config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
+config.color_scheme = "Catppuccin Mocha"
 config.window_decorations = "INTEGRATED_BUTTONS"
 config.window_background_opacity = 0.98
 config.macos_window_background_blur = 20
@@ -146,6 +152,30 @@ config.keys = {
 					)
 				end
 			end),
+		}),
+	},
+
+	{
+		key = "1",
+		mods = "CTRL|SHIFT",
+		action = act.SwitchToWorkspace({
+			name = "1",
+		}),
+	},
+
+	{
+		key = "2",
+		mods = "CTRL|SHIFT",
+		action = act.SwitchToWorkspace({
+			name = "2",
+		}),
+	},
+
+	{
+		key = "3",
+		mods = "CTRL|SHIFT",
+		action = act.SwitchToWorkspace({
+			name = "3",
 		}),
 	},
 
