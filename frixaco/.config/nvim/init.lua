@@ -716,7 +716,72 @@ require("lazy").setup({
 		{
 			"nvim-lualine/lualine.nvim",
 			dependencies = { "nvim-tree/nvim-web-devicons" },
-			opts = {},
+			config = function()
+				require("lualine").setup({
+					options = {
+						icons_enabled = true,
+						theme = "auto",
+						component_separators = { left = "│", right = "│" },
+						section_separators = { left = "", right = "" },
+						disabled_filetypes = {
+							statusline = { "snacks_dashboard" },
+							winbar = {},
+						},
+						ignore_focus = {},
+						always_divide_middle = true,
+						always_show_tabline = true,
+						globalstatus = true,
+						refresh = {
+							statusline = 100,
+							tabline = 100,
+							winbar = 100,
+						},
+					},
+					sections = {
+						lualine_a = {
+							{
+								"mode",
+								fmt = function(str)
+									return str:sub(1, 1):upper()
+								end,
+							},
+						},
+						lualine_b = {
+							{
+								"buffers",
+								show_modified_status = true,
+								use_mode_colors = true,
+							},
+						},
+						lualine_c = { "diagnostics" },
+						lualine_x = {
+							{
+								"searchcount",
+								maxcount = 999,
+								timeout = 500,
+							},
+							{ "selectioncount" },
+							"fileformat",
+						},
+						lualine_y = {},
+						lualine_z = {
+							"branch",
+						},
+					},
+					inactive_sections = {
+						lualine_a = {},
+						lualine_b = {},
+						lualine_c = {},
+						lualine_x = {},
+						lualine_y = {},
+						lualine_z = {},
+					},
+					tabline = {},
+					winbar = {},
+					inactive_winbar = {},
+					extensions = {},
+				})
+			end,
 		},
 
 		-- { "echasnovski/mini.statusline", version = false, opts = {} },
