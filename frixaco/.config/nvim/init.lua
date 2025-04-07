@@ -144,47 +144,31 @@ require('lazy').setup({
       -- use a release tag to download pre-built binaries
       version = '*',
       opts = {
-        keymap = {
-          preset = 'none',
-
-          ['<Tab>'] = { 'select_next', 'fallback' },
-          ['<S-Tab>'] = { 'select_prev', 'fallback' },
-
-          ['<cr>'] = { 'select_and_accept', 'fallback' },
-
-          ['<C-n>'] = { 'snippet_forward', 'fallback' },
-          ['<C-p>'] = { 'snippet_backward', 'fallback' },
-
-          ['<C-y>'] = { 'select_and_accept' },
-          ['<C-e>'] = { 'cancel' },
-
-          ['<C-Space>'] = { 'show' },
-        },
         fuzzy = {
           implementation = 'rust',
         },
         completion = {
-          list = {
-            selection = {
-              preselect = true,
-              auto_insert = true,
-            },
-          },
-          menu = {
-            draw = {
-              columns = {
-                { 'label', 'label_description', gap = 1 },
-                { 'kind_icon', gap = 1, 'kind' },
-              },
-              treesitter = { 'lsp' },
-            },
-          },
-          documentation = {
-            auto_show = true,
-            auto_show_delay_ms = 500,
-          },
+          --   list = {
+          --     selection = {
+          --       preselect = true,
+          --       auto_insert = true,
+          --     },
+          --   },
+          --   menu = {
+          --     draw = {
+          --       columns = {
+          --         { 'label', 'label_description', gap = 1 },
+          --         { 'kind_icon', gap = 1, 'kind' },
+          --       },
+          --       treesitter = { 'lsp' },
+          --     },
+          --   },
+          --   documentation = {
+          --     auto_show = true,
+          --     auto_show_delay_ms = 500,
+          --   },
         },
-        signature = { enabled = true },
+        -- signature = { enabled = true },
         cmdline = {
           enabled = true,
           completion = {
@@ -193,24 +177,24 @@ require('lazy').setup({
             },
           },
         },
-        sources = {
-          default = { 'avante', 'lazydev', 'lsp', 'path', 'snippets', 'buffer' },
-          providers = {
-            lazydev = {
-              name = 'LazyDev',
-              module = 'lazydev.integrations.blink',
-              -- make lazydev completions top priority (see `:h blink.cmp`)
-              score_offset = 100,
-            },
-            avante = {
-              module = 'blink-cmp-avante',
-              name = 'Avante',
-              opts = {
-                -- options for blink-cmp-avante
-              },
-            },
-          },
-        },
+        -- sources = {
+        --   default = { 'avante', 'lazydev', 'lsp', 'path', 'snippets', 'buffer' },
+        --   providers = {
+        --     lazydev = {
+        --       name = 'LazyDev',
+        --       module = 'lazydev.integrations.blink',
+        --       -- make lazydev completions top priority (see `:h blink.cmp`)
+        --       score_offset = 100,
+        --     },
+        --     avante = {
+        --       module = 'blink-cmp-avante',
+        --       name = 'Avante',
+        --       opts = {
+        --         -- options for blink-cmp-avante
+        --       },
+        --     },
+        --   },
+        -- },
       },
     },
 
@@ -304,12 +288,44 @@ require('lazy').setup({
         })
 
         local lspconfig = require('lspconfig')
+        local util = require('lspconfig.util')
+
         for server, config in pairs(opts.servers) do
           -- passing config.capabilities to blink.cmp merges with the capabilities in your
           -- `opts[server].capabilities, if you've defined it
           config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
           lspconfig[server].setup(config)
         end
+
+        local function custom_root_dir(fname)
+          -- Check for pyrightconfig.json
+          local pyright_config_root = util.root_pattern('pyrightconfig.json')(fname)
+          if pyright_config_root then
+            return pyright_config_root
+          end
+
+          -- Prioritize .git ancestor
+          local git_root = util.find_git_ancestor(fname)
+          if git_root then
+            return git_root
+          end
+
+          -- Fallback markers for Python projects
+          local fallback_markers = {
+            'requirements.txt',
+            'pyproject.toml',
+            'setup.py', -- Optional: add more markers if relevant
+          }
+          local marker_root = util.root_pattern(unpack(fallback_markers))(fname)
+          if marker_root then
+            return marker_root
+          end
+
+          -- Ultimate fallback: use the directory of the file itself
+          return util.path.dirname(fname)
+        end
+
+        require('lspconfig').pyright.setup({ root_dir = custom_root_dir })
       end,
     },
 
@@ -682,76 +698,76 @@ require('lazy').setup({
       -- this is equivalent to setup({}) function
     },
 
-    {
-      'yetone/avante.nvim',
-      event = 'VeryLazy',
-      version = false, -- Never set this value to "*"! Never!
-      opts = {
-        provider = 'openrouter',
-        cursor_applying_provider = 'groq',
-        behaviour = {
-          enable_cursor_planning_mode = true,
-          auto_apply_diff_after_generation = false,
-        },
-        vendors = {
-          openrouter = {
-            __inherited_from = 'openai',
-            endpoint = 'https://openrouter.ai/api/v1',
-            api_key_name = 'OPENROUTER_API_KEY',
-            -- model = "google/gemini-2.5-pro-exp-03-25",
-            -- model = "deepseek/deepseek-chat-v3-0324",
-            model = 'anthropic/claude-3.5-sonnet',
-          },
-          groq = {
-            __inherited_from = 'openai',
-            api_key_name = 'GROK_API_KEY',
-            endpoint = 'https://api.groq.com/openai/v1/',
-            model = 'llama-3.3-70b-versatile',
-            max_tokens = 32768,
-          },
-        },
-      },
-      -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-      build = 'make',
-      -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-      dependencies = {
-        'nvim-treesitter/nvim-treesitter',
-        'stevearc/dressing.nvim',
-        'nvim-lua/plenary.nvim',
-        'MunifTanjim/nui.nvim',
-        --- The below dependencies are optional,
-        'echasnovski/mini.pick', -- for file_selector provider mini.pick
-        'nvim-telescope/telescope.nvim', -- for file_selector provider telescope
-        -- 'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
-        -- 'ibhagwan/fzf-lua', -- for file_selector provider fzf
-        'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
-        {
-          -- support for image pasting
-          'HakonHarnes/img-clip.nvim',
-          event = 'VeryLazy',
-          opts = {
-            -- recommended settings
-            default = {
-              embed_image_as_base64 = false,
-              prompt_for_file_name = false,
-              drag_and_drop = {
-                insert_mode = true,
-              },
-              -- required for Windows users
-              use_absolute_path = true,
-            },
-          },
-        },
-        {
-          -- Make sure to set this up properly if you have lazy=true
-          'MeanderingProgrammer/render-markdown.nvim',
-          opts = {
-            file_types = { 'markdown', 'Avante' },
-          },
-          ft = { 'markdown', 'Avante' },
-        },
-      },
-    },
+    -- {
+    --   'yetone/avante.nvim',
+    --   event = 'VeryLazy',
+    --   version = false, -- Never set this value to "*"! Never!
+    --   opts = {
+    --     provider = 'openrouter',
+    --     cursor_applying_provider = 'groq',
+    --     behaviour = {
+    --       enable_cursor_planning_mode = true,
+    --       auto_apply_diff_after_generation = false,
+    --     },
+    --     vendors = {
+    --       openrouter = {
+    --         __inherited_from = 'openai',
+    --         endpoint = 'https://openrouter.ai/api/v1',
+    --         api_key_name = 'OPENROUTER_API_KEY',
+    --         -- model = "google/gemini-2.5-pro-exp-03-25",
+    --         -- model = "deepseek/deepseek-chat-v3-0324",
+    --         model = 'anthropic/claude-3.5-sonnet',
+    --       },
+    --       groq = {
+    --         __inherited_from = 'openai',
+    --         api_key_name = 'GROK_API_KEY',
+    --         endpoint = 'https://api.groq.com/openai/v1/',
+    --         model = 'llama-3.3-70b-versatile',
+    --         max_tokens = 32768,
+    --       },
+    --     },
+    --   },
+    --   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    --   build = 'make',
+    --   -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+    --   dependencies = {
+    --     'nvim-treesitter/nvim-treesitter',
+    --     'stevearc/dressing.nvim',
+    --     'nvim-lua/plenary.nvim',
+    --     'MunifTanjim/nui.nvim',
+    --     --- The below dependencies are optional,
+    --     'echasnovski/mini.pick', -- for file_selector provider mini.pick
+    --     'nvim-telescope/telescope.nvim', -- for file_selector provider telescope
+    --     -- 'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
+    --     -- 'ibhagwan/fzf-lua', -- for file_selector provider fzf
+    --     'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
+    --     {
+    --       -- support for image pasting
+    --       'HakonHarnes/img-clip.nvim',
+    --       event = 'VeryLazy',
+    --       opts = {
+    --         -- recommended settings
+    --         default = {
+    --           embed_image_as_base64 = false,
+    --           prompt_for_file_name = false,
+    --           drag_and_drop = {
+    --             insert_mode = true,
+    --           },
+    --           -- required for Windows users
+    --           use_absolute_path = true,
+    --         },
+    --       },
+    --     },
+    --     {
+    --       -- Make sure to set this up properly if you have lazy=true
+    --       'MeanderingProgrammer/render-markdown.nvim',
+    --       opts = {
+    --         file_types = { 'markdown', 'Avante' },
+    --       },
+    --       ft = { 'markdown', 'Avante' },
+    --     },
+    --   },
+    -- },
 
     {
       'nvim-lualine/lualine.nvim',
