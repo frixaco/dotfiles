@@ -16,11 +16,13 @@ vim.opt.rtp:prepend(lazypath)
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+vim.o.number = true
 vim.o.relativenumber = true
 vim.o.signcolumn = 'yes'
 vim.o.scrolloff = 3
 vim.g.have_nerd_font = true
 vim.o.mouse = 'a'
+vim.o.wrap = false
 vim.o.showmode = false
 vim.schedule(function()
   vim.o.clipboard = 'unnamedplus'
