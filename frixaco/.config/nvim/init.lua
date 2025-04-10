@@ -483,7 +483,7 @@ require('lazy').setup({
         dashboard = { enabled = true },
         notifier = { enabled = true },
         lazygit = { enabled = true },
-        scroll = { enabled = true },
+        -- scroll = { enabled = true },
         statuscolumn = { enabled = true },
         indent = {
           priority = 1,
@@ -806,9 +806,14 @@ require('lazy').setup({
             },
             lualine_b = {
               {
-                'buffers',
+                'filename',
                 show_modified_status = true,
                 use_mode_colors = true,
+                path = 1, -- 0: Just the filename
+                -- 1: Relative path
+                -- 2: Absolute path
+                -- 3: Absolute path, with tilde as the home directory
+                -- 4: Filename and parent dir, with tilde as the home directory
               },
             },
             lualine_c = { 'diagnostics' },
