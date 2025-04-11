@@ -138,14 +138,14 @@ require('lazy').setup({
 
     {
       'saghen/blink.cmp',
-      event = 'VeryLazy',
-      -- optional: provides snippets for the snippet source
-      dependencies = {
-        'Kaiser-Yang/blink-cmp-avante',
-      },
+      event = { 'BufReadPre', 'BufNewFile' },
       -- use a release tag to download pre-built binaries
       version = '*',
       opts = {
+        appearance = {
+          use_nvim_cmp_as_default = true,
+          nerd_font_variant = 'mono',
+        },
         fuzzy = {
           implementation = 'rust',
         },
@@ -156,19 +156,19 @@ require('lazy').setup({
           --       auto_insert = true,
           --     },
           --   },
-          --   menu = {
-          --     draw = {
-          --       columns = {
-          --         { 'label', 'label_description', gap = 1 },
-          --         { 'kind_icon', gap = 1, 'kind' },
-          --       },
-          --       treesitter = { 'lsp' },
-          --     },
-          --   },
-          --   documentation = {
-          --     auto_show = true,
-          --     auto_show_delay_ms = 500,
-          --   },
+          menu = {
+            draw = {
+              columns = {
+                { 'kind_icon', 'label', 'label_description', 'source_name', gap = 1 },
+                -- { 'label_description', gap = 1 },
+              },
+              treesitter = { 'lsp' },
+            },
+          },
+          documentation = {
+            auto_show = true,
+            auto_show_delay_ms = 500,
+          },
         },
         -- signature = { enabled = true },
         cmdline = {
@@ -179,25 +179,19 @@ require('lazy').setup({
             },
           },
         },
-        -- sources = {
-        --   default = { 'avante', 'lazydev', 'lsp', 'path', 'snippets', 'buffer' },
-        --   providers = {
-        --     lazydev = {
-        --       name = 'LazyDev',
-        --       module = 'lazydev.integrations.blink',
-        --       -- make lazydev completions top priority (see `:h blink.cmp`)
-        --       score_offset = 100,
-        --     },
-        --     avante = {
-        --       module = 'blink-cmp-avante',
-        --       name = 'Avante',
-        --       opts = {
-        --         -- options for blink-cmp-avante
-        --       },
-        --     },
-        --   },
-        -- },
+        sources = {
+          default = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' },
+          providers = {
+            lazydev = {
+              name = 'LazyDev',
+              module = 'lazydev.integrations.blink',
+              -- make lazydev completions top priority (see `:h blink.cmp`)
+              score_offset = 100,
+            },
+          },
+        },
       },
+      opts_extend = { 'sources.default' },
     },
 
     {
@@ -238,6 +232,7 @@ require('lazy').setup({
           ruff = {},
           lua_ls = {},
           ts_ls = {},
+          rust_analyzer = {},
           html = {},
           emmet_language_server = {},
           graphql = {},
@@ -292,10 +287,25 @@ require('lazy').setup({
         local lspconfig = require('lspconfig')
         local util = require('lspconfig.util')
 
+        local on_attach = function(_, bufnr)
+          local nnoremap = function(keys, func, desc)
+            if desc then
+              desc = 'LSP:  ' .. desc
+            end
+            vim.keymap.set('n', keys, func, { buffer = bufnr, noremap = true, desc = desc })
+          end
+
+          nnoremap('<leader>e', vim.diagnostic.open_float, 'Open Floating Diagnostic Message')
+          nnoremap('K', vim.lsp.buf.hover, 'Hover Documentation')
+          nnoremap('<leader>rn', vim.lsp.buf.rename, 'Rename')
+          vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, noremap = true, desc = 'Code Action' })
+        end
+
         for server, config in pairs(opts.servers) do
           -- passing config.capabilities to blink.cmp merges with the capabilities in your
           -- `opts[server].capabilities, if you've defined it
           config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
+          config.on_attach = on_attach
           lspconfig[server].setup(config)
         end
 
@@ -485,17 +495,17 @@ require('lazy').setup({
         lazygit = { enabled = true },
         -- scroll = { enabled = true },
         statuscolumn = { enabled = true },
-        indent = {
-          priority = 1,
-          enabled = true,
-          animate = {
-            enabled = false,
-          },
-          scope = {
-            enabled = true,
-            underline = true,
-          },
-        },
+        -- indent = {
+        --   priority = 1,
+        --   enabled = true,
+        --   animate = {
+        --     enabled = false,
+        --   },
+        --   scope = {
+        --     enabled = true,
+        --     underline = true,
+        --   },
+        -- },
         explorer = {
           enabled = true,
           replace_netrw = true,
@@ -574,6 +584,35 @@ require('lazy').setup({
             Snacks.picker.help()
           end,
           desc = 'Help Pages',
+        },
+        {
+          'gd',
+          function()
+            Snacks.picker.lsp_definitions()
+          end,
+          desc = 'Goto Definition',
+        },
+        {
+          'gr',
+          function()
+            Snacks.picker.lsp_references()
+          end,
+          nowait = true,
+          desc = 'References',
+        },
+        {
+          'gI',
+          function()
+            Snacks.picker.lsp_implementations()
+          end,
+          desc = 'Goto Implementation',
+        },
+        {
+          'gy',
+          function()
+            Snacks.picker.lsp_type_definitions()
+          end,
+          desc = 'Goto T[y]pe Definition',
         },
       },
     },
@@ -677,20 +716,20 @@ require('lazy').setup({
       },
     },
 
-    -- {
-    -- 	"echasnovski/mini.indentscope",
-    -- 	event = "VeryLazy",
-    -- 	version = false,
-    -- 	config = function()
-    -- 		local no_indent_animation = require("mini.indentscope").gen_animation.none()
-    -- 		require("mini.indentscope").setup({
-    -- 			draw = {
-    -- 				animation = no_indent_animation,
-    -- 			},
-    -- 			symbol = "│",
-    -- 		})
-    -- 	end,
-    -- },
+    {
+      'echasnovski/mini.indentscope',
+      event = 'VeryLazy',
+      version = false,
+      config = function()
+        local no_indent_animation = require('mini.indentscope').gen_animation.none()
+        require('mini.indentscope').setup({
+          draw = {
+            animation = no_indent_animation,
+          },
+          symbol = '│',
+        })
+      end,
+    },
 
     {
       'windwp/nvim-autopairs',
