@@ -5,7 +5,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { 'Failed to clone lazy.nvim:\n', 'ErrorMsg' },
-      { out,                            'WarningMsg' },
+      { out, 'WarningMsg' },
       { '\nPress any key to exit...' },
     }, true, {})
     vim.fn.getchar()
@@ -70,8 +70,7 @@ vim.api.nvim_create_autocmd('LspProgress', {
   ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    local value = ev.data.params
-        .value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
+    local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
     if not client or type(value) ~= 'table' then
       return
     end
@@ -100,8 +99,7 @@ vim.api.nvim_create_autocmd('LspProgress', {
       id = 'lsp_progress',
       title = client.name,
       opts = function(notif)
-        notif.icon = #progress[client.id] == 0 and ' ' or
-            spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+        notif.icon = #progress[client.id] == 0 and ' ' or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
       end,
     })
   end,
@@ -128,7 +126,7 @@ require('lazy').setup({
             -- See the configuration section for more details
             -- Load luvit types when the `vim.uv` word is found
             { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-            { path = 'wezterm-types',      mods = { 'wezterm' } },
+            { path = 'wezterm-types', mods = { 'wezterm' } },
           },
         })
       end,
@@ -260,6 +258,7 @@ require('lazy').setup({
             --     },
             --   },
             -- },
+            filetypes = { 'css', 'javascriptreact', 'typescriptreact', 'html' },
           },
         },
       },
@@ -300,8 +299,7 @@ require('lazy').setup({
           nnoremap('<leader>e', vim.diagnostic.open_float, 'Open Floating Diagnostic Message')
           nnoremap('K', vim.lsp.buf.hover, 'Hover Documentation')
           nnoremap('<leader>rn', vim.lsp.buf.rename, 'Rename')
-          vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action,
-            { buffer = bufnr, noremap = true, desc = 'Code Action' })
+          vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, noremap = true, desc = 'Code Action' })
         end
 
         for server, config in pairs(opts.servers) do
@@ -448,8 +446,8 @@ require('lazy').setup({
         require('nvim-ts-autotag').setup({
           opts = {
             -- Defaults
-            enable_close = true,           -- Auto close tags
-            enable_rename = true,          -- Auto rename pairs of tags
+            enable_close = true, -- Auto close tags
+            enable_rename = true, -- Auto rename pairs of tags
             enable_close_on_slash = false, -- Auto close on trailing </
           },
           -- Also override individual filetype configs, these take priority.
@@ -469,18 +467,18 @@ require('lazy').setup({
       event = 'VeryLazy',
       config = function()
         require('treesitter-context').setup({
-          enable = true,            -- Enable this plugin (Can be enabled/disabled later via commands)
-          multiwindow = false,      -- Enable multiwindow support.
-          max_lines = 0,            -- How many lines the window should span. Values <= 0 mean no limit.
-          min_window_height = 0,    -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+          enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+          multiwindow = false, -- Enable multiwindow support.
+          max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+          min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
           line_numbers = true,
           multiline_threshold = 20, -- Maximum number of lines to show for a single context
-          trim_scope = 'outer',     -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
-          mode = 'cursor',          -- Line used to calculate context. Choices: 'cursor', 'topline'
+          trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+          mode = 'cursor', -- Line used to calculate context. Choices: 'cursor', 'topline'
           -- Separator between context and content. Should be a single character string, like '-'.
           -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
           separator = nil,
-          zindex = 20,     -- The Z-index of the context window
+          zindex = 20, -- The Z-index of the context window
           on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
         })
       end,
@@ -946,13 +944,13 @@ require('lazy').setup({
       config = function()
         function ToggleCheckbox()
           local line = vim.api.nvim_get_current_line()
-          local checkbox_pattern = "^%s*%- %[(.)%]"
+          local checkbox_pattern = '^%s*%- %[(.)%]'
           local status = line:match(checkbox_pattern)
 
-          if status == " " then
-            line = line:gsub(checkbox_pattern, "- [x]")
-          elseif status == "x" or status == "X" then
-            line = line:gsub(checkbox_pattern, "- [ ]")
+          if status == ' ' then
+            line = line:gsub(checkbox_pattern, '- [x]')
+          elseif status == 'x' or status == 'X' then
+            line = line:gsub(checkbox_pattern, '- [ ]')
           else
             return
           end
@@ -961,8 +959,8 @@ require('lazy').setup({
         end
 
         vim.api.nvim_set_keymap('n', '<leader>t', ':lua ToggleCheckbox()<CR>', { noremap = true, silent = true })
-      end
-    }
+      end,
+    },
   },
   -- Configure any other settings here. See the documentation for more details.
   -- colorscheme that will be used when installing plugins.
