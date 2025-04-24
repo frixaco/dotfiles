@@ -22,7 +22,7 @@ vim.o.signcolumn = 'yes'
 vim.o.scrolloff = 3
 vim.g.have_nerd_font = true
 vim.o.mouse = 'a'
-vim.o.wrap = false
+vim.o.wrap = true
 vim.o.showmode = false
 vim.schedule(function()
   vim.o.clipboard = 'unnamedplus'
@@ -934,6 +934,28 @@ require('lazy').setup({
     },
 
     {
+      'catgoose/nvim-colorizer.lua',
+      event = 'VeryLazy',
+      opts = { -- set to setup table
+        lazy_load = true,
+        user_default_options = {
+          RRGGBBAA = true, -- #RRGGBBAA hex codes
+          AARRGGBB = true, -- 0xAARRGGBB hex codes
+          rgb_fn = true, -- CSS rgb() and rgba() functions
+          hsl_fn = true, -- CSS hsl() and hsla() functions
+          css = true, -- Enable all CSS *features*:
+          -- names, RGB, RGBA, RRGGBB, RRGGBBAA, AARRGGBB, rgb_fn, hsl_fn
+          css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
+          -- Tailwind colors.  boolean|'normal'|'lsp'|'both'.  True sets to 'normal'
+          tailwind = true, -- Enable tailwind colors
+          tailwind_opts = { -- Options for highlighting tailwind names
+            update_names = false, -- When using tailwind = 'both', update tailwind names from LSP results.  See tailwind section
+          },
+        },
+      },
+    },
+
+    {
       'MeanderingProgrammer/render-markdown.nvim',
       dependencies = { 'nvim-treesitter/nvim-treesitter' },
       -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
@@ -958,7 +980,12 @@ require('lazy').setup({
           vim.api.nvim_set_current_line(line)
         end
 
-        vim.api.nvim_set_keymap('n', '<leader>t', ':lua ToggleCheckbox()<CR>', { noremap = true, silent = true })
+        vim.api.nvim_create_autocmd('FileType', {
+          pattern = 'markdown',
+          callback = function()
+            vim.api.nvim_buf_set_keymap(0, 'n', '<Tab>', ':lua ToggleCheckbox()<CR>', { noremap = true, silent = true })
+          end,
+        })
       end,
     },
   },
