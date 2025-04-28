@@ -47,65 +47,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- SIMPLE LspProgress notification
--- vim.api.nvim_create_autocmd("LspProgress", {
--- 	---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
--- 	callback = function(ev)
--- 		local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
--- 		vim.notify(vim.lsp.status(), "info", {
--- 			id = "lsp_progress",
--- 			title = "LSP Progress",
--- 			opts = function(notif)
--- 				notif.icon = ev.data.params.value.kind == "end" and " "
--- 					or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
--- 			end,
--- 		})
--- 	end,
--- })
-
--- ADVANCED LspProgress notification
----@type table<number, {token:lsp.ProgressToken, msg:string, done:boolean}[]>
-local progress = vim.defaulttable()
-vim.api.nvim_create_autocmd('LspProgress', {
-  ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
-  callback = function(ev)
-    local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
-    if not client or type(value) ~= 'table' then
-      return
-    end
-    local p = progress[client.id]
-    for i = 1, #p + 1 do
-      if i == #p + 1 or p[i].token == ev.data.params.token then
-        p[i] = {
-          token = ev.data.params.token,
-          msg = ('[%3d%%] %s%s'):format(
-            value.kind == 'end' and 100 or value.percentage or 100,
-            value.title or '',
-            value.message and (' **%s**'):format(value.message) or ''
-          ),
-          done = value.kind == 'end',
-        }
-        break
-      end
-    end
-    local msg = {} ---@type string[]
-    progress[client.id] = vim.tbl_filter(function(v)
-      return table.insert(msg, v.msg) or not v.done
-    end, p)
-
-    local spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' }
-    vim.notify(table.concat(msg, '\n'), 'info', {
-      id = 'lsp_progress',
-      title = client.name,
-      opts = function(notif)
-        notif.icon = #progress[client.id] == 0 and ' ' or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
-      end,
-    })
-  end,
-})
-
 require('lazy').setup({
+  defaults = { lazy = true },
+  -- Configure any other settings here. See the documentation for more details.
+  -- colorscheme that will be used when installing plugins.
+  install = { colorscheme = { 'catppuccin' } },
+  -- automatically check for plugin updates
+  checker = { enabled = true },
   spec = {
     {
       'catppuccin/nvim',
@@ -134,6 +82,7 @@ require('lazy').setup({
 
     {
       'tpope/vim-sleuth',
+      event = { 'BufReadPost', 'BufNewFile' },
     },
 
     {
@@ -263,6 +212,64 @@ require('lazy').setup({
         },
       },
       config = function(_, opts)
+        -- SIMPLE LspProgress notification
+        -- vim.api.nvim_create_autocmd("LspProgress", {
+        -- 	---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
+        -- 	callback = function(ev)
+        -- 		local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+        -- 		vim.notify(vim.lsp.status(), "info", {
+        -- 			id = "lsp_progress",
+        -- 			title = "LSP Progress",
+        -- 			opts = function(notif)
+        -- 				notif.icon = ev.data.params.value.kind == "end" and " "
+        -- 					or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+        -- 			end,
+        -- 		})
+        -- 	end,
+        -- })
+
+        -- ADVANCED LspProgress notification
+        ---@type table<number, {token:lsp.ProgressToken, msg:string, done:boolean}[]>
+        local progress = vim.defaulttable()
+        vim.api.nvim_create_autocmd('LspProgress', {
+          ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
+          callback = function(ev)
+            local client = vim.lsp.get_client_by_id(ev.data.client_id)
+            local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
+            if not client or type(value) ~= 'table' then
+              return
+            end
+            local p = progress[client.id]
+            for i = 1, #p + 1 do
+              if i == #p + 1 or p[i].token == ev.data.params.token then
+                p[i] = {
+                  token = ev.data.params.token,
+                  msg = ('[%3d%%] %s%s'):format(
+                    value.kind == 'end' and 100 or value.percentage or 100,
+                    value.title or '',
+                    value.message and (' **%s**'):format(value.message) or ''
+                  ),
+                  done = value.kind == 'end',
+                }
+                break
+              end
+            end
+            local msg = {} ---@type string[]
+            progress[client.id] = vim.tbl_filter(function(v)
+              return table.insert(msg, v.msg) or not v.done
+            end, p)
+
+            local spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' }
+            vim.notify(table.concat(msg, '\n'), 'info', {
+              id = 'lsp_progress',
+              title = client.name,
+              opts = function(notif)
+                notif.icon = #progress[client.id] == 0 and ' ' or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+              end,
+            })
+          end,
+        })
+
         require('mason').setup()
         require('mason-lspconfig').setup({
           ensure_installed = {
@@ -442,6 +449,7 @@ require('lazy').setup({
 
     {
       'windwp/nvim-ts-autotag',
+      dependencies = { 'nvim-treesitter/nvim-treesitter' },
       config = function()
         require('nvim-ts-autotag').setup({
           opts = {
@@ -486,8 +494,8 @@ require('lazy').setup({
 
     {
       'folke/snacks.nvim',
-      priority = 1000,
-      lazy = false,
+      -- priority = 1000,
+      -- lazy = false,
       ---@type snacks.Config
       opts = {
         bigfile = { enabled = true },
@@ -536,13 +544,13 @@ require('lazy').setup({
         styles = {},
       },
       keys = {
-        {
-          '<leader>b',
-          function()
-            Snacks.explorer()
-          end,
-          desc = 'File Explorer',
-        },
+        -- {
+        --   '<leader>b',
+        --   function()
+        --     Snacks.explorer()
+        --   end,
+        --   desc = 'File Explorer',
+        -- },
         {
           '<leader>gg',
           function()
@@ -920,7 +928,7 @@ require('lazy').setup({
       ---@type YaziConfig | {}
       opts = {
         -- if you want to open yazi instead of netrw, see below for more info
-        open_for_directories = false,
+        open_for_directories = true,
         keymaps = {
           show_help = '<f1>',
         },
@@ -957,13 +965,13 @@ require('lazy').setup({
 
     {
       'MeanderingProgrammer/render-markdown.nvim',
+      event = 'VeryLazy',
       dependencies = { 'nvim-treesitter/nvim-treesitter' },
-      -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-      -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-      ---@module 'render-markdown'
-      ---@type render.md.UserConfig
-      opts = {},
       config = function()
+        pcall(function()
+          require('render-markdown').setup()
+        end)
+
         function ToggleCheckbox()
           local line = vim.api.nvim_get_current_line()
           local checkbox_pattern = '^%s*%- %[(.)%]'
@@ -989,11 +997,6 @@ require('lazy').setup({
       end,
     },
   },
-  -- Configure any other settings here. See the documentation for more details.
-  -- colorscheme that will be used when installing plugins.
-  install = { colorscheme = { 'catppuccin' } },
-  -- automatically check for plugin updates
-  checker = { enabled = true },
 })
 
 -- {

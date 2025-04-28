@@ -7,6 +7,7 @@
   editor = nvim
   pager = delta
 	hooksPath = /home/frixaco/.githooks
+  preloadindex = true
 [diff]
   tool = nvimdiff
   colorMoved = default
@@ -43,3 +44,8 @@
 
 [merge]
   conflictstyle = diff3
+
+[status]
+  branch = true
+  showStash = true
+  showUntrackedFiles = all
