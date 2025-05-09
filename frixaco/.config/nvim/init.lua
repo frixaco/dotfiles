@@ -155,7 +155,7 @@ require('lazy').setup({
             },
           },
         },
-        'williamboman/mason-lspconfig.nvim',
+        -- 'williamboman/mason-lspconfig.nvim',
         'WhoIsSethDaniel/mason-tool-installer.nvim',
         'saghen/blink.cmp',
       },
@@ -207,7 +207,7 @@ require('lazy').setup({
             --     },
             --   },
             -- },
-            filetypes = { 'css', 'javascriptreact', 'typescriptreact', 'html' },
+            -- filetypes = { 'css', 'javascriptreact', 'typescriptreact', 'html' },
           },
         },
       },
@@ -271,13 +271,11 @@ require('lazy').setup({
         })
 
         require('mason').setup()
-        require('mason-lspconfig').setup({
-          ensure_installed = {
-            'lua_ls',
-            'ts_ls',
-          },
-          automatic_installation = true,
-        })
+        -- NOTE: this causing duplicate Language Servers running each time
+        -- require('mason-lspconfig').setup({
+        --   ensure_installed = {},
+        --   automatic_installation = true,
+        -- })
         require('mason-tool-installer').setup({
           ensure_installed = {
             'stylua',
