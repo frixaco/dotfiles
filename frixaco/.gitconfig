@@ -5,16 +5,17 @@
 
 [core]
   editor = nvim
-  pager = delta
-	hooksPath = /home/frixaco/.githooks
+  ; pager = delta
+  hooksPath = /home/frixaco/.githooks
   preloadindex = true
 [diff]
-  tool = nvimdiff
+  ; tool = nvimdiff
+  external = difft
   colorMoved = default
-[difftool "nvimdiff"]
-  cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
-[interactive]
-  diffFilter = delta --color-only
+; [difftool "nvimdiff"]
+;   cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+; [interactive]
+;   diffFilter = delta --color-only
 
 [init]
 	defaultBranch = main
@@ -33,14 +34,14 @@
 	repo = ~/vbrato/vbrato-api
 
 
-[delta]
-  navigate = true    # use n and N to move between diff sections
-
-  # delta detects terminal colors automatically; set one of these to disable auto-detection
-  # dark = true
-  # light = true
-  side-by-side = false
-  line-numbers = true
+; [delta]
+;   navigate = true    # use n and N to move between diff sections
+;
+;   # delta detects terminal colors automatically; set one of these to disable auto-detection
+;   # dark = true
+;   # light = true
+;   side-by-side = false
+;   line-numbers = true
 
 [merge]
   conflictstyle = diff3
@@ -49,3 +50,7 @@
   branch = true
   showStash = true
   showUntrackedFiles = all
+
+[alias]
+  dl = -c diff.external=difft log -p --ext-diff
+  dft = -c diff.external=difft diff
