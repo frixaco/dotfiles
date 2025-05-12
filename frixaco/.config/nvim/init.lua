@@ -447,6 +447,7 @@ require('lazy').setup({
 
     {
       'windwp/nvim-ts-autotag',
+      event = 'VeryLazy',
       dependencies = { 'nvim-treesitter/nvim-treesitter' },
       config = function()
         require('nvim-ts-autotag').setup({
@@ -454,15 +455,7 @@ require('lazy').setup({
             -- Defaults
             enable_close = true, -- Auto close tags
             enable_rename = true, -- Auto rename pairs of tags
-            enable_close_on_slash = false, -- Auto close on trailing </
-          },
-          -- Also override individual filetype configs, these take priority.
-          -- Empty by default, useful if one of the "opts" global settings
-          -- doesn't work well in a specific filetype
-          per_filetype = {
-            ['html'] = {
-              enable_close = false,
-            },
+            enable_close_on_slash = true, -- Auto close on trailing </
           },
         })
       end,
@@ -819,6 +812,7 @@ require('lazy').setup({
 
     {
       'nvim-lualine/lualine.nvim',
+      event = 'VeryLazy',
       dependencies = { 'nvim-tree/nvim-web-devicons' },
       config = function()
         require('lualine').setup({
@@ -955,7 +949,7 @@ require('lazy').setup({
           -- Tailwind colors.  boolean|'normal'|'lsp'|'both'.  True sets to 'normal'
           tailwind = true, -- Enable tailwind colors
           tailwind_opts = { -- Options for highlighting tailwind names
-            update_names = false, -- When using tailwind = 'both', update tailwind names from LSP results.  See tailwind section
+            update_names = true, -- When using tailwind = 'both', update tailwind names from LSP results.  See tailwind section
           },
         },
       },
