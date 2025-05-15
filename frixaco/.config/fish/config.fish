@@ -3,6 +3,8 @@ switch (uname)
     /opt/homebrew/bin/brew shellenv | source
 end
 
+set -gx SSH_AUTH_SOCK ~/.1password/agent.sock
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
 end
