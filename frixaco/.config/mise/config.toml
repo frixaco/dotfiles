@@ -5,3 +5,6 @@ node = "22"
 bun = "latest"
 zig = "latest"
 usage = "latest"
+
+[settings]
+idiomatic_version_file_enable_tools = ["python"]

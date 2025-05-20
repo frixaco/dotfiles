@@ -1,0 +1,19 @@
+window.padding = { x = 8, y = 4 }
+window.decorations = "Buttonless"
+
+terminal.shell = "/usr/bin/fish"
+
+general.import = [
+  # uncomment the flavour you want below:
+  # "~/.config/alacritty/catppuccin-latte.toml"
+  # "~/.config/alacritty/catppuccin-frappe.toml"
+  # "~/.config/alacritty/catppuccin-macchiato.toml"
+  "~/.config/alacritty/catppuccin-mocha.toml"
+]
+
+# font.normal = { family = "VictorMono Nerd Font", style = "Bold" }
+font.normal = { family = "Maple Mono NF" }
+# font.normal = { family = "ZedMono NFM Extd" }
+font.size = 13
+
+scrolling.history = 100000
