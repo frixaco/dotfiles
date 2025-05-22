@@ -6,8 +6,7 @@ customCommands:
         initialValue: ""
     command: git commit -m "{{index .PromptResponses 0}}" --no-verify
     context: "global"
-    subprocess: true
-
+    output: terminal
 gui:
   theme:
     activeBorderColor:
@@ -31,7 +30,6 @@ gui:
       - "#cdd6f4"
     searchingActiveBorderColor:
       - "#f9e2af"
-
 git:
   paging:
     colorArg: always

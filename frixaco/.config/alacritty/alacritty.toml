@@ -12,8 +12,9 @@ general.import = [
 ]
 
 # font.normal = { family = "VictorMono Nerd Font", style = "Bold" }
-font.normal = { family = "Maple Mono NF" }
+# font.normal = { family = "Maple Mono NF" }
 # font.normal = { family = "ZedMono NFM Extd" }
+font.normal = { family = "JetBrainsMono Nerd Font" }
 font.size = 13
 
 scrolling.history = 100000
