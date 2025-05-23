@@ -1,7 +1,7 @@
 [tools]
 go = "latest"
-python = "3.12"
-node = "22"
+uv = "latest"
+node = "latest"
 bun = "latest"
 zig = "latest"
 usage = "latest"
