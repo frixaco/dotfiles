@@ -135,8 +135,8 @@ automatically-unhide-macos-hidden-apps = true
     alt-shift-6 = 'move-node-to-workspace 6'
     alt-shift-7 = 'move-node-to-workspace 7'
 
-    alt-shift-t = 'exec-and-forget open -n /Applications/Alacritty.app'
-    alt-shift-b = 'exec-and-forget open -n /Applications/Zen.app'
+    # alt-shift-t = 'exec-and-forget open -n /Applications/Alacritty.app'
+    # alt-shift-b = 'exec-and-forget open /Applications/Zen.app'
 
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
