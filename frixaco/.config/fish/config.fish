@@ -76,7 +76,8 @@ set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
 
 zoxide init fish | source
 # jumper shell fish | source
-~/.local/bin/mise activate fish | source
+# ~/.local/bin/mise activate fish | source
+pyenv init - fish | source
 
 switch (uname)
   case Darwin
