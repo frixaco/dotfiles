@@ -1,0 +1,9 @@
+[tools]
+node = 'latest'
+go = 'latest'
+bun = 'latest'
+uv = 'latest'
+
+[settings]
+python.uv_venv_auto = true
+idiomatic_version_file_enable_tools = ["python"]

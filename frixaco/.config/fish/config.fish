@@ -45,11 +45,6 @@ alias sf="source ~/.config/fish/config.fish"
 alias c="clear"
 alias ef="nvim ~/.config/fish/config.fish"
 
-# Switched to uv, will keep for now
-# function mpy
-#   echo -e "[tools]\npython = { version=\"3.12\", virtualenv=\".venv\" }" > .mise.toml
-# end
-
 function g
   set -gx LAZYGIT_NEW_DIR_FILE ~/.lazygit/newdir
 
@@ -68,30 +63,12 @@ if test -f ~/.config/fish/env.fish
   source ~/.config/fish/env.fish
 end
 
-starship init fish | source
 
 fzf --fish | source
 set -gx FZF_DEFAULT_COMMAND 'fd --follow --hidden --no-ignore --exclude .aws-sam --exclude Library --exclude .cache --exclude .gradle --exclude .vscode/extensions --exclude .git/ --exclude .pyenv --exclude .venv --exclude .npm --exclude .yarn --exclude node_modules --exclude .next/ --exclude .open-next/'
 set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
 
 zoxide init fish | source
-# jumper shell fish | source
-# ~/.local/bin/mise activate fish | source
-pyenv init - fish | source
 
-switch (uname)
-  case Darwin
-    # pnpm
-    set -gx PNPM_HOME "/Users/frixaco/Library/pnpm"
-    if not string match -q -- $PNPM_HOME $PATH
-      set -gx PATH "$PNPM_HOME" $PATH
-    end
-    # pnpm end
-  case Linux
-    # pnpm
-    set -gx PNPM_HOME "/home/frixaco/.local/share/pnpm"
-    if not string match -q -- $PNPM_HOME $PATH
-      set -gx PATH "$PNPM_HOME" $PATH
-    end
-    # pnpm end
-end
+starship init fish | source
+source "$HOME/.cargo/env.fish"
