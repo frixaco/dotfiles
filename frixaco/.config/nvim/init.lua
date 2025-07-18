@@ -199,8 +199,8 @@ require('lazy').setup({
         },
         servers = {
           gopls = {},
-          -- basedpyright = {},
-          pyright = {},
+          basedpyright = {},
+          -- pyright = {},
           ruff = {},
           lua_ls = {},
           ts_ls = {},
@@ -397,10 +397,10 @@ require('lazy').setup({
               return { 'isort', 'black' }
             end
           end,
-          javascript = { 'prettier' },
-          typescript = { 'prettier' },
-          javascriptreact = { 'prettier' },
-          typescriptreact = { 'prettier' },
+          javascript = { 'biome' },
+          typescript = { 'biome' },
+          javascriptreact = { 'biome' },
+          typescriptreact = { 'biome' },
           graphql = { 'prettier' },
           yaml = { 'prettier' },
           toml = { 'taplo' },
