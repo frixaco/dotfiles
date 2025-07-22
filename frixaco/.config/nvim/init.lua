@@ -51,40 +51,16 @@ require('lazy').setup({
   defaults = { lazy = true },
   -- Configure any other settings here. See the documentation for more details.
   -- colorscheme that will be used when installing plugins.
-  install = { colorscheme = { 'catppuccin' } },
+  install = { colorscheme = { 'gruvbox' } },
   -- automatically check for plugin updates
   checker = { enabled = true },
   spec = {
-    -- {
-    --   'rebelot/kanagawa.nvim',
-    --   lazy = false,
-    --   priority = 1000,
-    --   config = function()
-    --     vim.cmd.colorscheme('kanagawa')
-    --   end,
-    -- },
-
-    -- {
-    --   'Shatur/neovim-ayu',
-    --   lazy = false,
-    --   priority = 1000,
-    --   config = function()
-    --     require('ayu').setup({
-    --       mirage = true, -- Set to `true` to use `mirage` variant instead of `dark` for dark background.
-    --       terminal = true, -- Set to `false` to let terminal manage its own colors.
-    --       overrides = {}, -- A dictionary of group names, each associated with a dictionary of parameters (`bg`, `fg`, `sp` and `style`) and colors in hex.
-    --     })
-    --     require('ayu').colorscheme()
-    --   end,
-    -- },
-
     {
-      'catppuccin/nvim',
-      name = 'catppuccin',
+      'ellisonleao/gruvbox.nvim',
       lazy = false,
       priority = 1000,
       config = function()
-        vim.cmd.colorscheme('catppuccin')
+        vim.cmd.colorscheme('gruvbox')
       end,
     },
 
@@ -174,7 +150,7 @@ require('lazy').setup({
           'williamboman/mason.nvim',
           opts = {
             ui = {
-              border = 'rounded', -- Optional: for a nicer UI
+              -- border = 'rounded', -- Optional: for a nicer UI
             },
           },
         },
@@ -283,7 +259,7 @@ require('lazy').setup({
             end, p)
 
             local spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' }
-            vim.notify(table.concat(msg, '\n'), 'info', {
+            vim.notify(table.concat(msg, '\n'), vim.log.levels.INFO, {
               id = 'lsp_progress',
               title = client.name,
               opts = function(notif)
@@ -326,7 +302,6 @@ require('lazy').setup({
 
           nnoremap('<leader>e', vim.diagnostic.open_float, 'Open Floating Diagnostic Message')
           nnoremap('K', vim.lsp.buf.hover, 'Hover Documentation')
-          nnoremap('<leader>rn', vim.lsp.buf.rename, 'Rename')
           vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, noremap = true, desc = 'Code Action' })
         end
 
@@ -346,7 +321,7 @@ require('lazy').setup({
           end
 
           -- Prioritize .git ancestor
-          local git_root = util.find_git_ancestor(fname)
+          local git_root = vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
           if git_root then
             return git_root
           end
@@ -363,7 +338,7 @@ require('lazy').setup({
           end
 
           -- Ultimate fallback: use the directory of the file itself
-          return util.path.dirname(fname)
+          return vim.fs.dirname(fname)
         end
 
         require('lspconfig').pyright.setup({ root_dir = custom_root_dir })
@@ -704,7 +679,6 @@ require('lazy').setup({
 
           -- Toggles
           map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
-          map('n', '<leader>td', gitsigns.toggle_deleted)
           map('n', '<leader>tw', gitsigns.toggle_word_diff)
 
           -- Text object
@@ -758,80 +732,7 @@ require('lazy').setup({
       'windwp/nvim-autopairs',
       event = 'InsertEnter',
       config = true,
-      -- use opts = {} for passing setup options
-      -- this is equivalent to setup({}) function
     },
-
-    -- {
-    --   'yetone/avante.nvim',
-    --   event = 'VeryLazy',
-    --   version = false, -- Never set this value to "*"! Never!
-    --   opts = {
-    --     provider = 'openrouter',
-    --     cursor_applying_provider = 'groq',
-    --     behaviour = {
-    --       enable_cursor_planning_mode = true,
-    --       auto_apply_diff_after_generation = false,
-    --     },
-    --     vendors = {
-    --       openrouter = {
-    --         __inherited_from = 'openai',
-    --         endpoint = 'https://openrouter.ai/api/v1',
-    --         api_key_name = 'OPENROUTER_API_KEY',
-    --         -- model = "google/gemini-2.5-pro-exp-03-25",
-    --         -- model = "deepseek/deepseek-chat-v3-0324",
-    --         model = 'anthropic/claude-3.5-sonnet',
-    --       },
-    --       groq = {
-    --         __inherited_from = 'openai',
-    --         api_key_name = 'GROK_API_KEY',
-    --         endpoint = 'https://api.groq.com/openai/v1/',
-    --         model = 'llama-3.3-70b-versatile',
-    --         max_tokens = 32768,
-    --       },
-    --     },
-    --   },
-    --   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-    --   build = 'make',
-    --   -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-    --   dependencies = {
-    --     'nvim-treesitter/nvim-treesitter',
-    --     'stevearc/dressing.nvim',
-    --     'nvim-lua/plenary.nvim',
-    --     'MunifTanjim/nui.nvim',
-    --     --- The below dependencies are optional,
-    --     'echasnovski/mini.pick', -- for file_selector provider mini.pick
-    --     'nvim-telescope/telescope.nvim', -- for file_selector provider telescope
-    --     -- 'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
-    --     -- 'ibhagwan/fzf-lua', -- for file_selector provider fzf
-    --     'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
-    --     {
-    --       -- support for image pasting
-    --       'HakonHarnes/img-clip.nvim',
-    --       event = 'VeryLazy',
-    --       opts = {
-    --         -- recommended settings
-    --         default = {
-    --           embed_image_as_base64 = false,
-    --           prompt_for_file_name = false,
-    --           drag_and_drop = {
-    --             insert_mode = true,
-    --           },
-    --           -- required for Windows users
-    --           use_absolute_path = true,
-    --         },
-    --       },
-    --     },
-    --     {
-    --       -- Make sure to set this up properly if you have lazy=true
-    --       'MeanderingProgrammer/render-markdown.nvim',
-    --       opts = {
-    --         file_types = { 'markdown', 'Avante' },
-    --       },
-    --       ft = { 'markdown', 'Avante' },
-    --     },
-    --   },
-    -- },
 
     {
       'nvim-lualine/lualine.nvim',
@@ -1013,57 +914,3 @@ require('lazy').setup({
     },
   },
 })
-
--- {
--- 	"nvim-telescope/telescope.nvim",
--- 	tag = "0.1.8",
--- 	dependencies = {
--- 		"nvim-lua/plenary.nvim",
--- 		{
--- 			"nvim-telescope/telescope-fzf-native.nvim",
--- 			-- build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
--- 			build = "make",
--- 		},
--- 	},
--- 	config = function()
--- 		require("telescope").setup({
--- 			-- defaults = {
--- 			-- 	file_ignore_patterns = { ".git/*" },
--- 			-- },
--- 			extensions = {
--- 				fzf = {
--- 					fuzzy = true, -- false will only do exact matching
--- 					override_generic_sorter = true, -- override the generic sorter
--- 					override_file_sorter = true, -- override the file sorter
--- 					case_mode = "smart_case", -- or "ignore_case" or "respect_case"
--- 					-- the default case_mode is "smart_case"
--- 				},
--- 			},
--- 		})
---
--- 		require("telescope").load_extension("fzf")
---
--- 		vim.keymap.set("n", "<leader>p", function()
--- 			require("telescope.builtin").find_files({
--- 				hidden = true,
--- 				follow = true,
--- 			})
--- 		end, {})
---
--- 		vim.keymap.set("n", "<leader>g", function()
--- 			require("telescope.builtin").current_buffer_fuzzy_find()
--- 		end, {})
---
--- 		vim.keymap.set("n", "<leader>fg", function()
--- 			require("telescope.builtin").live_grep({
--- 				additional_args = function()
--- 					return { "--hidden", "--follow" }
--- 				end,
--- 			})
--- 		end, {})
---
--- 		vim.keymap.set("n", "<leader>fh", function()
--- 			require("telescope.builtin").help_tags()
--- 		end, {})
--- 	end,
--- },

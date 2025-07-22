@@ -10,26 +10,26 @@ customCommands:
 gui:
   theme:
     activeBorderColor:
-      - "#89b4fa"
+      - "#83a598" # bright_blue
       - bold
     inactiveBorderColor:
-      - "#a6adc8"
+      - "#928374" # gray
     optionsTextColor:
-      - "#89b4fa"
+      - "#83a598" # bright_blue
     selectedLineBgColor:
-      - "#313244"
+      - "#504945" # dark2
     selectedRangeBgColor:
-      - "#313244"
+      - "#665c54" # dark3
     cherryPickedCommitBgColor:
-      - "#45475a"
+      - "#7b2c2f" # dark_red_soft
     cherryPickedCommitFgColor:
-      - "#89b4fa"
+      - "#fabd2f" # bright_yellow
     unstagedChangesColor:
-      - "#f38ba8"
+      - "#fb4934" # bright_red
     defaultFgColor:
-      - "#cdd6f4"
+      - "#ebdbb2" # light1
     searchingActiveBorderColor:
-      - "#f9e2af"
+      - "#fabd2f" # bright_yellow
 git:
   paging:
     colorArg: always
