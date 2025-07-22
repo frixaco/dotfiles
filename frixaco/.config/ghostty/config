@@ -1,14 +1,4 @@
-theme = catppuccin-mocha
-font-family = "ZedMono NFM Extd"
-command = /usr/bin/fish
+theme = tokyonight
+font-family = "JetBrainsMono Nerd Font"
 window-padding-x = 8
 window-padding-y = 4
-window-decoration = none
-
-font-style-bold = "Medium"
-font-style-bold-italic = "Medium Italic"
-font-thicken = true
-adjust-cell-width = -5%
-selection-invert-fg-bg = true
-gtk-single-instance = false
-

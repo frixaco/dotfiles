@@ -1,7 +1,6 @@
 window.padding = { x = 8, y = 4 }
 window.decorations = "Buttonless"
-
-terminal.shell = "/usr/bin/fish"
+terminal.shell = "/opt/homebrew/bin/fish"
 
 general.import = [
   # uncomment the flavour you want below:
@@ -11,10 +10,7 @@ general.import = [
   "~/.config/alacritty/catppuccin-mocha.toml"
 ]
 
-# font.normal = { family = "VictorMono Nerd Font", style = "Bold" }
-# font.normal = { family = "Maple Mono NF" }
-# font.normal = { family = "ZedMono NFM Extd" }
 font.normal = { family = "JetBrainsMono Nerd Font" }
-font.size = 13
+font.size = 14
 
 scrolling.history = 100000

@@ -7,29 +7,29 @@ customCommands:
     command: git commit -m "{{index .PromptResponses 0}}" --no-verify
     context: "global"
     output: terminal
-gui:
-  theme:
-    activeBorderColor:
-      - "#83a598" # bright_blue
-      - bold
-    inactiveBorderColor:
-      - "#928374" # gray
-    optionsTextColor:
-      - "#83a598" # bright_blue
-    selectedLineBgColor:
-      - "#504945" # dark2
-    selectedRangeBgColor:
-      - "#665c54" # dark3
-    cherryPickedCommitBgColor:
-      - "#7b2c2f" # dark_red_soft
-    cherryPickedCommitFgColor:
-      - "#fabd2f" # bright_yellow
-    unstagedChangesColor:
-      - "#fb4934" # bright_red
-    defaultFgColor:
-      - "#ebdbb2" # light1
-    searchingActiveBorderColor:
-      - "#fabd2f" # bright_yellow
+# gui:
+#   theme:
+#     activeBorderColor:
+#       - "#83a598" # bright_blue
+#       - bold
+#     inactiveBorderColor:
+#       - "#928374" # gray
+#     optionsTextColor:
+#       - "#83a598" # bright_blue
+#     selectedLineBgColor:
+#       - "#504945" # dark2
+#     selectedRangeBgColor:
+#       - "#665c54" # dark3
+#     cherryPickedCommitBgColor:
+#       - "#7b2c2f" # dark_red_soft
+#     cherryPickedCommitFgColor:
+#       - "#fabd2f" # bright_yellow
+#     unstagedChangesColor:
+#       - "#fb4934" # bright_red
+#     defaultFgColor:
+#       - "#ebdbb2" # light1
+#     searchingActiveBorderColor:
+#       - "#fabd2f" # bright_yellow
 git:
   paging:
     colorArg: always

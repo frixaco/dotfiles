@@ -49,18 +49,18 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 require('lazy').setup({
   defaults = { lazy = true },
-  -- Configure any other settings here. See the documentation for more details.
-  -- colorscheme that will be used when installing plugins.
-  install = { colorscheme = { 'gruvbox' } },
-  -- automatically check for plugin updates
+  install = { colorscheme = { 'tokyonight' } },
   checker = { enabled = true },
+  ui = {
+    backdrop = 100,
+  },
   spec = {
     {
-      'ellisonleao/gruvbox.nvim',
+      'folke/tokyonight.nvim',
       lazy = false,
       priority = 1000,
       config = function()
-        vim.cmd.colorscheme('gruvbox')
+        vim.cmd.colorscheme('tokyonight-night')
       end,
     },
 
@@ -150,7 +150,7 @@ require('lazy').setup({
           'williamboman/mason.nvim',
           opts = {
             ui = {
-              -- border = 'rounded', -- Optional: for a nicer UI
+              backdrop = 100,
             },
           },
         },
@@ -493,22 +493,13 @@ require('lazy').setup({
         lazygit = { enabled = true },
         -- scroll = { enabled = true },
         statuscolumn = { enabled = true },
-        -- indent = {
-        --   priority = 1,
-        --   enabled = true,
-        --   animate = {
-        --     enabled = false,
-        --   },
-        --   scope = {
-        --     enabled = true,
-        --     underline = true,
-        --   },
-        -- },
-        -- explorer = {
-        --   enabled = true,
-        --   replace_netrw = true,
-        -- },
         picker = {
+          layout = {  
+            layout = {  
+              backdrop = false,  
+              border = 'none'
+            }  
+          },
           enabled = true,
           sources = {
             explorer = {
