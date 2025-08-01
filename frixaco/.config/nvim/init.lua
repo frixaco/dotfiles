@@ -55,6 +55,9 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 vim.o.confirm = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+vim.api.nvim_set_keymap('n', '<leader>tt', ':CyberdreamToggleMode<CR>', { noremap = true, silent = true })
+
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking text',
   group = vim.api.nvim_create_augroup('highlight-yank', { clear = true }),
@@ -65,20 +68,44 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 require('lazy').setup({
   defaults = { lazy = true },
-  install = { colorscheme = { 'tokyonight' } },
+  install = { colorscheme = { 'cyberdream' } },
+  -- install = { colorscheme = { 'catppuccin' } },
   checker = { enabled = true },
   ui = {
     backdrop = 100,
   },
   spec = {
+    -- {
+    --   'folke/tokyonight.nvim',
+    --   lazy = false,
+    --   priority = 1000,
+    --   config = function()
+    --     vim.cmd.colorscheme('tokyonight-night')
+    --   end,
+    -- },
+
     {
-      'folke/tokyonight.nvim',
+      'scottmckendry/cyberdream.nvim',
       lazy = false,
       priority = 1000,
       config = function()
-        vim.cmd.colorscheme('tokyonight-night')
+        require('cyberdream').setup({
+          transparent = true,
+        })
+
+        vim.cmd.colorscheme('cyberdream')
       end,
     },
+
+    -- {
+    --   'catppuccin/nvim',
+    --   name = 'catppuccin',
+    --   priority = 1000,
+    --   lazy = false,
+    --   config = function()
+    --     vim.cmd.colorscheme('catppuccin-mocha')
+    --   end,
+    -- },
 
     {
       'folke/lazydev.nvim',

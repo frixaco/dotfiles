@@ -1,5 +1,6 @@
 # Helix Editor Configuration
-theme = "catppuccin_mocha"
+# theme = "catppuccin_mocha"
+theme = "cyberdream"
 
 [editor]
 # Show line numbers
@@ -20,7 +21,14 @@ auto-save = true
 [editor.statusline]
 left = ["mode", "spinner", "file-name", "file-modification-indicator"]
 center = ["version-control"]
-right = ["diagnostics", "selections", "position", "file-encoding", "file-line-ending", "file-type"]
+right = [
+  "diagnostics",
+  "selections",
+  "position",
+  "file-encoding",
+  "file-line-ending",
+  "file-type",
+]
 
 [editor.lsp]
 # Enable LSP
