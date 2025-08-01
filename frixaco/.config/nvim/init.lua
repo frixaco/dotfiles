@@ -329,6 +329,17 @@ require('lazy').setup({
           lspconfig[server].setup(config)
         end
 
+        lspconfig.sourcekit.setup({
+          on_attach = on_attach,
+          capabilities = require('blink.cmp').get_lsp_capabilities({
+            workspace = {
+              didChangeWatchedFiles = {
+                dynamicRegistration = true,
+              },
+            },
+          }),
+        })
+
         local function custom_root_dir(fname)
           -- Check for pyrightconfig.json
           local pyright_config_root = util.root_pattern('pyrightconfig.json')(fname)
@@ -404,6 +415,7 @@ require('lazy').setup({
           shell = { 'shfmt', 'shellcheck' },
           zsh = { 'shfmt', 'shellcheck' },
           markdown = { 'prettier' },
+          swift = { 'swiftformat' },
         },
       },
     },
@@ -431,6 +443,7 @@ require('lazy').setup({
           'tsx',
           'javascript',
           'typescript',
+          'swift',
           'vimdoc',
           'vim',
           'bash',
@@ -510,11 +523,11 @@ require('lazy').setup({
         -- scroll = { enabled = true },
         statuscolumn = { enabled = true },
         picker = {
-          layout = {  
-            layout = {  
-              backdrop = false,  
-              border = 'none'
-            }  
+          layout = {
+            layout = {
+              backdrop = false,
+              border = 'none',
+            },
           },
           enabled = true,
           sources = {

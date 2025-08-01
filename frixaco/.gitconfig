@@ -1,38 +1,38 @@
 [includeIf "gitdir:~/personal/"]
-  path = ~/personal/.gitconfig-personal
+path = ~/personal/.gitconfig-personal
 [includeIf "gitdir:~/vbrato/"]
-  path = ~/vbrato/.gitconfig-vbrato
+path = ~/vbrato/.gitconfig-vbrato
 
 [core]
-  editor = nvim
-  ; pager = delta
-  hooksPath = /home/frixaco/.githooks
-  preloadindex = true
-  attributesfile = ~/.gitattributes
+editor = nvim
+; pager = delta
+hooksPath = /home/frixaco/.githooks
+preloadindex = true
+attributesfile = ~/.gitattributes
 [diff]
-  ; tool = nvimdiff
-  external = difft
-  colorMoved = default
+; tool = nvimdiff
+external = difft
+colorMoved = default
 ; [difftool "nvimdiff"]
 ;   cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
 ; [interactive]
 ;   diffFilter = delta --color-only
 
 [init]
-	defaultBranch = main
+defaultBranch = main
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+clean = git-lfs clean -- %f
+smudge = git-lfs smudge -- %f
+process = git-lfs filter-process
+required = true
 [alias]
-  bl = !~/bare-clone.fish
+bl = !~/bare-clone.fish
 [column]
-	ui = auto
+ui = auto
 [branch]
-	sort = -committerdate
+sort = -committerdate
 [maintenance]
-	repo = ~/vbrato/vbrato-api
+repo = ~/vbrato/vbrato-api
 
 
 ; [delta]
@@ -45,17 +45,20 @@
 ;   line-numbers = true
 
 [merge]
-  conflictstyle = diff3
+conflictstyle = diff3
 
 [merge "mergiraf"]
-  name = mergiraf
-  driver = mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L
+name = mergiraf
+driver = mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L
 
 [status]
-  branch = true
-  showStash = true
-  showUntrackedFiles = all
+branch = true
+showStash = true
+showUntrackedFiles = all
 
 [alias]
-  dl = -c diff.external=difft log -p --ext-diff
-  dft = -c diff.external=difft diff
+dl = -c diff.external=difft log -p --ext-diff
+dft = -c diff.external=difft diff
+[user]
+name = frixaco
+email = rustam21ashurmatov@gmail.com
