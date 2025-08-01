@@ -71,4 +71,6 @@ set -gx FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
 zoxide init fish | source
 
 starship init fish | source
+
 source "$HOME/.cargo/env.fish"
+~/.local/bin/mise activate fish | source

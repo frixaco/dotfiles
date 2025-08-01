@@ -3,6 +3,7 @@ node = 'latest'
 go = 'latest'
 bun = 'latest'
 uv = 'latest'
+usage = "latest"
 
 [settings]
 python.uv_venv_auto = true
