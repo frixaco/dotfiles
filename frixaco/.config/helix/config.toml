@@ -1,0 +1,55 @@
+# Helix Editor Configuration
+theme = "catppuccin_mocha"
+
+[editor]
+# Show line numbers
+line-number = "relative"
+# Enable mouse support
+mouse = true
+# Show current line
+cursorline = true
+# Show column guide
+# rulers = [80, 120]
+# Enable auto-completion
+completion-trigger-len = 2
+# Auto-format on save
+auto-format = true
+# Auto-save
+auto-save = true
+
+[editor.statusline]
+left = ["mode", "spinner", "file-name", "file-modification-indicator"]
+center = ["version-control"]
+right = ["diagnostics", "selections", "position", "file-encoding", "file-line-ending", "file-type"]
+
+[editor.lsp]
+# Enable LSP
+enable = true
+# Show diagnostic messages
+display-messages = true
+# Show inlay hints
+display-inlay-hints = true
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false
+
+[editor.auto-pairs]
+'(' = ')'
+'{' = '}'
+'[' = ']'
+'"' = '"'
+"'" = "'"
+"`" = "`"
+
+[keys.normal]
+# Quick save
+# "C-s" = ":w"
+# Quick quit
+# "C-q" = ":q"
+# Format document
+# "C-f" = ":format"

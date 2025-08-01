@@ -1,0 +1,80 @@
+# Helix Editor Language Configuration
+# Python and TypeScript/JavaScript support
+
+# Language Server Configurations
+[language-server.basedpyright]
+command = "basedpyright-langserver"
+args = ["--stdio"]
+
+[language-server.ruff]
+command = "ruff"
+args = ["server", "--preview"]
+
+[language-server.tsserver]
+command = "typescript-language-server"
+args = ["--stdio"]
+
+[language-server.biome]
+command = "biome"
+args = ["lsp-proxy"]
+
+# Python Configuration
+[[language]]
+name = "python"
+scope = "source.python"
+file-types = ["py", "pyi"]
+shebangs = ["python", "python3"]
+roots = ["pyproject.toml", "setup.py", "requirements.txt", "Pipfile", ".git"]
+auto-format = true
+language-servers = [
+    "basedpyright",
+    { name = "ruff", only-features = ["format", "diagnostics"] }
+]
+
+# TypeScript Configuration
+[[language]]
+name = "typescript"
+scope = "source.ts"
+file-types = ["ts"]
+roots = ["package.json", "tsconfig.json", ".git"]
+auto-format = true
+language-servers = [
+    "tsserver",
+    { name = "biome", only-features = ["format", "diagnostics"] }
+]
+
+# TSX Configuration
+[[language]]
+name = "tsx"
+scope = "source.tsx"
+file-types = ["tsx"]
+roots = ["package.json", "tsconfig.json", ".git"]
+auto-format = true
+language-servers = [
+    "tsserver",
+    { name = "biome", only-features = ["format", "diagnostics"] }
+]
+
+# JavaScript Configuration
+[[language]]
+name = "javascript"
+scope = "source.js"
+file-types = ["js", "mjs", "cjs"]
+roots = ["package.json", "jsconfig.json", ".git"]
+auto-format = true
+language-servers = [
+    "tsserver",
+    { name = "biome", only-features = ["format", "diagnostics"] }
+]
+
+# JSX Configuration
+[[language]]
+name = "jsx"
+scope = "source.jsx"
+file-types = ["jsx"]
+roots = ["package.json", "jsconfig.json", ".git"]
+auto-format = true
+language-servers = [
+    "tsserver",
+    { name = "biome", only-features = ["format", "diagnostics"] }
+]
