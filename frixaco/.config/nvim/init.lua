@@ -90,6 +90,7 @@ require('lazy').setup({
       priority = 1000,
       config = function()
         require('cyberdream').setup({
+          variant = 'auto',
           transparent = true,
         })
 
