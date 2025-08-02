@@ -345,6 +345,7 @@ require('lazy').setup({
           end
 
           nnoremap('<leader>e', vim.diagnostic.open_float, 'Open Floating Diagnostic Message')
+          nnoremap('<leader>r', vim.lsp.buf.rename, 'Rename')
           nnoremap('K', vim.lsp.buf.hover, 'Hover Documentation')
           vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, noremap = true, desc = 'Code Action' })
         end
@@ -554,7 +555,7 @@ require('lazy').setup({
           layout = {
             layout = {
               backdrop = false,
-              border = 'none',
+              -- border = 'none',
             },
           },
           enabled = true,
