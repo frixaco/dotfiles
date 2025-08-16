@@ -1,3 +1,74 @@
+-- DASHBOARD
+local function open_dashboard()
+  local buf = vim.api.nvim_get_current_buf()
+  local win = vim.api.nvim_get_current_win()
+
+  vim.bo[buf].buftype = 'nofile'
+  vim.bo[buf].bufhidden = 'wipe'
+  vim.bo[buf].swapfile = false
+  vim.bo[buf].modifiable = true
+  vim.bo[buf].filetype = 'txt'
+
+  vim.wo[win].number = false
+  vim.wo[win].relativenumber = false
+  vim.wo[win].signcolumn = 'no'
+
+  local project_name = nil
+  local cwd = vim.loop.cwd()
+  local git_root = vim.fs.dirname(vim.fs.find('.git', { path = cwd, upward = true })[1])
+  if not git_root then
+    project_name = cwd:match('([^/]+)$')
+  else
+    project_name = git_root:match('([^/]+)$')
+  end
+
+  local h1 = '# PROJECT'
+  if not git_root then
+    h1 = '# PROJECT (not Git repo)'
+  end
+
+  local lines = {
+    h1,
+    project_name,
+    '',
+    '## GIT STATUS',
+    '- **M** index.ts',
+  }
+
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  local ns = vim.api.nvim_create_namespace('dashboard')
+
+  vim.api.nvim_buf_set_extmark(0, ns, 0, 0, {
+    virt_text = { { 'Hello', 'ErrorMsg' }, { ' World', 'Title' } },
+    virt_text_pos = 'eol', -- "eol", "overlay", "right_align"
+  })
+
+  vim.bo[buf].modifiable = false
+end
+
+-- Only open dashboard if conditions match the "intro screen" case
+local function setup_dashboard()
+  local buf = 1
+  if vim.fn.argc(-1) > 0 then
+    return
+  end
+  if vim.api.nvim_buf_get_name(0) ~= '' then
+    return
+  end
+  if vim.bo[buf].modified then
+    return
+  end
+  if vim.api.nvim_buf_line_count(buf) > 1 or #(vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or '') > 0 then
+    return
+  end
+
+  open_dashboard()
+end
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = setup_dashboard,
+})
+--
+
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
