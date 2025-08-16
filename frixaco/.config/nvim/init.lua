@@ -14,27 +14,41 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- WSL yank support
-local clip = '/mnt/c/Windows/System32/clip.exe' -- change this path according to your mount point
+-- WSL clipboard support and fix for the lags on first actions
+-- First, add win32yank.exe to PATH:
+--   curl -LO https://github.com/equalsraf/win32yank/releases/latest/download/win32yank-x64.zip
+--   unzip win32yank-x64.zip
+--   sudo mv win32yank.exe /usr/local/bin/
+--   sudo chmod +x /usr/local/bin/win32yank.exe
 
-if vim.fn.executable(clip) == 1 then
-  vim.api.nvim_create_augroup('WSLYank', { clear = true })
-  vim.api.nvim_create_autocmd('TextYankPost', {
-    group = 'WSLYank',
-    callback = function()
-      if vim.v.event.operator == 'y' then
-        vim.fn.system(clip, vim.fn.getreg('0'))
-      end
-    end,
-  })
+if vim.fn.has('wsl') == 1 then
+  -- try to pick win32yank.exe, because it's faster
+  local clipboard_exe = vim.fn.executable('win32yank.exe') == 1 and 'win32yank.exe' or '/mnt/c/Windows/System32/clip.exe'
+
+  -- register our own provider, so clipboard provider detector doesn't run
+  vim.g.clipboard = {
+    name = 'wsl-clipboard',
+    copy = {
+      ['+'] = clipboard_exe .. ' -i --crlf',
+      ['*'] = clipboard_exe .. ' -i --crlf',
+    },
+    paste = {
+      ['+'] = clipboard_exe .. ' -o --lf',
+      ['*'] = clipboard_exe .. ' -o --lf',
+    },
+    -- keep the first spawned process and re-use it:
+    cache_enabled = 1,
+  }
 end
+
+vim.o.clipboard = 'unnamedplus' -- or 'unnamed,unnamedplus'
 
 vim.o.shell = 'fish'
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.o.number = true
 vim.o.relativenumber = true
-vim.o.signcolumn = 'yes'
+vim.o.signcolumn = 'yes:2'
 vim.o.scrolloff = 3
 vim.g.have_nerd_font = true
 vim.o.mouse = 'a'
@@ -121,21 +135,6 @@ require('lazy').setup({
     -- },
 
     {
-      'folke/lazydev.nvim',
-      event = 'VeryLazy',
-      config = function()
-        require('lazydev').setup({
-          library = {
-            -- See the configuration section for more details
-            -- Load luvit types when the `vim.uv` word is found
-            { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-            { path = 'wezterm-types', mods = { 'wezterm' } },
-          },
-        })
-      end,
-    },
-
-    {
       'tpope/vim-sleuth',
       event = { 'BufReadPost', 'BufNewFile' },
     },
@@ -184,15 +183,7 @@ require('lazy').setup({
           },
         },
         sources = {
-          default = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' },
-          providers = {
-            lazydev = {
-              name = 'LazyDev',
-              module = 'lazydev.integrations.blink',
-              -- make lazydev completions top priority (see `:h blink.cmp`)
-              score_offset = 100,
-            },
-          },
+          default = { 'lsp', 'path', 'snippets', 'buffer' },
         },
       },
       opts_extend = { 'sources.default' },
@@ -233,6 +224,7 @@ require('lazy').setup({
           gopls = {},
           basedpyright = {},
           -- pyright = {},
+          astro = {},
           ruff = {},
           lua_ls = {},
           ts_ls = {},
@@ -558,7 +550,6 @@ require('lazy').setup({
       ---@type snacks.Config
       opts = {
         bigfile = { enabled = true },
-        dashboard = { enabled = true },
         notifier = { enabled = true },
         lazygit = { enabled = true },
         -- scroll = { enabled = true },
@@ -616,13 +607,6 @@ require('lazy').setup({
           desc = 'Smart Find Files',
         },
 
-        {
-          '<leader>p',
-          function()
-            Snacks.picker.files()
-          end,
-          desc = 'Find Files',
-        },
         {
           '<leader>l',
           function()
@@ -976,6 +960,7 @@ require('lazy').setup({
 
     {
       'dmtrKovalenko/fff.nvim',
+      lazy = false,
       build = 'cargo build --release',
       -- or if you are using nixos
       -- build = "nix run .#release",
@@ -984,7 +969,7 @@ require('lazy').setup({
       },
       keys = {
         {
-          'ff', -- try it if you didn't it is a banger keybinding for a picker
+          '<leader>p', -- try it if you didn't it is a banger keybinding for a picker
           function()
             require('fff').find_files() -- or find_in_git_root() if you only want git files
           end,
