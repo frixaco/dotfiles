@@ -2,46 +2,96 @@
 local function open_dashboard()
   local buf = vim.api.nvim_get_current_buf()
   local win = vim.api.nvim_get_current_win()
+  local width = vim.api.nvim_win_get_width(win)
+  local height = vim.api.nvim_win_get_height(win)
+
+  local saved_opts = {
+    number = vim.wo[win].number,
+    relativenumber = vim.wo[win].relativenumber,
+    signcolumn = vim.wo[win].signcolumn,
+  }
+  vim.api.nvim_create_autocmd({ 'BufWipeout', 'BufDelete' }, {
+    buffer = buf,
+    once = true,
+    callback = function()
+      if vim.api.nvim_win_is_valid(win) then
+        for k, v in pairs(saved_opts) do
+          vim.wo[win][k] = v
+        end
+      end
+    end,
+  })
 
   vim.bo[buf].buftype = 'nofile'
   vim.bo[buf].bufhidden = 'wipe'
   vim.bo[buf].swapfile = false
   vim.bo[buf].modifiable = true
-  vim.bo[buf].filetype = 'txt'
+  vim.bo[buf].filetype = 'dashboard'
+
+  vim.b[buf].miniindentscope_disable = true
 
   vim.wo[win].number = false
   vim.wo[win].relativenumber = false
   vim.wo[win].signcolumn = 'no'
 
-  local project_name = nil
-  local cwd = vim.loop.cwd()
-  local git_root = vim.fs.dirname(vim.fs.find('.git', { path = cwd, upward = true })[1])
-  if not git_root then
-    project_name = cwd:match('([^/]+)$')
-  else
-    project_name = git_root:match('([^/]+)$')
-  end
-
-  local h1 = '# PROJECT'
-  if not git_root then
-    h1 = '# PROJECT (not Git repo)'
-  end
-
   local lines = {
-    h1,
-    project_name,
+    '##############',
+    '#   PROJECT  #',
+    '##############',
     '',
-    '## GIT STATUS',
-    '- **M** index.ts',
+    vim.fn.fnamemodify(vim.uv.cwd(), ':t'),
+    '',
+    '',
+    '',
+    '##############',
+    '#   STATUS   #',
+    '##############',
+    '',
+    'checking...',
   }
 
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-  local ns = vim.api.nvim_create_namespace('dashboard')
+  local vpad = math.floor((height - #lines) / 2)
+  local centered = {}
+  for _, line in ipairs(lines) do
+    local pad = math.floor((width - #line) / 2)
+    if pad < 0 then
+      pad = 0
+    end
+    table.insert(centered, string.rep(' ', pad) .. line)
+  end
 
-  vim.api.nvim_buf_set_extmark(0, ns, 0, 0, {
-    virt_text = { { 'Hello', 'ErrorMsg' }, { ' World', 'Title' } },
-    virt_text_pos = 'eol', -- "eol", "overlay", "right_align"
-  })
+  local final_lines = {}
+  for _ = 1, vpad do
+    table.insert(final_lines, '')
+  end
+  vim.list_extend(final_lines, centered)
+
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, final_lines)
+
+  vim.system({ 'git', 'status', '--porcelain' }, { text = true }, function(obj)
+    vim.schedule(function()
+      vim.bo[buf].modifiable = true
+      local ok = (obj.code == 0)
+
+      local out = '~~DIRTY~~'
+      if not ok then
+        out = 'Not a repository'
+      elseif ok and obj.stdout == '' then
+        out = '*CLEAN*'
+      end
+
+      local centered_out = {}
+      local pad = math.floor((width - #out) / 2)
+      if pad < 0 then
+        pad = 0
+      end
+      table.insert(centered_out, string.rep(' ', pad) .. out)
+
+      vim.api.nvim_buf_set_lines(buf, vpad + #lines - 1, -1, false, centered_out)
+
+      vim.bo[buf].modifiable = false
+    end)
+  end)
 
   vim.bo[buf].modifiable = false
 end
@@ -67,10 +117,18 @@ end
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = setup_dashboard,
 })
+vim.api.nvim_create_autocmd('VimResized', {
+  callback = function()
+    if vim.bo.filetype == 'dashboard' then
+      vim.bo.modifiable = true
+      open_dashboard()
+    end
+  end,
+})
 --
 
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
   local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath })
   if vim.v.shell_error ~= 0 then
@@ -114,20 +172,18 @@ end
 
 vim.o.clipboard = 'unnamedplus' -- or 'unnamed,unnamedplus'
 
-vim.o.shell = 'fish'
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+vim.g.have_nerd_font = true
+
+vim.o.shell = 'fish'
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.signcolumn = 'yes:2'
 vim.o.scrolloff = 3
-vim.g.have_nerd_font = true
 vim.o.mouse = 'a'
 vim.o.wrap = true
 vim.o.showmode = false
-vim.schedule(function()
-  vim.o.clipboard = 'unnamedplus'
-end)
 vim.o.breakindent = true
 vim.o.undofile = true
 vim.o.ignorecase = true
@@ -141,7 +197,7 @@ vim.o.cursorline = true
 vim.o.confirm = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
-vim.api.nvim_set_keymap('n', '<leader>tt', ':CyberdreamToggleMode<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>tt', ':CyberdreamToggleMode<CR>', { noremap = true, silent = true })
 
 local opts = { noremap = true, silent = true, desc = 'LSP diagnostic' }
 
