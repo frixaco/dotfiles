@@ -5,6 +5,10 @@ local function open_dashboard()
   local width = vim.api.nvim_win_get_width(win)
   local height = vim.api.nvim_win_get_height(win)
 
+  local saved_cmdheight = vim.o.cmdheight
+  local saved_laststatus = vim.o.laststatus
+  vim.o.cmdheight = 0
+  vim.o.laststatus = 0
   local saved_opts = {
     number = vim.wo[win].number,
     relativenumber = vim.wo[win].relativenumber,
@@ -19,6 +23,8 @@ local function open_dashboard()
         for k, v in pairs(saved_opts) do
           vim.wo[win][k] = v
         end
+        vim.o.cmdheight = saved_cmdheight
+        vim.o.laststatus = saved_laststatus
       end
     end,
   })
@@ -39,12 +45,14 @@ local function open_dashboard()
   vim.wo[win].signcolumn = 'no'
   vim.wo[win].cursorline = false
 
+  local project_name = vim.fn.fnamemodify(vim.uv.cwd(), ':t')
+
   local lines = {
     '##############',
     '#   PROJECT  #',
     '##############',
     '',
-    vim.fn.fnamemodify(vim.uv.cwd(), ':t'),
+    project_name,
     '',
     '',
     '',
@@ -52,7 +60,7 @@ local function open_dashboard()
     '#   STATUS   #',
     '##############',
     '',
-    'checking...',
+    'checking',
   }
 
   local vpad = math.floor((height - #lines) / 2)
@@ -74,6 +82,7 @@ local function open_dashboard()
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, final_lines)
 
   local ns = vim.api.nvim_create_namespace('dashboard')
+
   -- PROJECT HIGHLIGHTS
   vim.api.nvim_buf_set_extmark(buf, ns, vpad, math.floor((width - 14) / 2), {
     end_row = vpad,
@@ -133,6 +142,25 @@ local function open_dashboard()
     hl_group = 'Conceal',
   })
 
+  local pn_pad = math.floor((width - #project_name) / 2)
+  if pn_pad < 0 then
+    pn_pad = 0
+  end
+  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 4, pn_pad, {
+    end_row = vpad + 4,
+    end_col = pn_pad + #project_name,
+    hl_group = 'Typedef',
+  })
+  local st_pad = math.floor((width - 8) / 2)
+  if st_pad < 0 then
+    st_pad = 0
+  end
+  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 12, st_pad, {
+    end_row = vpad + 12,
+    end_col = st_pad + 8,
+    hl_group = 'Directory',
+  })
+
   --
 
   vim.system({ 'git', 'status', '--porcelain' }, { text = true }, function(obj)
@@ -142,7 +170,7 @@ local function open_dashboard()
 
       local out = '++++++++'
       if not ok then
-        out = 'Not a repository'
+        out = 'Not repo'
       elseif ok and obj.stdout == '' then
         out = '--------'
       end
@@ -155,6 +183,24 @@ local function open_dashboard()
       table.insert(centered_out, string.rep(' ', pad) .. out)
 
       vim.api.nvim_buf_set_lines(buf, vpad + #lines - 1, -1, false, centered_out)
+      local pn_pad = math.floor((width - #project_name) / 2)
+      if pn_pad < 0 then
+        pn_pad = 0
+      end
+      vim.api.nvim_buf_set_extmark(buf, ns, vpad + 4, pn_pad, {
+        end_row = vpad + 4,
+        end_col = pn_pad + #project_name,
+        hl_group = 'Typedef',
+      })
+      local st_pad = math.floor((width - 8) / 2)
+      if st_pad < 0 then
+        st_pad = 0
+      end
+      vim.api.nvim_buf_set_extmark(buf, ns, vpad + 12, st_pad, {
+        end_row = vpad + 12,
+        end_col = st_pad + 8,
+        hl_group = 'Directory',
+      })
 
       vim.bo[buf].modifiable = false
     end)
@@ -975,7 +1021,7 @@ require('lazy').setup({
 
     {
       'nvim-lualine/lualine.nvim',
-      event = 'VeryLazy',
+      event = { 'BufReadPost' },
       dependencies = { 'nvim-tree/nvim-web-devicons' },
       config = function()
         require('lualine').setup({
@@ -985,7 +1031,7 @@ require('lazy').setup({
             component_separators = { left = '│', right = '│' },
             section_separators = { left = '', right = '' },
             disabled_filetypes = {
-              statusline = { 'snacks_dashboard' },
+              statusline = { 'dashboard' },
               winbar = {},
             },
             ignore_focus = {},
