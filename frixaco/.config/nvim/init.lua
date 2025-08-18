@@ -9,6 +9,7 @@ local function open_dashboard()
     number = vim.wo[win].number,
     relativenumber = vim.wo[win].relativenumber,
     signcolumn = vim.wo[win].signcolumn,
+    cursorline = vim.wo[win].cursorline,
   }
   vim.api.nvim_create_autocmd({ 'BufWipeout', 'BufDelete' }, {
     buffer = buf,
@@ -22,6 +23,9 @@ local function open_dashboard()
     end,
   })
 
+  vim.api.nvim_set_hl(0, 'DashboardNormalBold', { link = 'Normal', bold = true })
+  vim.wo[win].winhl = 'Normal:DashboardNormalBold'
+
   vim.bo[buf].buftype = 'nofile'
   vim.bo[buf].bufhidden = 'wipe'
   vim.bo[buf].swapfile = false
@@ -33,6 +37,7 @@ local function open_dashboard()
   vim.wo[win].number = false
   vim.wo[win].relativenumber = false
   vim.wo[win].signcolumn = 'no'
+  vim.wo[win].cursorline = false
 
   local lines = {
     '##############',
@@ -68,16 +73,78 @@ local function open_dashboard()
 
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, final_lines)
 
+  local ns = vim.api.nvim_create_namespace('dashboard')
+  -- PROJECT HIGHLIGHTS
+  vim.api.nvim_buf_set_extmark(buf, ns, vpad, math.floor((width - 14) / 2), {
+    end_row = vpad,
+    end_col = math.floor((width - 14) / 2) + 14,
+    hl_group = 'Conceal',
+  })
+
+  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 1, math.floor((width - 14) / 2) + 1, {
+    end_row = vpad + 1,
+    end_col = math.floor((width - 14) / 2) + 13,
+    hl_group = 'Typedef',
+  })
+  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 1, math.floor((width - 14) / 2) + 13, {
+    end_row = vpad + 1,
+    end_col = math.floor((width - 14) / 2) + 14,
+    hl_group = 'Conceal',
+  })
+  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 1, math.floor((width - 14) / 2), {
+    end_row = vpad + 1,
+    end_col = math.floor((width - 14) / 2) + 1,
+    hl_group = 'Conceal',
+  })
+
+  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 2, math.floor((width - 14) / 2), {
+    end_row = vpad + 2,
+    end_col = math.floor((width - 14) / 2) + 14,
+    hl_group = 'Conceal',
+  })
+  --
+
+  -- STATUS HIGHLIGHTS
+  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 8, math.floor((width - 14) / 2), {
+    end_row = vpad + 8,
+    end_col = math.floor((width - 14) / 2) + 14,
+    hl_group = 'Conceal',
+  })
+
+  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 9, math.floor((width - 14) / 2) + 1, {
+    end_row = vpad + 9,
+    end_col = math.floor((width - 14) / 2) + 13,
+    hl_group = 'Directory',
+  })
+  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 9, math.floor((width - 14) / 2) + 13, {
+    end_row = vpad + 9,
+    end_col = math.floor((width - 14) / 2) + 14,
+    hl_group = 'Conceal',
+  })
+  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 9, math.floor((width - 14) / 2), {
+    end_row = vpad + 9,
+    end_col = math.floor((width - 14) / 2) + 1,
+    hl_group = 'Conceal',
+  })
+
+  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 10, math.floor((width - 14) / 2), {
+    end_row = vpad + 10,
+    end_col = math.floor((width - 14) / 2) + 14,
+    hl_group = 'Conceal',
+  })
+
+  --
+
   vim.system({ 'git', 'status', '--porcelain' }, { text = true }, function(obj)
     vim.schedule(function()
       vim.bo[buf].modifiable = true
       local ok = (obj.code == 0)
 
-      local out = '~~DIRTY~~'
+      local out = '++++++++'
       if not ok then
         out = 'Not a repository'
       elseif ok and obj.stdout == '' then
-        out = '*CLEAN*'
+        out = '--------'
       end
 
       local centered_out = {}
