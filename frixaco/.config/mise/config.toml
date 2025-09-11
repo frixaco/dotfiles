@@ -4,6 +4,7 @@ go = 'latest'
 bun = 'latest'
 uv = 'latest'
 usage = "latest"
+zig = 'latest'
 
 [settings]
 python.uv_venv_auto = true
