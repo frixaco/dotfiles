@@ -1,244 +1,244 @@
 -- DASHBOARD
-local function open_dashboard()
-  local buf = vim.api.nvim_get_current_buf()
-  local win = vim.api.nvim_get_current_win()
-  local width = vim.api.nvim_win_get_width(win)
-  local height = vim.api.nvim_win_get_height(win)
-
-  local saved_cmdheight = vim.o.cmdheight
-  local saved_laststatus = vim.o.laststatus
-  vim.o.cmdheight = 0
-  vim.o.laststatus = 0
-  local saved_opts = {
-    number = vim.wo[win].number,
-    relativenumber = vim.wo[win].relativenumber,
-    signcolumn = vim.wo[win].signcolumn,
-    cursorline = vim.wo[win].cursorline,
-  }
-  vim.api.nvim_create_autocmd({ 'BufWipeout', 'BufDelete' }, {
-    buffer = buf,
-    once = true,
-    callback = function()
-      if vim.api.nvim_win_is_valid(win) then
-        for k, v in pairs(saved_opts) do
-          vim.wo[win][k] = v
-        end
-        vim.o.cmdheight = saved_cmdheight
-        vim.o.laststatus = saved_laststatus
-      end
-    end,
-  })
-
-  vim.api.nvim_set_hl(0, 'DashboardNormalBold', { link = 'Normal', bold = true })
-  vim.wo[win].winhl = 'Normal:DashboardNormalBold'
-
-  vim.bo[buf].buftype = 'nofile'
-  vim.bo[buf].bufhidden = 'wipe'
-  vim.bo[buf].swapfile = false
-  vim.bo[buf].modifiable = true
-  vim.bo[buf].filetype = 'dashboard'
-
-  vim.b[buf].miniindentscope_disable = true
-
-  vim.wo[win].number = false
-  vim.wo[win].relativenumber = false
-  vim.wo[win].signcolumn = 'no'
-  vim.wo[win].cursorline = false
-
-  local project_name = vim.fn.fnamemodify(vim.uv.cwd(), ':t')
-
-  local lines = {
-    '##############',
-    '#   PROJECT  #',
-    '##############',
-    '',
-    project_name,
-    '',
-    '',
-    '',
-    '##############',
-    '#   STATUS   #',
-    '##############',
-    '',
-    'checking',
-  }
-
-  local vpad = math.floor((height - #lines) / 2)
-  local centered = {}
-  for _, line in ipairs(lines) do
-    local pad = math.floor((width - #line) / 2)
-    if pad < 0 then
-      pad = 0
-    end
-    table.insert(centered, string.rep(' ', pad) .. line)
-  end
-
-  local final_lines = {}
-  for _ = 1, vpad do
-    table.insert(final_lines, '')
-  end
-  vim.list_extend(final_lines, centered)
-
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, final_lines)
-
-  local ns = vim.api.nvim_create_namespace('dashboard')
-
-  -- PROJECT HIGHLIGHTS
-  vim.api.nvim_buf_set_extmark(buf, ns, vpad, math.floor((width - 14) / 2), {
-    end_row = vpad,
-    end_col = math.floor((width - 14) / 2) + 14,
-    hl_group = 'Conceal',
-  })
-
-  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 1, math.floor((width - 14) / 2) + 1, {
-    end_row = vpad + 1,
-    end_col = math.floor((width - 14) / 2) + 13,
-    hl_group = 'Typedef',
-  })
-  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 1, math.floor((width - 14) / 2) + 13, {
-    end_row = vpad + 1,
-    end_col = math.floor((width - 14) / 2) + 14,
-    hl_group = 'Conceal',
-  })
-  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 1, math.floor((width - 14) / 2), {
-    end_row = vpad + 1,
-    end_col = math.floor((width - 14) / 2) + 1,
-    hl_group = 'Conceal',
-  })
-
-  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 2, math.floor((width - 14) / 2), {
-    end_row = vpad + 2,
-    end_col = math.floor((width - 14) / 2) + 14,
-    hl_group = 'Conceal',
-  })
-  --
-
-  -- STATUS HIGHLIGHTS
-  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 8, math.floor((width - 14) / 2), {
-    end_row = vpad + 8,
-    end_col = math.floor((width - 14) / 2) + 14,
-    hl_group = 'Conceal',
-  })
-
-  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 9, math.floor((width - 14) / 2) + 1, {
-    end_row = vpad + 9,
-    end_col = math.floor((width - 14) / 2) + 13,
-    hl_group = 'Directory',
-  })
-  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 9, math.floor((width - 14) / 2) + 13, {
-    end_row = vpad + 9,
-    end_col = math.floor((width - 14) / 2) + 14,
-    hl_group = 'Conceal',
-  })
-  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 9, math.floor((width - 14) / 2), {
-    end_row = vpad + 9,
-    end_col = math.floor((width - 14) / 2) + 1,
-    hl_group = 'Conceal',
-  })
-
-  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 10, math.floor((width - 14) / 2), {
-    end_row = vpad + 10,
-    end_col = math.floor((width - 14) / 2) + 14,
-    hl_group = 'Conceal',
-  })
-
-  local pn_pad = math.floor((width - #project_name) / 2)
-  if pn_pad < 0 then
-    pn_pad = 0
-  end
-  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 4, pn_pad, {
-    end_row = vpad + 4,
-    end_col = pn_pad + #project_name,
-    hl_group = 'Typedef',
-  })
-  local st_pad = math.floor((width - 8) / 2)
-  if st_pad < 0 then
-    st_pad = 0
-  end
-  vim.api.nvim_buf_set_extmark(buf, ns, vpad + 12, st_pad, {
-    end_row = vpad + 12,
-    end_col = st_pad + 8,
-    hl_group = 'Directory',
-  })
-
-  --
-
-  vim.system({ 'git', 'status', '--porcelain' }, { text = true }, function(obj)
-    vim.schedule(function()
-      vim.bo[buf].modifiable = true
-      local ok = (obj.code == 0)
-
-      local out = '++++++++'
-      if not ok then
-        out = 'Not repo'
-      elseif ok and obj.stdout == '' then
-        out = '--------'
-      end
-
-      local centered_out = {}
-      local pad = math.floor((width - #out) / 2)
-      if pad < 0 then
-        pad = 0
-      end
-      table.insert(centered_out, string.rep(' ', pad) .. out)
-
-      vim.api.nvim_buf_set_lines(buf, vpad + #lines - 1, -1, false, centered_out)
-      local pn_pad = math.floor((width - #project_name) / 2)
-      if pn_pad < 0 then
-        pn_pad = 0
-      end
-      vim.api.nvim_buf_set_extmark(buf, ns, vpad + 4, pn_pad, {
-        end_row = vpad + 4,
-        end_col = pn_pad + #project_name,
-        hl_group = 'Typedef',
-      })
-      local st_pad = math.floor((width - 8) / 2)
-      if st_pad < 0 then
-        st_pad = 0
-      end
-      vim.api.nvim_buf_set_extmark(buf, ns, vpad + 12, st_pad, {
-        end_row = vpad + 12,
-        end_col = st_pad + 8,
-        hl_group = 'Directory',
-      })
-
-      vim.bo[buf].modifiable = false
-    end)
-  end)
-
-  vim.bo[buf].modifiable = false
-end
-
--- Only open dashboard if conditions match the "intro screen" case
-local function setup_dashboard()
-  local buf = 1
-  if vim.fn.argc(-1) > 0 then
-    return
-  end
-  if vim.api.nvim_buf_get_name(0) ~= '' then
-    return
-  end
-  if vim.bo[buf].modified then
-    return
-  end
-  if vim.api.nvim_buf_line_count(buf) > 1 or #(vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or '') > 0 then
-    return
-  end
-
-  open_dashboard()
-end
-vim.api.nvim_create_autocmd('VimEnter', {
-  callback = setup_dashboard,
-})
-vim.api.nvim_create_autocmd('VimResized', {
-  callback = function()
-    if vim.bo.filetype == 'dashboard' then
-      vim.bo.modifiable = true
-      open_dashboard()
-    end
-  end,
-})
+-- local function open_dashboard()
+--   local buf = vim.api.nvim_get_current_buf()
+--   local win = vim.api.nvim_get_current_win()
+--   local width = vim.api.nvim_win_get_width(win)
+--   local height = vim.api.nvim_win_get_height(win)
 --
+--   local saved_cmdheight = vim.o.cmdheight
+--   local saved_laststatus = vim.o.laststatus
+--   vim.o.cmdheight = 0
+--   vim.o.laststatus = 0
+--   local saved_opts = {
+--     number = vim.wo[win].number,
+--     relativenumber = vim.wo[win].relativenumber,
+--     signcolumn = vim.wo[win].signcolumn,
+--     cursorline = vim.wo[win].cursorline,
+--   }
+--   vim.api.nvim_create_autocmd({ 'BufWipeout', 'BufDelete' }, {
+--     buffer = buf,
+--     once = true,
+--     callback = function()
+--       if vim.api.nvim_win_is_valid(win) then
+--         for k, v in pairs(saved_opts) do
+--           vim.wo[win][k] = v
+--         end
+--         vim.o.cmdheight = saved_cmdheight
+--         vim.o.laststatus = saved_laststatus
+--       end
+--     end,
+--   })
+--
+--   vim.api.nvim_set_hl(0, 'DashboardNormalBold', { link = 'Normal', bold = true })
+--   vim.wo[win].winhl = 'Normal:DashboardNormalBold'
+--
+--   vim.bo[buf].buftype = 'nofile'
+--   vim.bo[buf].bufhidden = 'wipe'
+--   vim.bo[buf].swapfile = false
+--   vim.bo[buf].modifiable = true
+--   vim.bo[buf].filetype = 'dashboard'
+--
+--   vim.b[buf].miniindentscope_disable = true
+--
+--   vim.wo[win].number = false
+--   vim.wo[win].relativenumber = false
+--   vim.wo[win].signcolumn = 'no'
+--   vim.wo[win].cursorline = false
+--
+--   local project_name = vim.fn.fnamemodify(vim.uv.cwd(), ':t')
+--
+--   local lines = {
+--     '##############',
+--     '#   PROJECT  #',
+--     '##############',
+--     '',
+--     project_name,
+--     '',
+--     '',
+--     '',
+--     '##############',
+--     '#   STATUS   #',
+--     '##############',
+--     '',
+--     'checking',
+--   }
+--
+--   local vpad = math.floor((height - #lines) / 2)
+--   local centered = {}
+--   for _, line in ipairs(lines) do
+--     local pad = math.floor((width - #line) / 2)
+--     if pad < 0 then
+--       pad = 0
+--     end
+--     table.insert(centered, string.rep(' ', pad) .. line)
+--   end
+--
+--   local final_lines = {}
+--   for _ = 1, vpad do
+--     table.insert(final_lines, '')
+--   end
+--   vim.list_extend(final_lines, centered)
+--
+--   vim.api.nvim_buf_set_lines(buf, 0, -1, false, final_lines)
+--
+--   local ns = vim.api.nvim_create_namespace('dashboard')
+--
+--   -- PROJECT HIGHLIGHTS
+--   vim.api.nvim_buf_set_extmark(buf, ns, vpad, math.floor((width - 14) / 2), {
+--     end_row = vpad,
+--     end_col = math.floor((width - 14) / 2) + 14,
+--     hl_group = 'Conceal',
+--   })
+--
+--   vim.api.nvim_buf_set_extmark(buf, ns, vpad + 1, math.floor((width - 14) / 2) + 1, {
+--     end_row = vpad + 1,
+--     end_col = math.floor((width - 14) / 2) + 13,
+--     hl_group = 'Typedef',
+--   })
+--   vim.api.nvim_buf_set_extmark(buf, ns, vpad + 1, math.floor((width - 14) / 2) + 13, {
+--     end_row = vpad + 1,
+--     end_col = math.floor((width - 14) / 2) + 14,
+--     hl_group = 'Conceal',
+--   })
+--   vim.api.nvim_buf_set_extmark(buf, ns, vpad + 1, math.floor((width - 14) / 2), {
+--     end_row = vpad + 1,
+--     end_col = math.floor((width - 14) / 2) + 1,
+--     hl_group = 'Conceal',
+--   })
+--
+--   vim.api.nvim_buf_set_extmark(buf, ns, vpad + 2, math.floor((width - 14) / 2), {
+--     end_row = vpad + 2,
+--     end_col = math.floor((width - 14) / 2) + 14,
+--     hl_group = 'Conceal',
+--   })
+--   --
+--
+--   -- STATUS HIGHLIGHTS
+--   vim.api.nvim_buf_set_extmark(buf, ns, vpad + 8, math.floor((width - 14) / 2), {
+--     end_row = vpad + 8,
+--     end_col = math.floor((width - 14) / 2) + 14,
+--     hl_group = 'Conceal',
+--   })
+--
+--   vim.api.nvim_buf_set_extmark(buf, ns, vpad + 9, math.floor((width - 14) / 2) + 1, {
+--     end_row = vpad + 9,
+--     end_col = math.floor((width - 14) / 2) + 13,
+--     hl_group = 'Directory',
+--   })
+--   vim.api.nvim_buf_set_extmark(buf, ns, vpad + 9, math.floor((width - 14) / 2) + 13, {
+--     end_row = vpad + 9,
+--     end_col = math.floor((width - 14) / 2) + 14,
+--     hl_group = 'Conceal',
+--   })
+--   vim.api.nvim_buf_set_extmark(buf, ns, vpad + 9, math.floor((width - 14) / 2), {
+--     end_row = vpad + 9,
+--     end_col = math.floor((width - 14) / 2) + 1,
+--     hl_group = 'Conceal',
+--   })
+--
+--   vim.api.nvim_buf_set_extmark(buf, ns, vpad + 10, math.floor((width - 14) / 2), {
+--     end_row = vpad + 10,
+--     end_col = math.floor((width - 14) / 2) + 14,
+--     hl_group = 'Conceal',
+--   })
+--
+--   local pn_pad = math.floor((width - #project_name) / 2)
+--   if pn_pad < 0 then
+--     pn_pad = 0
+--   end
+--   vim.api.nvim_buf_set_extmark(buf, ns, vpad + 4, pn_pad, {
+--     end_row = vpad + 4,
+--     end_col = pn_pad + #project_name,
+--     hl_group = 'Typedef',
+--   })
+--   local st_pad = math.floor((width - 8) / 2)
+--   if st_pad < 0 then
+--     st_pad = 0
+--   end
+--   vim.api.nvim_buf_set_extmark(buf, ns, vpad + 12, st_pad, {
+--     end_row = vpad + 12,
+--     end_col = st_pad + 8,
+--     hl_group = 'Directory',
+--   })
+--
+--   --
+--
+--   vim.system({ 'git', 'status', '--porcelain' }, { text = true }, function(obj)
+--     vim.schedule(function()
+--       vim.bo[buf].modifiable = true
+--       local ok = (obj.code == 0)
+--
+--       local out = '++++++++'
+--       if not ok then
+--         out = 'Not repo'
+--       elseif ok and obj.stdout == '' then
+--         out = '--------'
+--       end
+--
+--       local centered_out = {}
+--       local pad = math.floor((width - #out) / 2)
+--       if pad < 0 then
+--         pad = 0
+--       end
+--       table.insert(centered_out, string.rep(' ', pad) .. out)
+--
+--       vim.api.nvim_buf_set_lines(buf, vpad + #lines - 1, -1, false, centered_out)
+--       local pn_pad = math.floor((width - #project_name) / 2)
+--       if pn_pad < 0 then
+--         pn_pad = 0
+--       end
+--       vim.api.nvim_buf_set_extmark(buf, ns, vpad + 4, pn_pad, {
+--         end_row = vpad + 4,
+--         end_col = pn_pad + #project_name,
+--         hl_group = 'Typedef',
+--       })
+--       local st_pad = math.floor((width - 8) / 2)
+--       if st_pad < 0 then
+--         st_pad = 0
+--       end
+--       vim.api.nvim_buf_set_extmark(buf, ns, vpad + 12, st_pad, {
+--         end_row = vpad + 12,
+--         end_col = st_pad + 8,
+--         hl_group = 'Directory',
+--       })
+--
+--       vim.bo[buf].modifiable = false
+--     end)
+--   end)
+--
+--   vim.bo[buf].modifiable = false
+-- end
+--
+-- -- Only open dashboard if conditions match the "intro screen" case
+-- local function setup_dashboard()
+--   local buf = 1
+--   if vim.fn.argc(-1) > 0 then
+--     return
+--   end
+--   if vim.api.nvim_buf_get_name(0) ~= '' then
+--     return
+--   end
+--   if vim.bo[buf].modified then
+--     return
+--   end
+--   if vim.api.nvim_buf_line_count(buf) > 1 or #(vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or '') > 0 then
+--     return
+--   end
+--
+--   open_dashboard()
+-- end
+-- vim.api.nvim_create_autocmd('VimEnter', {
+--   callback = setup_dashboard,
+-- })
+-- vim.api.nvim_create_autocmd('VimResized', {
+--   callback = function()
+--     if vim.bo.filetype == 'dashboard' then
+--       vim.bo.modifiable = true
+--       open_dashboard()
+--     end
+--   end,
+-- })
+-- --
 
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.uv.fs_stat(lazypath) then
@@ -647,50 +647,42 @@ require('lazy').setup({
 
     {
       'stevearc/conform.nvim',
-      event = { 'BufWritePre' },
-      opts = {
-        format_on_save = function(bufnr)
-          -- Disable "format_on_save lsp_fallback" for languages that don't
-          -- have a well standardized coding style. You can add additional
-          -- languages here or re-enable it for the disabled ones.
-          local disable_filetypes = { c = true, cpp = true }
-          if disable_filetypes[vim.bo[bufnr].filetype] then
-            return nil
-          else
-            return {
-              timeout_ms = 500,
-              lsp_format = 'fallback',
-            }
-          end
-        end,
-        formatters_by_ft = {
-          lua = { 'stylua' },
-          python = function(bufnr)
-            if require('conform').get_formatter_info('ruff_format', bufnr).available then
-              return { 'ruff_format' }
-            else
-              return { 'isort', 'black' }
-            end
-          end,
-          javascript = { 'biome' },
-          typescript = { 'biome' },
-          javascriptreact = { 'biome' },
-          typescriptreact = { 'biome' },
-          html = { 'biome', 'prettier' },
-          graphql = { 'prettier' },
-          yaml = { 'prettier' },
-          toml = { 'taplo' },
-          json = { 'prettier' },
-          jsonc = { 'prettier' },
-          go = { 'goimports', 'gofmt' },
-          c = { 'clang_format' },
-          css = { 'biome', 'prettier' },
-          shell = { 'shfmt', 'shellcheck' },
-          zsh = { 'shfmt', 'shellcheck' },
-          markdown = { 'prettier' },
-          swift = { 'swiftformat' },
-        },
-      },
+      event = { 'BufReadPost' },
+      config = function()
+        require('conform').setup({
+          format_on_save = {
+            timeout_ms = 500,
+            lsp_format = 'fallback',
+          },
+          formatters_by_ft = {
+            lua = { 'stylua' },
+            python = function(bufnr)
+              if require('conform').get_formatter_info('ruff_format', bufnr).available then
+                return { 'ruff_format' }
+              else
+                return { 'isort', 'black' }
+              end
+            end,
+            javascript = { 'biome' },
+            typescript = { 'biome' },
+            javascriptreact = { 'biome' },
+            typescriptreact = { 'biome', 'prettier', stop_after_first = true },
+            html = { 'biome' },
+            graphql = { 'biome' },
+            yaml = { 'prettier' },
+            toml = { 'taplo' },
+            json = { 'biome' },
+            jsonc = { 'biome' },
+            go = { 'goimports', 'gofmt' },
+            c = { 'clang_format' },
+            css = { 'biome' },
+            shell = { 'shfmt', 'shellcheck' },
+            zsh = { 'shfmt', 'shellcheck' },
+            markdown = { 'prettier' },
+            swift = { 'swiftformat' },
+          },
+        })
+      end,
     },
 
     {
@@ -1169,32 +1161,7 @@ require('lazy').setup({
       event = 'VeryLazy',
       dependencies = { 'nvim-treesitter/nvim-treesitter' },
       config = function()
-        pcall(function()
-          require('render-markdown').setup()
-        end)
-
-        function ToggleCheckbox()
-          local line = vim.api.nvim_get_current_line()
-          local checkbox_pattern = '^%s*%- %[(.)%]'
-          local status = line:match(checkbox_pattern)
-
-          if status == ' ' then
-            line = line:gsub(checkbox_pattern, '- [x]')
-          elseif status == 'x' or status == 'X' then
-            line = line:gsub(checkbox_pattern, '- [ ]')
-          else
-            return
-          end
-
-          vim.api.nvim_set_current_line(line)
-        end
-
-        vim.api.nvim_create_autocmd('FileType', {
-          pattern = 'markdown',
-          callback = function()
-            vim.api.nvim_buf_set_keymap(0, 'n', '<Tab>', ':lua ToggleCheckbox()<CR>', { noremap = true, silent = true })
-          end,
-        })
+        require('render-markdown').setup()
       end,
     },
 
