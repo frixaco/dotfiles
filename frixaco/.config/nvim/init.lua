@@ -312,7 +312,6 @@ require('lazy').setup({
           run_on_start = true,
         })
 
-        local lspconfig = require('lspconfig')
         local util = require('lspconfig.util')
 
         local on_attach = function(_, bufnr)
@@ -334,10 +333,11 @@ require('lazy').setup({
           -- `opts[server].capabilities, if you've defined it
           config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
           config.on_attach = on_attach
-          lspconfig[server].setup(config)
+          vim.lsp.enable(server)
+          vim.lsp.config(server, config)
         end
 
-        lspconfig.sourcekit.setup({
+        vim.lsp.config('sourcekit', {
           on_attach = on_attach,
           capabilities = require('blink.cmp').get_lsp_capabilities({
             workspace = {
@@ -376,7 +376,7 @@ require('lazy').setup({
           return vim.fs.dirname(fname)
         end
 
-        require('lspconfig').pyright.setup({ root_dir = custom_root_dir })
+        vim.lsp.config('pyright', { root_dir = custom_root_dir })
       end,
     },
 
