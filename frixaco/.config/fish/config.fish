@@ -46,17 +46,11 @@ alias c="clear"
 alias ef="nvim ~/.config/fish/config.fish"
 
 function g
-  set -gx LAZYGIT_NEW_DIR_FILE ~/.lazygit/newdir
+  set -l original_dir (pwd)
 
-  # sudo lazygit $argv
-  # with sudo lazygit i keep getting confirmation prompts
   lazygit $argv
 
-  if test -f $LAZYGIT_NEW_DIR_FILE
-    cd (cat $LAZYGIT_NEW_DIR_FILE)
-    or exit
-    rm -f $LAZYGIT_NEW_DIR_FILE >/dev/null
-  end
+  cd $original_dir
 end
 
 if test -f ~/.config/fish/env.fish 
