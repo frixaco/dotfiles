@@ -131,41 +131,6 @@ local function render_dashboard(buf, win)
 
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, final_lines)
 
-  local ns = vim.api.nvim_create_namespace('dashboard')
-  vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
-
-  local row = margin_top
-  vim.api.nvim_buf_set_extmark(buf, ns, row + 1, margin_left + 2, {
-    end_col = margin_left + 2 + #project_name,
-    hl_group = 'Title',
-  })
-
-  if git_info.is_repo then
-    vim.api.nvim_buf_set_extmark(buf, ns, row + 6, margin_left + 2, {
-      end_col = margin_left + 16,
-      hl_group = 'Directory',
-    })
-
-    local status_hl = git_info.status == 'clean' and 'String' or 'WarningMsg'
-    vim.api.nvim_buf_set_extmark(buf, ns, row + 9, margin_left + 2, {
-      end_col = margin_left + 22,
-      hl_group = status_hl,
-    })
-  else
-    vim.api.nvim_buf_set_extmark(buf, ns, row + 6, margin_left + 2, {
-      end_col = margin_left + 24,
-      hl_group = 'Comment',
-    })
-  end
-
-  if #recent_files > 0 then
-    local recent_row = git_info.is_repo and (row + 11) or (row + 8)
-    vim.api.nvim_buf_set_extmark(buf, ns, recent_row, margin_left + 2, {
-      end_col = margin_left + 14,
-      hl_group = 'Typedef',
-    })
-  end
-
   local is_dark = vim.o.background == 'dark'
   local colors
   if is_dark then
@@ -194,12 +159,57 @@ local function render_dashboard(buf, win)
     }
   end
 
-  local color_ns = vim.api.nvim_create_namespace('dashboard_colorbar')
-  
   for i, color in ipairs(colors) do
     vim.api.nvim_set_hl(0, 'DashboardColor' .. i, { fg = color })
   end
 
+  local ns = vim.api.nvim_create_namespace('dashboard')
+  vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
+
+  local row = margin_top
+  
+  vim.api.nvim_buf_set_extmark(buf, ns, row + 1, margin_left + 2, {
+    end_col = margin_left + 2 + #project_name,
+    hl_group = 'DashboardColor6',
+  })
+
+  if git_info.is_repo then
+    vim.api.nvim_buf_set_extmark(buf, ns, row + 6, margin_left + 2, {
+      end_col = margin_left + 16,
+      hl_group = 'DashboardColor1',
+    })
+
+    local branch_text = (git_info.branch or 'unknown')
+    local branch_line = '  ├─ Branch: ' .. branch_text
+    local branch_start = margin_left + vim.fn.strlen('  ├─ Branch: ')
+    
+    vim.api.nvim_buf_set_extmark(buf, ns, row + 7, branch_start, {
+      end_col = branch_start + vim.fn.strlen(branch_text),
+      hl_group = 'DashboardColor3',
+    })
+
+    local status_hl = git_info.status == 'clean' and 'DashboardColor2' or 'DashboardColor4'
+    local status_marker_start = margin_left + 2
+    vim.api.nvim_buf_set_extmark(buf, ns, row + 8, status_marker_start, {
+      end_col = status_marker_start + vim.fn.strlen('├─'),
+      hl_group = status_hl,
+    })
+  else
+    vim.api.nvim_buf_set_extmark(buf, ns, row + 6, margin_left + 2, {
+      end_col = margin_left + 24,
+      hl_group = 'DashboardColor7',
+    })
+  end
+
+  if #recent_files > 0 then
+    local recent_row = git_info.is_repo and (row + 11) or (row + 8)
+    vim.api.nvim_buf_set_extmark(buf, ns, recent_row, margin_left + 2, {
+      end_col = margin_left + 14,
+      hl_group = 'DashboardColor9',
+    })
+  end
+
+  local color_ns = vim.api.nvim_create_namespace('dashboard_colorbar')
   local base_col = margin_left + 2
   local byte_width = vim.fn.strlen('█')
   local block_width = byte_width * 5
@@ -290,6 +300,19 @@ function M.setup()
   })
 
   vim.api.nvim_create_autocmd('VimResized', {
+    callback = function()
+      if vim.bo.filetype == 'dashboard' then
+        vim.bo.modifiable = true
+        local buf = vim.api.nvim_get_current_buf()
+        local win = vim.api.nvim_get_current_win()
+        render_dashboard(buf, win)
+        vim.bo.modifiable = false
+      end
+    end,
+  })
+  
+  vim.api.nvim_create_autocmd('OptionSet', {
+    pattern = 'background',
     callback = function()
       if vim.bo.filetype == 'dashboard' then
         vim.bo.modifiable = true
