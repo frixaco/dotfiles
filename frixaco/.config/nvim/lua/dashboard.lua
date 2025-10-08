@@ -75,9 +75,9 @@ local function render_dashboard(buf, win)
   local recent_files = get_recent_files()
 
   local lines = {}
-  table.insert(lines, string.rep('─', math.min(width - margin_left * 2, 60)))
+  table.insert(lines, '  ' .. string.rep('─', math.min(width - margin_left * 2 - 2, 60)))
   table.insert(lines, '  ' .. project_name)
-  table.insert(lines, string.rep('─', math.min(width - margin_left * 2, 60)))
+  table.insert(lines, '  ' .. string.rep('─', math.min(width - margin_left * 2 - 2, 60)))
   table.insert(lines, '')
   table.insert(lines, '  Location: ' .. vim.uv.cwd())
   table.insert(lines, '')
@@ -86,11 +86,10 @@ local function render_dashboard(buf, win)
     table.insert(lines, '  Git Repository')
     table.insert(lines, '  ├─ Branch: ' .. (git_info.branch or 'unknown'))
     if git_info.status == 'clean' then
-      table.insert(lines, '  ├─ Status: clean')
+      table.insert(lines, '  └─ Status: clean')
     else
-      table.insert(lines, '  ├─ Status: ' .. git_info.files_changed .. ' file(s) changed')
+      table.insert(lines, '  └─ Status: ' .. git_info.files_changed .. ' file(s) changed')
     end
-    table.insert(lines, '  └─ Working directory: ' .. (git_info.status == 'clean' and 'clean' or 'dirty'))
   else
     table.insert(lines, '  Not a git repository')
   end
@@ -111,7 +110,7 @@ local function render_dashboard(buf, win)
     table.insert(lines, '')
   end
 
-  table.insert(lines, '  █████ █████ █████ █████ █████ █████ █████ █████ █████')
+  table.insert(lines, '  █████ █████ █████ █████ █████ █████ █████ █████ █████ █████')
 
   local color_bar_line_idx = margin_top + #lines - 1
 
@@ -144,6 +143,7 @@ local function render_dashboard(buf, win)
       '#ff5ea0', -- pink
       '#ffbd5e', -- orange
       '#bd5eff', -- purple
+      '#7b8496', -- grey
     }
   else
     colors = {
@@ -156,6 +156,7 @@ local function render_dashboard(buf, win)
       '#f40064', -- pink
       '#d17c00', -- orange
       '#a018ff', -- purple
+      '#7b8496', -- grey
     }
   end
 
@@ -188,12 +189,14 @@ local function render_dashboard(buf, win)
       hl_group = 'DashboardColor3',
     })
 
+    local status_text = git_info.status == 'clean' and 'clean' or (git_info.files_changed .. ' file(s) changed')
+    local status_start = margin_left + vim.fn.strlen('  ├─ Status: ')
     local status_hl = git_info.status == 'clean' and 'DashboardColor2' or 'DashboardColor4'
-    local status_marker_start = margin_left + 2
-    vim.api.nvim_buf_set_extmark(buf, ns, row + 8, status_marker_start, {
-      end_col = status_marker_start + vim.fn.strlen('├─'),
+    vim.api.nvim_buf_set_extmark(buf, ns, row + 8, status_start, {
+      end_col = status_start + vim.fn.strlen(status_text),
       hl_group = status_hl,
     })
+
   else
     vim.api.nvim_buf_set_extmark(buf, ns, row + 6, margin_left + 2, {
       end_col = margin_left + 24,
@@ -202,11 +205,21 @@ local function render_dashboard(buf, win)
   end
 
   if #recent_files > 0 then
-    local recent_row = git_info.is_repo and (row + 11) or (row + 8)
-    vim.api.nvim_buf_set_extmark(buf, ns, recent_row, margin_left + 2, {
-      end_col = margin_left + 14,
-      hl_group = 'DashboardColor9',
-    })
+    local recent_row = git_info.is_repo and (row + 10) or (row + 8)
+    
+    for i, file in ipairs(recent_files) do
+      local file_row = recent_row + i
+      local file_start = margin_left + vim.fn.strlen('  ├─ ')
+      local max_len = width - margin_left * 2 - 6
+      local display_file = file
+      if #file > max_len then
+        display_file = '...' .. file:sub(#file - max_len + 4)
+      end
+      vim.api.nvim_buf_set_extmark(buf, ns, file_row, file_start, {
+        end_col = file_start + vim.fn.strlen(display_file),
+        hl_group = 'DashboardColor10',
+      })
+    end
   end
 
   local color_ns = vim.api.nvim_create_namespace('dashboard_colorbar')
