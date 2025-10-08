@@ -198,8 +198,9 @@ local function render_dashboard(buf, win)
     })
 
   else
+    local not_git_text = 'Not a git repository'
     vim.api.nvim_buf_set_extmark(buf, ns, row + 6, margin_left + 2, {
-      end_col = margin_left + 24,
+      end_col = margin_left + 2 + vim.fn.strlen(not_git_text),
       hl_group = 'DashboardColor7',
     })
   end
