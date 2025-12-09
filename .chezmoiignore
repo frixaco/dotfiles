@@ -2,5 +2,5 @@
 .config/aerospace/**
 {{- end }}
 {{- if not .work }}
-Documents/vbrato/.gitconfig-vbrato
+Documents/vbrato/**
 {{- end }}
