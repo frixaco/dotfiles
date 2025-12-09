@@ -1,0 +1,8 @@
+theme = dark:cyberdream,light:cyberdream-light
+command = /opt/homebrew/bin/fish --login --interactive
+window-padding-x = 8
+window-padding-y = 4
+clipboard-read = allow
+clipboard-write = allow
+background-opacity = 0.90
+background-blur = 50

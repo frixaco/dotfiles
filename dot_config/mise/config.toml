@@ -1,0 +1,6 @@
+[tools]
+node = 'latest'
+go = 'latest'
+bun = 'latest'
+uv = 'latest'
+zig = 'latest'

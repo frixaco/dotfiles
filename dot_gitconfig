@@ -1,0 +1,43 @@
+[includeIf "gitdir:~/Documents/vbrato/"]
+	path = ~/Documents/vbrato/.gitconfig-vbrato
+
+[core]
+	editor = nvim
+	pager = delta
+	preloadindex = true
+	autocrlf = input
+
+[interactive]
+	diffFilter = delta --color-only
+
+; [pager]
+; 	difftool = true
+;
+; [diff]
+; 	external = difft
+; 	tool = difftastic
+
+[init]
+	defaultBranch = main
+
+[branch]
+	sort = -committerdate
+
+[maintenance]
+	auto = 1
+
+[delta]
+	navigate = true
+	features = cyberdream
+	side-by-side = false
+	line-numbers = true
+
+[delta "decorations"]
+	syntax-theme = cyberdream
+
+[merge]
+	conflictStyle = zdiff3
+
+[user]
+	name = frixaco
+	email = rustam21ashurmatov@gmail.com
