@@ -18,6 +18,9 @@ alias opencode="bunx opencode-ai"
 alias codex="bunx @openai/codex"
 alias claude="bunx @anthropic-ai/claude-code"
 
+function ccd
+    cd $(chezmoi source-path)
+end
 
 {{- if eq .chezmoi.os "linux" }}
 {{ 	if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
