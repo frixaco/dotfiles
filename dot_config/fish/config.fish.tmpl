@@ -5,6 +5,8 @@ set -gx EDITOR nvim
 # for Lazygit config to work
 set -gx XDG_CONFIG_HOME "$HOME/.config"
 
+fish_add_path ~/.local/bin ~/.bun/bin
+
 alias l="eza --color=always --icons --all --long --time modified --sort modified --no-permissions --octal-permissions --git --smart-group --git-repos"
 alias v="nvim"
 alias en="cd ~/.config/nvim && nvim"
@@ -16,8 +18,9 @@ alias opencode="bunx opencode-ai"
 alias codex="bunx @openai/codex"
 alias claude="bunx @anthropic-ai/claude-code"
 
-{{ if eq .chezmoi.os "linux" }}
-{{- 	if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+
+{{- if eq .chezmoi.os "linux" }}
+{{ 	if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
 function copy-to-desktop --description 'Copy file(s) to WSL Desktop (/mnt/c/Users/frixa/Desktop)'
     if test (count $argv) -eq 0
         echo "Usage: copy-to-desktop <file1> [file2 ...]"
@@ -41,7 +44,7 @@ function copy-to-desktop --description 'Copy file(s) to WSL Desktop (/mnt/c/User
     end
 end
 {{- 	end }}
-{{- end -}}
+{{- end }}
 
 function envsource
   for lien in (cat $argv | grep -v '^#')
@@ -75,3 +78,4 @@ end
 zoxide init fish | source
 starship init fish | source
 fzf --fish | source
+~/.local/bin/mise activate fish | source
