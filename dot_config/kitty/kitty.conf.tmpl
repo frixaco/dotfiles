@@ -1,3 +1,4 @@
+# chezmoi:template:left-delimiter=[[ right-delimiter=]]
 # vim:fileencoding=utf-8:foldmethod=marker
 
 #: Fonts {{{
@@ -2937,7 +2938,11 @@ font_size 14
 
 include themes/cyberdream.conf
 
+[[ if eq .chezmoi.os "darwin" -]]
 shell /opt/homebrew/bin/fish --login --interactive
+[[- else if eq .chezmoi.os "linux" -]]
+shell /usr/bin/fish --login --interactive
+[[- end ]]
 
 map ctrl+1 goto_tab 1
 map ctrl+2 goto_tab 2

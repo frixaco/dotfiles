@@ -1,5 +1,9 @@
 theme = dark:cyberdream,light:cyberdream-light
+{{- if eq .chezmoi.os "darwin" }}
 command = /opt/homebrew/bin/fish --login --interactive
+{{- else if eq .chezmoi.os "linux" }}
+command = /usr/bin/fish --login --interactive
+{{- end }}
 window-padding-x = 8
 window-padding-y = 4
 clipboard-read = allow
