@@ -45,5 +45,7 @@
 	name = frixaco
 	email = rustam21ashurmatov@gmail.com
 
+{{ if .work -}}
 [includeIf "gitdir:~/Documents/vbrato/"]
 	path = ~/Documents/vbrato/.gitconfig-vbrato
+{{- end }}
