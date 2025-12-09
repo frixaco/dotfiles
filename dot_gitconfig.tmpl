@@ -6,11 +6,11 @@
 	pager = delta
 	preloadindex = true
 	autocrlf = input
-{{- if eq .chezmoi.os "linux" -}}
-{{- 	if (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
+{{- if eq .chezmoi.os "linux" }}
+{{- 	if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
 	sshCommand = ssh.exe
-{{ 	end }}
-{{ end }}
+{{- 	end }}
+{{- end }}
 
 [interactive]
 	diffFilter = delta --color-only
