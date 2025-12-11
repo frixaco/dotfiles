@@ -202,8 +202,9 @@ require("lazy").setup({
 					astro = {},
 					ruff = {},
 					lua_ls = {},
-					-- ts_ls = {},
-					rust_analyzer = {}, -- Replaced with tsgo
+					-- ts_ls = {}, -- Replaced with tsgo
+					tsgo = {},
+					rust_analyzer = {},
 					html = {},
 					emmet_language_server = {},
 					graphql = {},
@@ -342,8 +343,6 @@ require("lazy").setup({
 					vim.lsp.enable(server)
 					vim.lsp.config(server, config)
 				end
-
-				vim.lsp.enable("tsgo")
 
 				vim.lsp.config("sourcekit", {
 					on_attach = on_attach,
