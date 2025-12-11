@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+# Amp custom command to capture kitty terminal pane/tab output
+
+action="${TOOLBOX_ACTION}"
+
+if [[ "$action" == "describe" ]]; then
+    cat <<EOF
+name: kitty-capture
+description: Capture text output from a kitty terminal pane or tab using kitty's remote control. Useful for getting terminal content to analyze or debug. Use action "list" first to see available windows.
+action: string (optional) "capture" to get text (default), "list" to show available windows with their IDs, titles, and running processes.
+match: string (optional) Match criteria for selecting the window (e.g., "id:1", "id:3", "title:my-app"). Use "list" action to find window IDs. Defaults to "id:1".
+extent: string (optional) What text to capture: "screen" (visible), "all" (scrollback + screen), "selection". Defaults to "screen". Ignored when action is "list".
+EOF
+    exit 0
+fi
+
+if [[ "$action" == "execute" ]]; then
+    # Parse arguments from stdin (key: value format)
+    cmd_action="capture"
+    match="id:1"
+    extent="screen"
+    
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^action:\ *(.*) ]]; then
+            cmd_action="${BASH_REMATCH[1]}"
+        elif [[ "$line" =~ ^match:\ *(.*) ]]; then
+            match="${BASH_REMATCH[1]}"
+        elif [[ "$line" =~ ^extent:\ *(.*) ]]; then
+            extent="${BASH_REMATCH[1]}"
+        fi
+    done
+    
+    # Find kitty socket
+    socket=$(ls /tmp/kitty-* 2>/dev/null | head -1)
+    
+    if [[ -z "$socket" ]]; then
+        echo "Error: No kitty socket found in /tmp/. Ensure kitty remote control is enabled (allow_remote_control yes in kitty.conf)" >&2
+        exit 1
+    fi
+    
+    if [[ "$cmd_action" == "list" ]]; then
+        # List windows with id, title, and foreground process
+        kitty @ --to "unix:$socket" ls 2>&1 | jq -r '
+            .[] | .tabs[] | .windows[] |
+            "id:\(.id) | title: \(.title) | process: \(.foreground_processes[0].cmdline | join(" "))"
+        ' 2>/dev/null || kitty @ --to "unix:$socket" ls 2>&1
+        exit $?
+    fi
+    
+    # Capture the text
+    kitty @ --to "unix:$socket" get-text --match "$match" --extent "$extent" 2>&1
+    exit $?
+fi
