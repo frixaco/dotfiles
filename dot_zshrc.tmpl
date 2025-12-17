@@ -1,0 +1,99 @@
+autoload -Uz compinit
+compinit
+
+export EDITOR=nvim
+
+# for Lazygit config to work
+export XDG_CONFIG_HOME="$HOME/.config"
+
+alias l="eza --color=always --icons --all --long --time modified --sort modified --no-permissions --octal-permissions --git --smart-group --git-repos"
+alias v="nvim"
+alias en="cd ~/.config/nvim && nvim"
+alias sf="source ~/.config/zsh/.zshrc"
+alias c="clear"
+alias ef="nvim ~/.config/zsh/.zshrc"
+alias amp="bunx @sourcegraph/amp --ide"
+alias opencode="bunx opencode-ai"
+alias codex="bunx @openai/codex"
+alias claude="bunx @anthropic-ai/claude-code"
+alias se="source .venv/bin/activate.fish"
+
+
+ccd() {
+  cd "$(chezmoi source-path)"
+}
+
+{{- if eq .chezmoi.os "linux" }}
+{{- if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+# Copy file(s) to WSL Desktop
+copy-to-desktop() {
+  if [ "$#" -eq 0 ]; then
+    echo "Usage: copy-to-desktop <file1> [file2 ...]"
+    return 1
+  fi
+
+  local target_dir="/mnt/c/Users/frixa/Desktop"
+
+  if [ ! -d "$target_dir" ]; then
+    echo "Error: Desktop directory not found: $target_dir"
+    return 1
+  fi
+
+  for file in "$@"; do
+    if [ -e "$file" ]; then
+      cp "$file" "$target_dir"
+      echo "Copied: $file -> $target_dir/"
+    else
+      echo "Error: File not found: $file"
+    fi
+  done
+}
+
+{{- end }}
+{{- end }}
+
+envsource() {
+  if [ "$#" -eq 0 ]; then
+    echo "Usage: envsource <env-file>"
+    return 1
+  fi
+
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in
+      \#*|"") continue ;;
+    esac
+
+    key="${line%%=*}"
+    value="${line#*=}"
+
+    export "$key=$value"
+    echo "Exported key $key"
+  done < "$1"
+}
+
+function g() {
+    local original_dir="$(pwd)"
+    
+    lazygit "$@"
+    
+    cd "$original_dir"
+}
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
+
+if [[ -f ~/.config/zsh/env.zsh ]]; then
+    source ~/.config/zsh/env.zsh
+fi
+
+eval "$(zoxide init zsh)"
+eval "$(starship init zsh)"
+eval "$(fzf --zsh)"
+eval "$(mise activate zsh)"
+{{ if .work -}}
+eval "$(rbenv init - zsh)"
+{{- end }}

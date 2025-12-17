@@ -209,5 +209,5 @@ backspace = ['close-all-windows-but-current', 'mode main']
 # shift-down = ['volume set 0', 'mode main']
 
 [[on-window-detected]]
-if.app-name-regex-substring = "1Password|Finder|Antinote"
+if.app-name-regex-substring = "1Password|Finder|Antinote|Simulator"
 run = ['layout floating']

@@ -17,6 +17,7 @@ alias amp="bunx @sourcegraph/amp --ide"
 alias opencode="bunx opencode-ai"
 alias codex="bunx @openai/codex"
 alias claude="bunx @anthropic-ai/claude-code"
+alias se="source .venv/bin/activate.fish"
 
 function ccd
     cd $(chezmoi source-path)
@@ -82,3 +83,6 @@ zoxide init fish | source
 starship init fish | source
 fzf --fish | source
 mise activate fish | source
+{{ if .work -}}
+rbenv init - fish | source
+{{- end}}
