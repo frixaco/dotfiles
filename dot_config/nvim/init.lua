@@ -197,7 +197,8 @@ require("lazy").setup({
 				},
 				servers = {
 					gopls = {},
-					basedpyright = {},
+					ty = {},
+					-- basedpyright = {},
 					-- pyright = {},
 					astro = {},
 					ruff = {},
