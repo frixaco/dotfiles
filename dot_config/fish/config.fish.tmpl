@@ -83,6 +83,6 @@ zoxide init fish | source
 starship init fish | source
 fzf --fish | source
 mise activate fish | source
-{{ if .work -}}
+{{ if and .work (eq .chezmoi.os "darwin") -}}
 rbenv init - fish | source
-{{- end}}
+{{- end }}
