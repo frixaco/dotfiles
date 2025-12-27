@@ -12,11 +12,13 @@ alias en="cd ~/.config/nvim && nvim"
 alias sf="source ~/.config/zsh/.zshrc"
 alias c="clear"
 alias ef="nvim ~/.config/zsh/.zshrc"
-alias amp="bunx @sourcegraph/amp --ide"
-alias opencode="bunx opencode-ai"
+# alias amp="bunx @sourcegraph/amp --ide"
+# alias opencode="bunx opencode-ai"
 alias codex="bunx @openai/codex"
-alias claude="bunx @anthropic-ai/claude-code"
+# alias claude="bunx @anthropic-ai/claude-code"
 alias se="source .venv/bin/activate.fish"
+
+export PATH="$HOME/.amp/bin:$HOME/.opencode/bin:$HOME/.local/bin:$PATH"
 
 ccd() {
   cd "$(chezmoi source-path)"

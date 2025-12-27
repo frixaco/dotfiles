@@ -5,7 +5,7 @@ set -gx EDITOR nvim
 # for Lazygit config to work
 set -gx XDG_CONFIG_HOME "$HOME/.config"
 
-fish_add_path ~/.local/bin ~/.bun/bin
+fish_add_path ~/.local/bin ~/.bun/bin ~/.amp/bin ~/.opencode/bin
 
 alias l="eza --color=always --icons --all --long --time modified --sort modified --no-permissions --octal-permissions --git --smart-group --git-repos"
 alias v="nvim"
@@ -13,10 +13,10 @@ alias en="cd ~/.config/nvim && nvim"
 alias sf="source ~/.config/fish/config.fish"
 alias c="clear"
 alias ef="nvim ~/.config/fish/config.fish"
-alias amp="bunx @sourcegraph/amp --ide"
-alias opencode="bunx opencode-ai"
+# alias amp="bunx @sourcegraph/amp --ide"
+# alias opencode="bunx opencode-ai"
+# alias claude="bunx @anthropic-ai/claude-code"
 alias codex="bunx @openai/codex"
-alias claude="bunx @anthropic-ai/claude-code"
 alias se="source .venv/bin/activate.fish"
 
 function ccd
