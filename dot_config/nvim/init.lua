@@ -31,6 +31,7 @@ vim.o.signcolumn = 'yes:2'
 vim.o.scrolloff = 3
 vim.o.mouse = 'a'
 vim.o.wrap = true
+vim.o.linebreak = true
 vim.o.showmode = false
 vim.o.breakindent = true
 vim.o.undofile = true

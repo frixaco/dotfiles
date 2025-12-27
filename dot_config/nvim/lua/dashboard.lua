@@ -110,7 +110,10 @@ local function render_dashboard(buf, win)
     table.insert(lines, '')
   end
 
-  table.insert(lines, '  █████ █████ █████ █████ █████ █████ █████ █████ █████ █████')
+  table.insert(
+    lines,
+    '  █████ █████ █████ █████ █████ █████ █████ █████ █████ █████'
+  )
 
   local color_bar_line_idx = margin_top + #lines - 1
 
@@ -168,7 +171,7 @@ local function render_dashboard(buf, win)
   vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
 
   local row = margin_top
-  
+
   vim.api.nvim_buf_set_extmark(buf, ns, row + 1, margin_left + 2, {
     end_col = margin_left + 2 + #project_name,
     hl_group = 'DashboardColor6',
@@ -183,7 +186,7 @@ local function render_dashboard(buf, win)
     local branch_text = (git_info.branch or 'unknown')
     local branch_line = '  ├─ Branch: ' .. branch_text
     local branch_start = margin_left + vim.fn.strlen('  ├─ Branch: ')
-    
+
     vim.api.nvim_buf_set_extmark(buf, ns, row + 7, branch_start, {
       end_col = branch_start + vim.fn.strlen(branch_text),
       hl_group = 'DashboardColor3',
@@ -196,7 +199,6 @@ local function render_dashboard(buf, win)
       end_col = status_start + vim.fn.strlen(status_text),
       hl_group = status_hl,
     })
-
   else
     local not_git_text = 'Not a git repository'
     vim.api.nvim_buf_set_extmark(buf, ns, row + 6, margin_left + 2, {
@@ -207,7 +209,7 @@ local function render_dashboard(buf, win)
 
   if #recent_files > 0 then
     local recent_row = git_info.is_repo and (row + 10) or (row + 8)
-    
+
     for i, file in ipairs(recent_files) do
       local file_row = recent_row + i
       local file_start = margin_left + vim.fn.strlen('  ├─ ')
@@ -228,7 +230,7 @@ local function render_dashboard(buf, win)
   local byte_width = vim.fn.strlen('█')
   local block_width = byte_width * 5
   local step = block_width + 1
-  
+
   for i = 1, #colors do
     local col = base_col + step * (i - 1)
     vim.api.nvim_buf_set_extmark(buf, color_ns, color_bar_line_idx, col, {
@@ -278,7 +280,7 @@ local function open_dashboard()
   vim.wo[win].relativenumber = false
   vim.wo[win].signcolumn = 'no'
   vim.wo[win].cursorline = false
-  vim.wo[win].wrap = false
+  vim.wo[win].wrap = true
 
   vim.b[buf].miniindentscope_disable = true
 
@@ -324,7 +326,7 @@ function M.setup()
       end
     end,
   })
-  
+
   vim.api.nvim_create_autocmd('OptionSet', {
     pattern = 'background',
     callback = function()
