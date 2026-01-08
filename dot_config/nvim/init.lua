@@ -72,7 +72,7 @@ require('lazy').setup({
   defaults = { lazy = true },
   install = { colorscheme = { 'cyberdream' } },
   -- install = { colorscheme = { 'catppuccin' } },
-  checker = { enabled = true, notify = true },
+  checker = { enabled = true, notify = false },
   ui = {
     backdrop = 100,
   },
