@@ -6,6 +6,8 @@ export EDITOR=nvim
 # for Lazygit config to work
 export XDG_CONFIG_HOME="$HOME/.config"
 
+export PATH="$HOME/.amp/bin:$HOME/.bun/bin:$HOME/.opencode/bin:$HOME/.local/bin:$PATH"
+
 alias l="eza --color=always --icons --all --long --time modified --sort modified --no-permissions --octal-permissions --git --smart-group --git-repos"
 alias v="nvim"
 alias en="cd ~/.config/nvim && nvim"
@@ -14,11 +16,10 @@ alias c="clear"
 alias ef="nvim ~/.config/zsh/.zshrc"
 # alias amp="bunx @sourcegraph/amp --ide"
 # alias opencode="bunx opencode-ai"
-alias codex="bunx @openai/codex"
 # alias claude="bunx @anthropic-ai/claude-code"
+# bun i -g @openai/codex
+alias pi="bunx @mariozechner/pi-coding-agent"
 alias se="source .venv/bin/activate.fish"
-
-export PATH="$HOME/.amp/bin:$HOME/.opencode/bin:$HOME/.local/bin:$PATH"
 
 ccd() {
   cd "$(chezmoi source-path)"

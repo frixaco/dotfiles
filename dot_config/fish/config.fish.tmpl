@@ -54,11 +54,20 @@ end
 {{- end }}
 
 function envsource
-  for lien in (cat $argv | grep -v '^#')
-    set item (string split -m 1 '=' $line)
-    set -gx $item[1] $item[2]
-    echo "Exported key $item[1]"
-  end
+    if not test -f $argv[1]
+        echo "Error: File $argv[1] not found"
+        return 1
+    end
+
+    while read -l line
+        # Skip comments and empty lines
+        if string match -qv '#*' $line; and string length -q (string trim $line)
+            set -l item (string split -m 1 '=' $line)
+            if test (count $item) -eq 2
+                set -gx $item[1] (string trim -c '"\'' $item[2])
+            end
+        end
+    end < $argv[1]
 end
 
 function g
