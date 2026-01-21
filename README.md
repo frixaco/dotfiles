@@ -7,7 +7,10 @@
 - `chezmoi` docs: https://www.chezmoi.io/user-guide/daily-operations/
 
 - `~/.config/chezmoi/chezmoi.toml`:
-    ```
-    [data]
-    work = true/false
-    ```
+
+  ```
+  [data]
+  work = true/false
+  ```
+
+- `fish_config theme save cyberdream`

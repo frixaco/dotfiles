@@ -67,6 +67,8 @@ envsource() {
 
     key="${line%%=*}"
     value="${line#*=}"
+    value="${value#\"}" ; value="${value%\"}"
+    value="${value#\'}" ; value="${value%\'}"
 
     export "$key=$value"
     echo "Exported key $key"
