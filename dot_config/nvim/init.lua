@@ -1,15 +1,16 @@
 -- Uses vim.pack.add() for plugin management
 -- Uses vim.lsp.config() / vim.lsp.enable() for LSP
 
--- Speed up Lua module loading (Neovim 0.9+)
-if vim.loader then
-  pcall(vim.loader.enable)
-end
+vim.loader.enable()
 
 -- Must be set before plugins/keymaps
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
+
+-- nvim-tree requires netrw disabled early
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- WSL clipboard provider should be registered early
 pcall(function()
@@ -101,6 +102,7 @@ local ok_pack_add, pack_add_err = pcall(vim.pack.add, {
 
   -- Picker & utilities
   { src = 'https://github.com/folke/snacks.nvim' },
+  { src = 'https://github.com/nvim-tree/nvim-tree.lua' },
 
   -- File picker
   { src = 'https://github.com/dmtrKovalenko/fff.nvim' },
@@ -131,6 +133,7 @@ end, { desc = 'Download/build fff.nvim binary' })
 --------------------------------------------------------------------------------
 
 vim.o.clipboard = 'unnamedplus'
+vim.o.termguicolors = true
 
 if vim.fn.executable('fish') == 1 then
   vim.o.shell = 'fish'
@@ -164,11 +167,11 @@ vim.keymap.set('n', '<leader>tt', '<cmd>CyberdreamToggleMode<CR>', { desc = 'Tog
 
 -- Diagnostic navigation
 vim.keymap.set('n', '[e', function()
-  vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+  vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
 end, { desc = 'Previous error' })
 
 vim.keymap.set('n', ']e', function()
-  vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+  vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
 end, { desc = 'Next error' })
 
 --------------------------------------------------------------------------------
@@ -233,6 +236,29 @@ setup('colorizer', {
     tailwind_opts = { update_names = true },
   },
 })
+
+-- nvim-tree
+local nvim_tree_ok = setup('nvim-tree', {
+  sort_by = 'case_sensitive',
+  view = {
+    width = 35,
+    preserve_window_proportions = true,
+  },
+  renderer = {
+    group_empty = true,
+  },
+  filters = {
+    dotfiles = false,
+  },
+  update_focused_file = {
+    enable = true,
+    update_root = false,
+  },
+})
+if nvim_tree_ok then
+  vim.keymap.set('n', '<leader>ft', '<cmd>NvimTreeToggle<CR>', { desc = 'Toggle tree', silent = true })
+  vim.keymap.set('n', '<leader>fr', '<cmd>NvimTreeFindFile<CR>', { desc = 'Reveal file in tree', silent = true })
+end
 
 -- gitsigns
 local gitsigns_ok, gitsigns = pcall(require, 'gitsigns')
@@ -349,42 +375,63 @@ setup('lualine', {
   },
 })
 
--- treesitter
-setup('nvim-treesitter.configs', {
-  ensure_installed = {
-    'c',
-    'cpp',
-    'html',
-    'css',
-    'xml',
-    'go',
-    'lua',
-    'python',
-    'astro',
-    'svelte',
-    'rust',
-    'hcl',
-    'tsx',
-    'javascript',
-    'typescript',
-    'vimdoc',
-    'vim',
-    'bash',
-    'yaml',
-    'graphql',
-    'toml',
-    'regex',
-    'json',
-    'jsonc',
-    'markdown',
-    'markdown_inline',
-    'sql',
-    'git_config',
-    'gitignore',
-  },
-  auto_install = true,
-  highlight = { enable = true, additional_vim_regex_highlighting = { 'ruby' } },
-  indent = { enable = true, disable = { 'ruby' } },
+-- treesitter (new nvim-treesitter is just a parser installer; highlighting is built-in on 0.12+)
+setup('nvim-treesitter', {})
+local ts_parsers = {
+  'c',
+  'cpp',
+  'html',
+  'css',
+  'xml',
+  'go',
+  'lua',
+  'python',
+  'astro',
+  'svelte',
+  'rust',
+  'hcl',
+  'tsx',
+  'javascript',
+  'typescript',
+  'vimdoc',
+  'vim',
+  'bash',
+  'yaml',
+  'graphql',
+  'toml',
+  'regex',
+  'json',
+  'jsonc',
+  'markdown',
+  'markdown_inline',
+  'sql',
+  'git_config',
+  'gitignore',
+}
+
+-- Install missing parsers on startup (async, non-blocking)
+vim.api.nvim_create_autocmd('VimEnter', {
+  group = vim.api.nvim_create_augroup('ts-ensure-installed', { clear = true }),
+  callback = function()
+    local installed = {}
+    for _, p in ipairs(require('nvim-treesitter.config').get_installed('parsers')) do
+      installed[p] = true
+    end
+    local missing = vim.tbl_filter(function(p)
+      return not installed[p]
+    end, ts_parsers)
+    if #missing > 0 then
+      require('nvim-treesitter.install').install(missing, { summary = true })
+    end
+  end,
+})
+
+-- Enable treesitter highlighting and indentation for all filetypes
+vim.api.nvim_create_autocmd('FileType', {
+  group = vim.api.nvim_create_augroup('ts-highlight', { clear = true }),
+  callback = function(ev)
+    pcall(vim.treesitter.start, ev.buf)
+  end,
 })
 
 -- nvim-ts-autotag
@@ -457,11 +504,7 @@ if snacks_ok then
   end, { desc = 'Todo' })
 end
 
--- fff.nvim (lazy loads automatically via vim.g.fff)
-vim.g.fff = {
-  lazy_sync = true,
-  debug = { enabled = true, show_scores = true },
-}
+vim.g.fff = { lazy_sync = true }
 vim.keymap.set('n', '<leader>p', function()
   require('fff').find_files()
 end, { desc = 'Open file picker' })
@@ -481,16 +524,8 @@ local lsp_on_attach = function(client, bufnr)
   vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = 'Code Action' })
 end
 
--- LSP Progress notification
-local progress = (vim.defaulttable and vim.defaulttable())
-  or setmetatable({}, {
-    __index = function(t, k)
-      local v = {}
-      rawset(t, k, v)
-      return v
-    end,
-  })
-local uv = vim.uv or vim.loop
+local progress = vim.defaulttable()
+local uv = vim.uv
 vim.api.nvim_create_autocmd('LspProgress', {
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
@@ -556,7 +591,22 @@ local servers = {
   'graphql',
   'cssls',
   'tailwindcss',
+  'svelte',
 }
+
+-- Optional fallback config (disabled): ts_ls
+--[[
+pcall(vim.lsp.config, 'ts_ls', {
+  capabilities = capabilities,
+  on_attach = lsp_on_attach,
+  init_options = {
+    plugins = {
+      { name = 'typescript-svelte-plugin', location = 'node_modules/svelte-language-server' },
+    },
+  },
+})
+pcall(vim.lsp.enable, 'ts_ls')
+]]
 
 for _, server in ipairs(servers) do
   local ok = pcall(vim.lsp.config, server, { capabilities = capabilities, on_attach = lsp_on_attach })
@@ -572,7 +622,7 @@ pcall(vim.lsp.config, 'sourcekit', { on_attach = lsp_on_attach, capabilities = c
 pcall(vim.lsp.enable, 'sourcekit')
 
 --------------------------------------------------------------------------------
--- CUSTOM MODULES (if you have them)
+-- CUSTOM MODULES
 --------------------------------------------------------------------------------
 
 pcall(function()
