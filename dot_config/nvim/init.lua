@@ -1,6 +1,3 @@
--- Uses vim.pack.add() for plugin management
--- Uses vim.lsp.config() / vim.lsp.enable() for LSP
-
 vim.loader.enable()
 
 -- Must be set before plugins/keymaps
@@ -257,7 +254,7 @@ local nvim_tree_ok = setup('nvim-tree', {
 })
 if nvim_tree_ok then
   vim.keymap.set('n', '<leader>ft', '<cmd>NvimTreeToggle<CR>', { desc = 'Toggle tree', silent = true })
-  vim.keymap.set('n', '<leader>fr', '<cmd>NvimTreeFindFile<CR>', { desc = 'Reveal file in tree', silent = true })
+  vim.keymap.set('n', '<leader>n', '<cmd>NvimTreeFindFile<CR>', { desc = 'Reveal file in tree', silent = true })
 end
 
 -- gitsigns
@@ -401,7 +398,6 @@ local ts_parsers = {
   'toml',
   'regex',
   'json',
-  'jsonc',
   'markdown',
   'markdown_inline',
   'sql',
@@ -409,22 +405,61 @@ local ts_parsers = {
   'gitignore',
 }
 
--- Install missing parsers on startup (async, non-blocking)
+local function ts_missing_parsers()
+  local ok, ts_config = pcall(require, 'nvim-treesitter.config')
+  if not ok then
+    return {}
+  end
+
+  local installed = {}
+  for _, p in ipairs(ts_config.get_installed('parsers')) do
+    installed[p] = true
+  end
+
+  return vim.tbl_filter(function(p)
+    return not installed[p]
+  end, ts_parsers)
+end
+
+local function ts_install_missing_in_background()
+  if vim.env.NVIM_TS_INSTALL_CHILD == '1' then
+    return false
+  end
+
+  local missing = ts_missing_parsers()
+  if #missing == 0 then
+    return false
+  end
+
+  local lua_cmd = string.format(
+    "local ok, install = pcall(require, 'nvim-treesitter.install'); if ok then install.install(vim.json.decode(%q), { summary = true }) end",
+    vim.json.encode(missing)
+  )
+
+  vim.system({ vim.v.progpath, '--headless', '+lua ' .. lua_cmd, '+qa' }, {
+    detach = true,
+    env = { NVIM_TS_INSTALL_CHILD = '1' },
+  })
+
+  return true
+end
+
+-- Install missing parsers on startup via detached headless Neovim.
+-- Keeps current session responsive and avoids cmdline takeover.
 vim.api.nvim_create_autocmd('VimEnter', {
   group = vim.api.nvim_create_augroup('ts-ensure-installed', { clear = true }),
   callback = function()
-    local installed = {}
-    for _, p in ipairs(require('nvim-treesitter.config').get_installed('parsers')) do
-      installed[p] = true
-    end
-    local missing = vim.tbl_filter(function(p)
-      return not installed[p]
-    end, ts_parsers)
-    if #missing > 0 then
-      require('nvim-treesitter.install').install(missing, { summary = true })
-    end
+    ts_install_missing_in_background()
   end,
 })
+
+vim.api.nvim_create_user_command('TSInstallMissingBg', function()
+  if ts_install_missing_in_background() then
+    vim.notify('Treesitter parser install started in background', vim.log.levels.INFO)
+  else
+    vim.notify('No missing Treesitter parsers', vim.log.levels.INFO)
+  end
+end, { desc = 'Install missing Treesitter parsers in detached headless Neovim' })
 
 -- Enable treesitter highlighting and indentation for all filetypes
 vim.api.nvim_create_autocmd('FileType', {
