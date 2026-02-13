@@ -3,6 +3,13 @@ compinit
 
 export EDITOR=nvim
 
+{{- if eq .chezmoi.os "darwin" }}
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export ANDROID_SDK_ROOT="$ANDROID_HOME"
+export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+{{- end }}
+
 # for Lazygit config to work
 export XDG_CONFIG_HOME="$HOME/.config"
 

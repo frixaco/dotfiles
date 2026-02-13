@@ -2,6 +2,13 @@ set -g fish_greeting
 
 set -gx EDITOR nvim
 
+{{- if eq .chezmoi.os "darwin" }}
+set -gx JAVA_HOME /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+set -gx ANDROID_HOME "$HOME/Library/Android/sdk"
+set -gx ANDROID_SDK_ROOT "$ANDROID_HOME"
+fish_add_path "$ANDROID_HOME/platform-tools" "$ANDROID_HOME/emulator"
+{{- end }}
+
 # for Lazygit config to work
 set -gx XDG_CONFIG_HOME "$HOME/.config"
 
