@@ -5,3 +5,85 @@ bun = 'latest'
 uv = 'latest'
 zig = 'latest'
 usage = 'latest'
+
+"go:golang.org/x/tools/gopls" = "v0.21.1"
+"github:JohnnyMorganz/StyLua" = "v2.3.1"
+"github:clangd/clangd" = "21.1.8"
+
+"npm:@olrtg/emmet-language-server" = "2.8.0"
+"npm:vscode-langservers-extracted" = "4.10.0"
+"npm:@tailwindcss/language-server" = "0.14.29"
+"npm:typescript-language-server" = "5.1.3"
+"npm:@typescript/native-preview" = "latest"
+"npm:prettier" = "latest"
+"npm:eslint" = "latest"
+"github:LuaLS/lua-language-server" = "3.17.1"
+
+[settings]
+npm.package_manager = "bun"
+ignored_config_paths = ["~/.local/share/chezmoi"]
+
+[tasks."lsp:install"]
+description = "Install LSP tools (mise + uv + rustup)"
+run = [
+  "mise install",
+  "uv tool install --upgrade ruff==0.15.1",
+  "uv tool install --upgrade ty==0.0.17",
+  "uv tool install --upgrade clang-format==21.1.8",
+  "rustup component add rust-analyzer --toolchain stable",
+]
+
+[tasks."lsp:doctor"]
+description = "Check LSP binaries on PATH"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+bins=(
+  rust-analyzer
+  gopls
+  stylua
+  clangd
+  clang-format
+  lua-language-server
+  ruff
+  ty
+  emmet-language-server
+  vscode-eslint-language-server
+  vscode-html-language-server
+  vscode-css-language-server
+  tailwindcss-language-server
+  typescript-language-server
+  tsgo
+  prettier
+  eslint
+)
+for bin in "${bins[@]}"; do
+  printf "%s -> %s\n" "$bin" "$(command -v "$bin")"
+done
+'''
+run_windows = '''
+where rust-analyzer
+where gopls
+where stylua
+where clangd
+where clang-format
+where lua-language-server
+where ruff
+where ty
+where emmet-language-server
+where vscode-eslint-language-server
+where vscode-html-language-server
+where vscode-css-language-server
+where tailwindcss-language-server
+where typescript-language-server
+where tsgo
+where prettier
+where eslint
+'''
+
+[tasks."lsp:sync"]
+description = "Install then verify LSP stack"
+run = [
+  { task = "lsp:install" },
+  { task = "lsp:doctor" },
+]

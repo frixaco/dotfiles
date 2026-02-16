@@ -91,14 +91,12 @@ local ok_pack_add, pack_add_err = pcall(vim.pack.add, {
   { src = 'https://github.com/nvim-treesitter/nvim-treesitter-context' },
 
   -- LSP tooling
-  { src = 'https://github.com/williamboman/mason.nvim' },
   { src = 'https://github.com/neovim/nvim-lspconfig' }, -- provides default configs
 
   -- Completion
   { src = 'https://github.com/saghen/blink.cmp', version = 'v1.8.0' },
 
   -- Picker & utilities
-  { src = 'https://github.com/folke/snacks.nvim' },
   { src = 'https://github.com/nvim-tree/nvim-tree.lua' },
 
   -- File picker
@@ -163,6 +161,14 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>tt', '<cmd>CyberdreamToggleMode<CR>', { desc = 'Toggle theme mode', silent = true })
 
 -- Diagnostic navigation
+vim.keymap.set('n', '[d', function()
+  vim.diagnostic.jump({ count = -1 })
+end, { desc = 'Previous diagnostic' })
+
+vim.keymap.set('n', ']d', function()
+  vim.diagnostic.jump({ count = 1 })
+end, { desc = 'Next diagnostic' })
+
 vim.keymap.set('n', '[e', function()
   vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
 end, { desc = 'Previous error' })
@@ -316,7 +322,7 @@ end
 local conform_ok, conform = pcall(require, 'conform')
 if conform_ok then
   conform.setup({
-    format_on_save = { timeout_ms = 1000, lsp_format = 'fallback' },
+    format_on_save = false,
     formatters_by_ft = {
       lua = { 'stylua' },
       python = function(bufnr)
@@ -344,6 +350,10 @@ if conform_ok then
       markdown = { 'prettier', 'biome', stop_after_first = true },
     },
   })
+
+  vim.keymap.set({ 'n', 'v' }, '<leader>f', function()
+    conform.format({ async = true, lsp_format = 'fallback' })
+  end, { desc = 'Format buffer/range' })
 end
 
 -- lualine
@@ -477,9 +487,6 @@ setup('nvim-ts-autotag', {
 -- treesitter-context
 setup('treesitter-context', { enable = false })
 
--- mason
-setup('mason', { ui = { backdrop = 100 } })
-
 -- blink.cmp
 local blink_ok = setup('blink.cmp', {
   appearance = { use_nvim_cmp_as_default = true, nerd_font_variant = 'mono' },
@@ -495,54 +502,13 @@ local blink_ok = setup('blink.cmp', {
   sources = { default = { 'lsp', 'path', 'snippets', 'buffer' } },
 })
 
--- snacks
-local snacks_ok = setup('snacks', {
-  bigfile = { enabled = true },
-  notifier = { enabled = true },
-  statuscolumn = { enabled = true },
-  picker = {
-    layout = { layout = { backdrop = false } },
-    enabled = true,
-    sources = {
-      explorer = { ignored = true, hidden = true, follow = true },
-      files = { ignored = false, show_empty = true, hidden = true, follow = true },
-    },
-    exclude = { 'node_modules', '.git', '.venv', '.next' },
-  },
-})
-
--- Snacks keymaps (only if loaded)
-if snacks_ok then
-  vim.keymap.set('n', '<leader>l', function()
-    Snacks.picker.lines()
-  end, { desc = 'Grep Buffer' })
-  vim.keymap.set('n', '<leader>fg', function()
-    Snacks.picker.grep()
-  end, { desc = 'Grep Files' })
-  vim.keymap.set('n', '<leader>fh', function()
-    Snacks.picker.help()
-  end, { desc = 'Help Pages' })
-  vim.keymap.set('n', 'gd', function()
-    Snacks.picker.lsp_definitions()
-  end, { desc = 'Goto Definition' })
-  vim.keymap.set('n', 'gr', function()
-    Snacks.picker.lsp_references()
-  end, { nowait = true, desc = 'References' })
-  vim.keymap.set('n', 'gI', function()
-    Snacks.picker.lsp_implementations()
-  end, { desc = 'Goto Implementation' })
-  vim.keymap.set('n', 'gy', function()
-    Snacks.picker.lsp_type_definitions()
-  end, { desc = 'Goto T[y]pe Definition' })
-  vim.keymap.set('n', '<leader>st', function()
-    Snacks.picker.todo_comments()
-  end, { desc = 'Todo' })
-end
-
 vim.g.fff = { lazy_sync = true }
-vim.keymap.set('n', '<leader>p', function()
+vim.keymap.set('n', 'ff', function()
   require('fff').find_files()
-end, { desc = 'Open file picker' })
+end, { desc = 'Find files' })
+vim.keymap.set('n', 'fg', function()
+  require('fff').live_grep()
+end, { desc = 'Live grep' })
 
 --------------------------------------------------------------------------------
 -- NATIVE LSP (vim.lsp.config / vim.lsp.enable)
@@ -553,53 +519,15 @@ local lsp_on_attach = function(client, bufnr)
   local map = function(keys, func, desc)
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = 'LSP: ' .. desc })
   end
+  map('gd', vim.lsp.buf.definition, 'Goto Definition')
+  map('gr', vim.lsp.buf.references, 'References')
+  map('gI', vim.lsp.buf.implementation, 'Goto Implementation')
+  map('gy', vim.lsp.buf.type_definition, 'Goto Type Definition')
   map('<leader>e', vim.diagnostic.open_float, 'Open Floating Diagnostic')
   map('<leader>r', vim.lsp.buf.rename, 'Rename')
   map('K', vim.lsp.buf.hover, 'Hover Documentation')
   vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = 'Code Action' })
 end
-
-local progress = vim.defaulttable()
-local uv = vim.uv
-vim.api.nvim_create_autocmd('LspProgress', {
-  callback = function(ev)
-    local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    local value = ev.data.params.value
-    if not client or type(value) ~= 'table' then
-      return
-    end
-
-    local p = progress[client.id]
-    for i = 1, #p + 1 do
-      if i == #p + 1 or p[i].token == ev.data.params.token then
-        p[i] = {
-          token = ev.data.params.token,
-          msg = ('[%3d%%] %s%s'):format(
-            value.kind == 'end' and 100 or value.percentage or 100,
-            value.title or '',
-            value.message and (' **%s**'):format(value.message) or ''
-          ),
-          done = value.kind == 'end',
-        }
-        break
-      end
-    end
-
-    local msg = {}
-    progress[client.id] = vim.tbl_filter(function(v)
-      return table.insert(msg, v.msg) or not v.done
-    end, p)
-
-    local spinner = { '⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏' }
-    vim.notify(table.concat(msg, '\n'), vim.log.levels.INFO, {
-      id = 'lsp_progress',
-      title = client.name,
-      opts = function(notif)
-        notif.icon = #progress[client.id] == 0 and ' ' or spinner[math.floor(uv.hrtime() / (1e6 * 80)) % #spinner + 1]
-      end,
-    })
-  end,
-})
 
 -- Get capabilities from blink.cmp (if available)
 local capabilities = {}
@@ -629,6 +557,8 @@ local servers = {
   'svelte',
 }
 
+local server_overrides = {}
+
 -- Optional fallback config (disabled): ts_ls
 --[[
 pcall(vim.lsp.config, 'ts_ls', {
@@ -644,7 +574,12 @@ pcall(vim.lsp.enable, 'ts_ls')
 ]]
 
 for _, server in ipairs(servers) do
-  local ok = pcall(vim.lsp.config, server, { capabilities = capabilities, on_attach = lsp_on_attach })
+  local config = vim.tbl_deep_extend('force', {
+    capabilities = capabilities,
+    on_attach = lsp_on_attach,
+  }, server_overrides[server] or {})
+
+  local ok = pcall(vim.lsp.config, server, config)
   if ok then
     pcall(vim.lsp.enable, server)
   else
