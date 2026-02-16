@@ -13,7 +13,7 @@ export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
 # for Lazygit config to work
 export XDG_CONFIG_HOME="$HOME/.config"
 
-export PATH="$HOME/.amp/bin:$HOME/.bun/bin:$HOME/.opencode/bin:$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.bun/bin:$HOME/.amp/bin:$HOME/.opencode/bin:$PATH"
 
 alias l="eza --color=always --icons --all --long --time modified --sort modified --no-permissions --octal-permissions --git --smart-group --git-repos"
 alias v="nvim"
@@ -21,12 +21,14 @@ alias en="cd ~/.config/nvim && nvim"
 alias sf="source ~/.config/zsh/.zshrc"
 alias c="clear"
 alias ef="nvim ~/.config/zsh/.zshrc"
+alias cc="claude"
+alias oc="opencode"
 # alias amp="bunx @sourcegraph/amp --ide"
 # alias opencode="bunx opencode-ai"
 # alias claude="bunx @anthropic-ai/claude-code"
 # bun i -g @openai/codex
 # bun i -g @mariozechner/pi-coding-agent
-alias se="source .venv/bin/activate.fish"
+alias se="source .venv/bin/activate"
 
 ccd() {
   cd "$(chezmoi source-path)"
@@ -67,6 +69,11 @@ envsource() {
     return 1
   fi
 
+  if [ ! -f "$1" ]; then
+    echo "Error: File not found: $1"
+    return 1
+  fi
+
   while IFS= read -r line || [ -n "$line" ]; do
     case "$line" in
       \#*|"") continue ;;
@@ -78,7 +85,6 @@ envsource() {
     value="${value#\'}" ; value="${value%\'}"
 
     export "$key=$value"
-    echo "Exported key $key"
   done < "$1"
 }
 
@@ -105,6 +111,6 @@ eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 eval "$(fzf --zsh)"
 eval "$(mise activate zsh)"
-{{ if .work -}}
+{{ if and .work (eq .chezmoi.os "darwin") -}}
 eval "$(rbenv init - zsh)"
 {{- end -}}
