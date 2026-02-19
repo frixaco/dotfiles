@@ -37,3 +37,12 @@ ln -sf ~/.config/AGENTS.md ~/.config/amp/AGENTS.md && \
 ln -sf ~/.config/AGENTS.md ~/.factory/AGENTS.md && \
 ln -sf ~/.config/AGENTS.md ~/.codex/AGENTS.md
 ```
+
+**Agent Skills Symlinks**
+
+Skills live in `~/.agents/skills/` (shared by Codex + OpenCode). Amp reads from `~/.config/agents/skills/`, so symlink:
+
+```bash
+mkdir -p ~/.agents/skills ~/.config/agents/skills && \
+ln -sf ~/.agents/skills/kitty-tui-control ~/.config/agents/skills/kitty-tui-control
+```
