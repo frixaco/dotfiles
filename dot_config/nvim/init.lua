@@ -485,7 +485,7 @@ setup('nvim-ts-autotag', {
 })
 
 -- treesitter-context
-setup('treesitter-context', { enable = false })
+setup('treesitter-context', { enable = true })
 
 -- blink.cmp
 local blink_ok = setup('blink.cmp', {
