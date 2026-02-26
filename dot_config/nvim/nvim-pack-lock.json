@@ -6,7 +6,7 @@
       "version": "'v1.8.0'"
     },
     "conform.nvim": {
-      "rev": "c2526f1cde528a66e086ab1668e996d162c75f4f",
+      "rev": "e969e302bced7ffb9a0a0323629f31feb0ca35a6",
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "cyberdream.nvim": {
@@ -14,7 +14,7 @@
       "src": "https://github.com/scottmckendry/cyberdream.nvim"
     },
     "fff.nvim": {
-      "rev": "46e87e5928bbd94c3459227ba28c2878dad2fa56",
+      "rev": "0a993d7a30805b3c2e253080c9a9a0fe77a8637c",
       "src": "https://github.com/dmtrKovalenko/fff.nvim"
     },
     "gitsigns.nvim": {
@@ -26,7 +26,7 @@
       "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
     "mini.indentscope": {
-      "rev": "0308f949f31769e509696af5d5f91cebb2159c69",
+      "rev": "065c7713fb4cd0124fe1462f15f27feeb8b04406",
       "src": "https://github.com/echasnovski/mini.indentscope"
     },
     "nvim-autopairs": {
@@ -34,19 +34,19 @@
       "src": "https://github.com/windwp/nvim-autopairs"
     },
     "nvim-colorizer.lua": {
-      "rev": "338409dd8a6ed74767bad3eb5269f1b903ffb3cf",
+      "rev": "ae0d66307a5b431c7b633806eb27769334ac5f05",
       "src": "https://github.com/catgoose/nvim-colorizer.lua"
     },
     "nvim-lspconfig": {
-      "rev": "44acfe887d4056f704ccc4f17513ed41c9e2b2e6",
+      "rev": "a40d22e75d951ad2fcf236ceb013d88f81d2cc9a",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-tree.lua": {
-      "rev": "e11ce83ed9a00f065bf676ae4e6c261c766989ba",
+      "rev": "ae16aab5fd1792b97758622b9fb53408ec804fd8",
       "src": "https://github.com/nvim-tree/nvim-tree.lua"
     },
     "nvim-treesitter": {
-      "rev": "ecdae44baefeffceade8b0c752d80ececad28e76",
+      "rev": "0f5b204603234a523fafa8f6b860fd36f80a23f6",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-treesitter-context": {
@@ -58,7 +58,7 @@
       "src": "https://github.com/windwp/nvim-ts-autotag"
     },
     "nvim-web-devicons": {
-      "rev": "746ffbb17975ebd6c40142362eee1b0249969c5c",
+      "rev": "737cf6c657898d0c697311d79d361288a1343d50",
       "src": "https://github.com/nvim-tree/nvim-web-devicons"
     },
     "plenary.nvim": {
@@ -70,7 +70,7 @@
       "src": "https://github.com/folke/todo-comments.nvim"
     },
     "undotree": {
-      "rev": "f68aed28c8ff1294b012dfadaced2084dc045870",
+      "rev": "0e6d41d55ad147407e4ba00a292973de8db0b836",
       "src": "https://github.com/jiaoshijie/undotree"
     },
     "vim-sleuth": {

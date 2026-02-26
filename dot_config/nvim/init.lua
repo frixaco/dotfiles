@@ -555,6 +555,7 @@ local servers = {
   'cssls',
   'tailwindcss',
   'svelte',
+  'wgsl_analyzer',
 }
 
 local server_overrides = {}

@@ -1,6 +1,6 @@
 ---
 name: kitty-tui-control
-description: Runs and controls TUI applications inside Kitty terminal tabs using Kitty's remote control interface. Use when asked to run a TUI app, start a dev server in a new tab, or check/inspect output from a running TUI application.
+description: Runs and controls TUI/CLI applications inside Kitty terminal tabs using Kitty's remote control interface. Use when asked to run a TUI app, start a dev server in a new tab, or check/inspect output from a running TUI application.
 ---
 
 # Kitty TUI Control
@@ -12,12 +12,14 @@ kitten @ launch --type tab --copy-env --cwd=current --tab-title "NAME" --hold co
 ```
 
 **Examples:**
+
 ```sh
 kitten @ launch --type tab --copy-env --cwd=current --tab-title "dev-server" --hold bun dev
 kitten @ launch --type tab --copy-env --cwd /Users/frixa/projects/myapp --tab-title "dev-server" --hold bun dev
 ```
 
 **Flags:**
+
 - `--type tab` - Create new tab (SPACE separator, not `=`)
 - `--copy-env` - Copy environment (PATH with mise/bun/node)
 - `--cwd=current` - Use current window's working directory
@@ -39,11 +41,13 @@ kitten @ launch --type tab --tab-title "NAME" --hold fish -ic "cd /path/to/proje
 ## Inspect a Running TUI App
 
 **List all windows:**
+
 ```sh
 kitten @ ls | jq -r '.[] | .tabs[] | .windows[] | "id:\(.id) | title: \(.title) | process: \(.foreground_processes[0].cmdline | join(" "))"'
 ```
 
 **Capture window output:**
+
 ```sh
 kitten @ get-text --match "id:N" --extent screen   # visible only
 kitten @ get-text --match "id:N" --extent all      # include scrollback
