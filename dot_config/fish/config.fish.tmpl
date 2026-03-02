@@ -105,3 +105,7 @@ mise activate fish | source
 {{ if and .work (eq .chezmoi.os "darwin") -}}
 rbenv init - fish | source
 {{- end -}}
+
+{{- if eq .chezmoi.os "darwin" }}
+source ~/.orbstack/shell/init2.fish 2>/dev/null || :
+{{- end }}
