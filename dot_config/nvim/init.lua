@@ -348,6 +348,7 @@ if conform_ok then
       shell = { 'shfmt', 'shellcheck' },
       zsh = { 'shfmt', 'shellcheck' },
       markdown = { 'prettier', 'biome', stop_after_first = true },
+      rust = { 'rustfmt', lsp_format = "fallback" }
     },
   })
 

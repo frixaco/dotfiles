@@ -15,6 +15,12 @@
 
 - `fish_config theme save cyberdream`
 
+- AI agents:
+  ```
+  amp, opencode, claude - bash script install
+  bun i -g @openai/codex @mariozechner/pi-coding-agent
+  ```
+
 **AGENTS.md Symlinks**
 
 All AI agent tools share a single `~/.config/AGENTS.md` via symlinks:
