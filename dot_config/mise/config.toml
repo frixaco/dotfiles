@@ -6,30 +6,29 @@ uv = 'latest'
 zig = 'latest'
 usage = 'latest'
 
-"go:golang.org/x/tools/gopls" = "v0.21.1"
-"github:JohnnyMorganz/StyLua" = "v2.3.1"
-"github:clangd/clangd" = "21.1.8"
-
-"npm:@olrtg/emmet-language-server" = "2.8.0"
-"npm:vscode-langservers-extracted" = "4.10.0"
-"npm:@tailwindcss/language-server" = "0.14.29"
-"npm:typescript-language-server" = "5.1.3"
-"npm:@typescript/native-preview" = "latest"
-"npm:prettier" = "latest"
-"npm:eslint" = "latest"
-"github:LuaLS/lua-language-server" = "3.17.1"
+"github:clangd/clangd" = "latest"
+"aqua:LuaLS/lua-language-server" = "latest"
 
 [settings]
 npm.package_manager = "bun"
 ignored_config_paths = ["~/.local/share/chezmoi"]
 
 [tasks."lsp:install"]
-description = "Install LSP tools (mise + uv + rustup)"
+description = "Install LSP tools (mise + uv + bun + rustup)"
 run = [
   "mise install",
-  "uv tool install --upgrade ruff==0.15.1",
-  "uv tool install --upgrade ty==0.0.17",
-  "uv tool install --upgrade clang-format==21.1.8",
+  "GOBIN=\"$HOME/.local/bin\" go install golang.org/x/tools/gopls@latest",
+  "uv tool install --upgrade ruff",
+  "uv tool install --upgrade ty",
+  "bun install -g @johnnymorganz/stylua-bin@latest",
+  "bun install -g @olrtg/emmet-language-server@latest",
+  "bun install -g vscode-langservers-extracted@latest",
+  "bun install -g @tailwindcss/language-server@latest",
+  "bun install -g typescript-language-server@latest",
+  "bun install -g @typescript/native-preview@latest",
+  "bun install -g prettier@latest",
+  "bun install -g eslint@latest",
+  "uv tool install --upgrade clang-format",
   "rustup component add rust-analyzer --toolchain stable",
 ]
 
