@@ -1,0 +1,39 @@
+# Primary model for all Codex sessions
+model = "gpt-5.4"
+# How much reasoning effort the model applies (none|minimal|low|medium|high|xhigh)
+model_reasoning_effort = "high"
+# Reasoning effort specifically for plan mode
+plan_mode_reasoning_effort = "high"
+# Communication style (none|friendly|pragmatic)
+personality = "pragmatic"
+
+# When to ask before running commands (untrusted|on-request|never)
+# "never" = full autonomy, no approval prompts
+approval_policy = "never"
+# Filesystem/network sandbox (read-only|workspace-write|danger-full-access)
+# "danger-full-access" = no sandbox restrictions at all
+sandbox_mode = "danger-full-access"
+
+# Web search mode (disabled|cached|live); "live" fetches real-time results
+# Note: defaults to "live" anyway with danger-full-access, but set explicitly
+web_search = "live"
+# URI scheme for clickable file citations (vscode|cursor|none|etc.)
+# file_opener = "nvim"
+
+[features]
+# Spawn parallel sub-agents for complex tasks (experimental; off by default)
+multi_agent = true
+
+[agents]
+# Max nesting depth for spawned agents; default is 1, raised to allow deeper chains
+max_depth = 2
+
+[mcp_servers.chrome-devtools]
+# Chrome DevTools MCP server for browser control/inspection
+command = "bunx"
+args = ["chrome-devtools-mcp@latest", "--slim", "--headless"]
+
+[projects."/Users/frixa"]
+# Trust level for this project path (trusted|untrusted)
+# Trusted = loads project-scoped .codex/ config layers
+trust_level = "trusted"
