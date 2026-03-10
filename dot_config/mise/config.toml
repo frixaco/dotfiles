@@ -11,13 +11,12 @@ usage = 'latest'
 
 [settings]
 npm.package_manager = "bun"
-ignored_config_paths = ["~/.local/share/chezmoi"]
 
 [tasks."lsp:install"]
 description = "Install LSP tools (mise + uv + bun + rustup)"
 run = [
   "mise install",
-  "GOBIN=\"$HOME/.local/bin\" go install golang.org/x/tools/gopls@latest",
+  "go install golang.org/x/tools/gopls@latest",
   "uv tool install --upgrade ruff",
   "uv tool install --upgrade ty",
   "bun install -g @johnnymorganz/stylua-bin@latest",
