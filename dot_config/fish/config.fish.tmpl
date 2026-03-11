@@ -22,7 +22,8 @@ alias c="clear"
 alias ef="nvim ~/.config/fish/config.fish"
 alias cc="claude"
 alias oc="opencode"
-alias cy="codex --yolo"
+# alias cy="codex --yolo"
+alias cy='codex -c model="gpt-5.4" -c model_reasoning_effort="high" -c plan_mode_reasoning_effort="high" -c personality="pragmatic" -c approval_policy="never" -c sandbox_mode="danger-full-access" -c web_search="live" -c features.multi_agent=true -c agents.max_depth=2 -c '\''mcp_servers.chrome-devtools.command="bunx"'\'' -c '\''mcp_servers.chrome-devtools.args=["chrome-devtools-mcp@latest","--slim","--headless"]'\'''
 alias se="source .venv/bin/activate.fish"
 
 function ccd

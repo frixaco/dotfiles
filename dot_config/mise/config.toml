@@ -2,6 +2,7 @@
 node = 'latest'
 go = 'latest'
 bun = 'latest'
+deno = 'latest'
 uv = 'latest'
 zig = 'latest'
 usage = 'latest'
