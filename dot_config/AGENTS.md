@@ -10,7 +10,6 @@
 - One logical change per task; prefer many small tasks
 - State assumptions before writing code
 - Fix root causes, not symptoms
-- Keep files under ~500 LOC; split when needed
 
 ## Code Rules
 
