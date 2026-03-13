@@ -3,7 +3,7 @@
   "amp.mcpServers": {
     "chrome-devtools": {
       "command": "bunx",
-      "args": ["chrome-devtools-mcp@latest", "--slim", "--headless"]
+      "args": ["chrome-devtools-mcp@latest"]
     },
     "fff": {
       "command": "fff-mcp",
