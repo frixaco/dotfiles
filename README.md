@@ -25,30 +25,25 @@
 
 All AI agent tools share a single `~/.config/AGENTS.md` via symlinks:
 
-| Tool        | Symlink Path                   |
-| ----------- | ------------------------------ |
-| claude code | `~/.claude/CLAUDE.md`          |
-| opencode    | `~/.config/opencode/AGENTS.md` |
-| pi          | `~/.pi/agent/AGENTS.md`        |
-| ampcode     | `~/.config/amp/AGENTS.md`      |
-| droid       | `~/.factory/AGENTS.md`         |
-| codex       | `~/.codex/AGENTS.md`           |
-
 ```bash
-mkdir -p ~/.claude ~/.config/opencode ~/.pi/agent ~/.config/amp ~/.factory ~/.codex && \
-ln -sf ~/.config/AGENTS.md ~/.claude/CLAUDE.md && \
-ln -sf ~/.config/AGENTS.md ~/.config/opencode/AGENTS.md && \
-ln -sf ~/.config/AGENTS.md ~/.pi/agent/AGENTS.md && \
-ln -sf ~/.config/AGENTS.md ~/.config/amp/AGENTS.md && \
-ln -sf ~/.config/AGENTS.md ~/.factory/AGENTS.md && \
-ln -sf ~/.config/AGENTS.md ~/.codex/AGENTS.md
+mkdir -p \
+  ~/.claude \
+  ~/.config/opencode \
+  ~/.pi/agent \
+  ~/.config/amp \
+  ~/.factory \
+  ~/.codex && \
+ln -sfn ~/.config/AGENTS.md ~/.claude/CLAUDE.md && \
+ln -sfn ~/.config/AGENTS.md ~/.config/opencode/AGENTS.md && \
+ln -sfn ~/.config/AGENTS.md ~/.pi/agent/AGENTS.md && \
+ln -sfn ~/.config/AGENTS.md ~/.config/amp/AGENTS.md && \
+ln -sfn ~/.config/AGENTS.md ~/.factory/AGENTS.md && \
+ln -sfn ~/.config/AGENTS.md ~/.codex/AGENTS.md
 ```
 
-**Agent Skills Symlinks**
-
-Skills live in `~/.agents/skills/` (shared by Codex + OpenCode). Amp reads from `~/.config/agents/skills/`, so symlink:
+Skills live in `~/.agents/skills/` (Amp, Codex, OpenCode, Pi). F*ck Claude Code for using `~/.claude/skills`:
 
 ```bash
-mkdir -p ~/.agents/skills ~/.config/agents/skills && \
-ln -sf ~/.agents/skills/kitty-tui-control ~/.config/agents/skills/kitty-tui-control
+rm -rf ~/.claude/skills
+ln -s ~/.agents/skills ~/.claude/skills
 ```
