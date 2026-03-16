@@ -30,5 +30,10 @@
 #  https://developer.1password.com/docs/ssh/agent/config
 [[ssh-keys]]
 vault = "Personal"
-item = "SSH-mac"
-
+item = {{- if eq .chezmoi.os "windows" -}}
+"SSH-pc"
+{{- else if eq .chezmoi.os "linux" -}}
+"SSH-mac"
+{{- else if eq .chezmoi.os "darwin" -}}
+"SSH-mac"
+{{- end }}
