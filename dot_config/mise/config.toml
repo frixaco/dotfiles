@@ -86,3 +86,81 @@ run = [
   { task = "lsp:install" },
   { task = "lsp:doctor" },
 ]
+
+[tasks."ai:install"]
+description = "Install/update AI coding agents"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Install amp if missing
+if ! command -v amp &> /dev/null; then
+    curl -fsSL https://ampcode.com/install.sh | bash
+fi
+
+# Install claude if missing
+if ! command -v claude &> /dev/null; then
+    curl -fsSL https://claude.ai/install.sh | bash
+fi
+
+# Install opencode via bun if missing
+if ! command -v opencode &> /dev/null; then
+    bun install -g opencode-ai
+fi
+
+# Update all
+amp update
+claude update
+bun i -g @mariozechner/pi-coding-agent @openai/codex droid opencode-ai
+'''
+
+run_windows = '''
+# Install amp if missing
+if (!(Get-Command amp -ErrorAction SilentlyContinue)) {
+    irm https://ampcode.com/install.ps1 | iex
+}
+
+# Install claude if missing
+if (!(Get-Command claude -ErrorAction SilentlyContinue)) {
+    irm https://claude.ai/install.ps1 | iex
+}
+
+# Install opencode via bun if missing
+if (!(Get-Command opencode -ErrorAction SilentlyContinue)) {
+    bun install -g opencode-ai
+}
+
+# Update all
+amp update
+claude update
+bun i -g @mariozechner/pi-coding-agent @openai/codex droid opencode-ai
+'''
+
+[tasks."ai:doctor"]
+description = "Check AI agent binaries on PATH"
+run = '''
+#!/usr/bin/env bash
+bins=(amp claude opencode codex pi droid)
+for bin in "${bins[@]}"; do
+  printf "%s -> %s\n" "$bin" "$(command -v "$bin" 2>/dev/null || echo "NOT FOUND")"
+done
+'''
+
+run_windows = '''
+$bins = @("amp", "claude", "opencode", "codex", "pi", "droid")
+foreach ($bin in $bins) {
+    $path = Get-Command $bin -ErrorAction SilentlyContinue
+    if ($path) {
+        Write-Output "$bin -> $($path.Source)"
+    } else {
+        Write-Output "$bin -> NOT FOUND"
+    }
+}
+'''
+
+[tasks."ai:sync"]
+description = "Install then verify AI agents"
+run = [
+  { task = "ai:install" },
+  { task = "ai:doctor" },
+]
