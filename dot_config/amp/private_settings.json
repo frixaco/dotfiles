@@ -3,11 +3,14 @@
   "amp.mcpServers": {
     "chrome-devtools": {
       "command": "bunx",
-      "args": ["chrome-devtools-mcp@latest"]
+      "args": [
+        "chrome-devtools-mcp@latest"
+      ]
     },
     "fff": {
       "command": "fff-mcp",
       "args": []
     }
-  }
+  },
+  "amp.agent.deepReasoningEffort": "xhigh"
 }
