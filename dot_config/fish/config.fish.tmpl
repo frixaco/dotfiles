@@ -29,6 +29,13 @@ alias cc="claude"
 alias oc="opencode"
 alias se="source .venv/bin/activate.fish"
 
+function theme-dark
+    set -gx BAT_THEME cyberdream
+end
+function theme-light
+    set -gx BAT_THEME cyberdream-light
+end
+
 function cy
     codex \
         -c model="gpt-5.4" \

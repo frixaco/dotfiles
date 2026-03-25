@@ -3166,7 +3166,9 @@ enabled_layouts splits,tall,stack
 
 font_size 14
 
-include themes/cyberdream.conf
+include dark-theme.auto.conf
+include light-theme.auto.conf
+include no-preference-theme.auto.conf
 
 [[ if eq .chezmoi.os "darwin" -]]
 shell /opt/homebrew/bin/fish --login --interactive

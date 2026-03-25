@@ -47,3 +47,9 @@ Skills live in `~/.agents/skills/` (Amp, Codex, OpenCode, Pi). F*ck Claude Code 
 rm -rf ~/.claude/skills
 ln -s ~/.agents/skills ~/.claude/skills
 ```
+
+**Theme**
+
+- `Fish` - manual, `fish_config theme save cyberdream-light`
+- Run `theme-dark` or `theme-light` to switch themes for Bat/Delta
+- `Lazygit` - manual edit config file and pass either `--dark` or `--light` in pager option

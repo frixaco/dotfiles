@@ -1,49 +1,50 @@
-# LIGHT THEME
-# gui:
-#     border: rounded
-#     theme:
-#         activeBorderColor:
-#             - "#5ef1ff"
-#         inactiveBorderColor:
-#             - "#7b8496"
-#         searchingActiveBorderColor:
-#             - "#ff5ef1"
-#         optionsTextColor:
-#             - "#3c4048"
-#         selectedLineBgColor:
-#             - "#3c4048"
-#         cherryPickedCommitBgColor:
-#             - "#3c4048"
-#         cherryPickedCommitFgColor:
-#             - "#ff5ea0"
-#         unstagedChangesColor:
-#             - "#ffbd5e"
-#         defaultFgColor:
-#             - "#ffffff"
-
-# DARK THEME
-gui:
-  border: square
-  theme:
-    activeBorderColor:
-      - "#5ef1ff"
-    inactiveBorderColor:
-      - "#7b8496"
-    searchingActiveBorderColor:
-      - "#ff5ef1"
-    optionsTextColor:
-      - "#3c4048"
-    selectedLineBgColor:
-      - "#3c4048"
-    cherryPickedCommitBgColor:
-      - "#3c4048"
-    cherryPickedCommitFgColor:
-      - "#ff5ea0"
-    unstagedChangesColor:
-      - "#ffbd5e"
-    defaultFgColor:
-      - "#ffffff"
 git:
   pagers:
     - colorArg: always
-      pager: delta --dark --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+      pager: delta --light --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+
+# LIGHT THEME
+gui:
+  border: rounded
+  theme:
+    activeBorderColor:
+      - "#008c99"
+    inactiveBorderColor:
+      - "#7b8496"
+    searchingActiveBorderColor:
+      - "#d100bf"
+    optionsTextColor:
+      - "#acacac"
+    selectedLineBgColor:
+      - "#acacac"
+    cherryPickedCommitBgColor:
+      - "#acacac"
+    cherryPickedCommitFgColor:
+      - "#f40064"
+    unstagedChangesColor:
+      - "#d17c00"
+    defaultFgColor:
+      - "#16181a"
+
+# # DARK THEME
+# gui:
+#   border: square
+#   theme:
+#     activeBorderColor:
+#       - "#5ef1ff"
+#     inactiveBorderColor:
+#       - "#7b8496"
+#     searchingActiveBorderColor:
+#       - "#ff5ef1"
+#     optionsTextColor:
+#       - "#3c4048"
+#     selectedLineBgColor:
+#       - "#3c4048"
+#     cherryPickedCommitBgColor:
+#       - "#3c4048"
+#     cherryPickedCommitFgColor:
+#       - "#ff5ea0"
+#     unstagedChangesColor:
+#       - "#ffbd5e"
+#     defaultFgColor:
+#       - "#ffffff"
