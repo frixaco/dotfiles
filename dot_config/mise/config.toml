@@ -105,10 +105,6 @@ if ! command -v opencode &> /dev/null; then
     bun install -g opencode-ai
 fi
 
-if ! command -v hermes &> /dev/null; then
-    curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
-fi
-
 amp update
 claude update
 bun i -g @mariozechner/pi-coding-agent @openai/codex droid opencode-ai
