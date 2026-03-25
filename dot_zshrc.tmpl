@@ -14,6 +14,11 @@ export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
 export XDG_CONFIG_HOME="$HOME/.config"
 
 export PATH="$HOME/.local/bin:$HOME/.bun/bin:$HOME/.amp/bin:$HOME/.opencode/bin:$PATH"
+{{- if eq .chezmoi.os "darwin" }}
+export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
+{{- else if eq .chezmoi.os "linux" }}
+export PATH="$PATH:/usr/local/bin/obsidian"
+{{- end }}
 
 alias l="eza --color=always --icons --all --long --time modified --sort modified --no-permissions --octal-permissions --git --smart-group --git-repos"
 alias v="nvim"

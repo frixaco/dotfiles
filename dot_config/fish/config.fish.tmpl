@@ -13,6 +13,11 @@ fish_add_path "$ANDROID_HOME/platform-tools" "$ANDROID_HOME/emulator"
 set -gx XDG_CONFIG_HOME "$HOME/.config"
 
 fish_add_path ~/.local/bin ~/.bun/bin ~/.amp/bin ~/.opencode/bin
+{{- if eq .chezmoi.os "darwin" }}
+fish_add_path /Applications/Obsidian.app/Contents/MacOS
+{{- else if eq .chezmoi.os "linux" }}
+fish_add_path /usr/local/bin/obsidian
+{{- end }}
 
 alias l="eza --color=always --icons --all --long --time modified --sort modified --no-permissions --octal-permissions --git --smart-group --git-repos"
 alias v="nvim"
