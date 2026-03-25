@@ -12,13 +12,6 @@
 [interactive]
 	diffFilter = delta --color-only
 
-; [pager]
-; 	difftool = true
-;
-; [diff]
-; 	external = difft
-; 	tool = difftastic
-
 [init]
 	defaultBranch = main
 
@@ -30,13 +23,17 @@
 
 [delta]
 	navigate = true
-	features = cyberdream
-	; dark = true
-	side-by-side = false
+	side-by-side = true
 	line-numbers = true
 
-[delta "decorations"]
-	syntax-theme = cyberdream
+[difftool]
+	prompt = false
+
+[difftool "difftastic"]
+	cmd = difft "$LOCAL" "$REMOTE"
+
+[diff]
+	tool = difftastic
 
 [merge]
 	conflictStyle = zdiff3
