@@ -1,0 +1,58 @@
+{
+  "sessionDefaultSettings": {
+    "reasoningEffort": "none",
+    "model": "custom:MiniMax-M2.7-(OpenCode-Go)-2",
+    "autonomyMode": "normal",
+    "specModeReasoningEffort": "xhigh",
+    "interactionMode": "auto",
+    "autonomyLevel": "off"
+  },
+  "logoAnimation": "off",
+  "customModels": [
+    {
+      "model": "glm-5",
+      "id": "custom:GLM-5-(OpenCode-Go)-0",
+      "index": 0,
+      "baseUrl": "https://opencode.ai/zen/go/v1",
+      "apiKey": "${OPENCODE_API_KEY}",
+      "displayName": "GLM-5 (OpenCode Go)",
+      "noImageSupport": true,
+      "provider": "generic-chat-completion-api"
+    },
+    {
+      "model": "kimi-k2.5",
+      "id": "custom:Kimi-K2.5-(OpenCode-Go)-1",
+      "index": 1,
+      "baseUrl": "https://opencode.ai/zen/go/v1",
+      "apiKey": "${OPENCODE_API_KEY}",
+      "displayName": "Kimi K2.5 (OpenCode Go)",
+      "noImageSupport": true,
+      "provider": "generic-chat-completion-api"
+    },
+    {
+      "model": "minimax-m2.7",
+      "id": "custom:MiniMax-M2.7-(OpenCode-Go)-2",
+      "index": 2,
+      "baseUrl": "https://opencode.ai/zen/go",
+      "apiKey": "${OPENCODE_API_KEY}",
+      "displayName": "MiniMax M2.7 (OpenCode Go)",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "model": "minimax-m2.5",
+      "id": "custom:MiniMax-M2.5-(OpenCode-Go)-3",
+      "index": 3,
+      "baseUrl": "https://opencode.ai/zen/go",
+      "apiKey": "${OPENCODE_API_KEY}",
+      "displayName": "MiniMax M2.5 (OpenCode Go)",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    }
+  ],
+  "diffMode": "github",
+  "terminalColorMode": "dark",
+  "includeCoAuthoredByDroid": false,
+  "showThinkingInMainView": true,
+  "showTokenUsageIndicator": true
+}
