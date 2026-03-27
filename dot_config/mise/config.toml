@@ -60,25 +60,25 @@ for bin in "${bins[@]}"; do
   printf "%s -> %s\n" "$bin" "$(command -v "$bin")"
 done
 '''
-run_windows = '''
-where rust-analyzer
-where gopls
-where stylua
-where clangd
-where clang-format
-where lua-language-server
-where ruff
-where ty
-where emmet-language-server
-where vscode-eslint-language-server
-where vscode-html-language-server
-where vscode-css-language-server
-where tailwindcss-language-server
-where typescript-language-server
-where tsgo
-where prettier
-where eslint
-'''
+run_windows = [
+  "where rust-analyzer",
+  "where gopls",
+  "where stylua",
+  "where clangd",
+  "where clang-format",
+  "where lua-language-server",
+  "where ruff",
+  "where ty",
+  "where emmet-language-server",
+  "where vscode-eslint-language-server",
+  "where vscode-html-language-server",
+  "where vscode-css-language-server",
+  "where tailwindcss-language-server",
+  "where typescript-language-server",
+  "where tsgo",
+  "where prettier",
+  "where eslint",
+]
 
 [tasks."lsp:sync"]
 description = "Install then verify LSP stack"
@@ -110,23 +110,12 @@ claude update
 bun i -g @mariozechner/pi-coding-agent @openai/codex droid opencode-ai
 '''
 
-run_windows = '''
-if (!(Get-Command amp -ErrorAction SilentlyContinue)) {
-    irm https://ampcode.com/install.ps1 | iex
-}
-
-if (!(Get-Command claude -ErrorAction SilentlyContinue)) {
-    irm https://claude.ai/install.ps1 | iex
-}
-
-if (!(Get-Command opencode -ErrorAction SilentlyContinue)) {
-    bun install -g opencode-ai
-}
-
-amp update
-claude update
-bun i -g @mariozechner/pi-coding-agent @openai/codex droid opencode-ai
-'''
+run_windows = [
+  "pwsh -Command \"if (!(Get-Command amp -EA SilentlyContinue)) { irm https://ampcode.com/install.ps1 | iex } else { amp update }\"",
+  "pwsh -Command \"if (!(Get-Command claude -EA SilentlyContinue)) { irm https://claude.ai/install.ps1 | iex } else { claude update }\"",
+  "pwsh -Command \"if (!(Get-Command opencode -EA SilentlyContinue)) { bun install -g opencode-ai }\"",
+  "bun i -g @mariozechner/pi-coding-agent @openai/codex droid opencode-ai",
+]
 
 [tasks."ai:doctor"]
 description = "Check AI agent binaries on PATH"
@@ -138,17 +127,14 @@ for bin in "${bins[@]}"; do
 done
 '''
 
-run_windows = '''
-$bins = @("amp", "claude", "opencode", "codex", "pi", "droid")
-foreach ($bin in $bins) {
-    $path = Get-Command $bin -ErrorAction SilentlyContinue
-    if ($path) {
-        Write-Output "$bin -> $($path.Source)"
-    } else {
-        Write-Output "$bin -> NOT FOUND"
-    }
-}
-'''
+run_windows = [
+  "where amp 2>nul || echo amp -^> NOT FOUND",
+  "where claude 2>nul || echo claude -^> NOT FOUND",
+  "where opencode 2>nul || echo opencode -^> NOT FOUND",
+  "where codex 2>nul || echo codex -^> NOT FOUND",
+  "where pi 2>nul || echo pi -^> NOT FOUND",
+  "where droid 2>nul || echo droid -^> NOT FOUND",
+]
 
 [tasks."ai:sync"]
 description = "Install then verify AI agents"
