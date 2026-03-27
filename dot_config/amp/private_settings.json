@@ -2,9 +2,9 @@
   "amp.dangerouslyAllowAll": true,
   "amp.mcpServers": {
     "chrome-devtools": {
-      "command": "bunx",
+      "command": "bun",
       "args": [
-        "chrome-devtools-mcp@latest"
+        "x", "chrome-devtools-mcp@latest"
       ]
     },
     "fff": {

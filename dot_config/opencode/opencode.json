@@ -4,7 +4,7 @@
   "mcp": {
     "chrome-devtools": {
       "type": "local",
-      "command": ["bunx", "chrome-devtools-mcp@latest"],
+      "command": ["bun", "x", "chrome-devtools-mcp@latest"],
       "enabled": true
     },
     "fff": {
