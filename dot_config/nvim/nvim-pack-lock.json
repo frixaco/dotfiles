@@ -14,11 +14,11 @@
       "src": "https://github.com/scottmckendry/cyberdream.nvim"
     },
     "fff.nvim": {
-      "rev": "dd56a3a8a8a5a85522badaf6485f28c8f7a7c840",
+      "rev": "eecb795a0e14082f4b0c66e6ad80d82da49632ad",
       "src": "https://github.com/dmtrKovalenko/fff.nvim"
     },
     "gitsigns.nvim": {
-      "rev": "0a80125bace82d82847d40bc2c38a22d62c6dc2d",
+      "rev": "50c205548d8b037b7ff6378fca6d21146f0b6161",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "lualine.nvim": {
@@ -34,19 +34,19 @@
       "src": "https://github.com/windwp/nvim-autopairs"
     },
     "nvim-colorizer.lua": {
-      "rev": "a6919ed9aadd0a8b2c11f264c9cbd41316dabf73",
+      "rev": "c8c2c19436d33165ec34fa90c975bc0a739fe3fb",
       "src": "https://github.com/catgoose/nvim-colorizer.lua"
     },
     "nvim-lspconfig": {
-      "rev": "841c6d4139aedb8a3f2baf30cef5327371385b93",
+      "rev": "16812abf0e8d8175155f26143a8504e8253e92b0",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-tree.lua": {
-      "rev": "3d385d3346e4883d60dc37cf642bd47bed78a46e",
+      "rev": "b548cfef00a79f0b3e3af24f91ae6bd14f22af95",
       "src": "https://github.com/nvim-tree/nvim-tree.lua"
     },
     "nvim-treesitter": {
-      "rev": "6620ae1c44dfa8623b22d0cbf873a9e8d073b849",
+      "rev": "7caec274fd19c12b55902a5b795100d21531391f",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "nvim-treesitter-context": {

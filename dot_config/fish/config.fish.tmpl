@@ -30,10 +30,18 @@ alias oc="opencode"
 alias se="source .venv/bin/activate.fish"
 
 function theme-dark
-    set -gx BAT_THEME cyberdream
+    set -Ux BAT_THEME cyberdream
+    sed -i '' 's/--dark/--light/g' ~/.config/lazygit/config.yml
+    sed -i '' 's/cyberdream-light/cyberdream/g' ~/.config/opencode/tui.json
+    cp ~/.config/lazygit/dark.yml ~/.config/lazygit/config.yml
+    set -Ux fish_terminal_color_theme dark
 end
 function theme-light
-    set -gx BAT_THEME cyberdream-light
+    set -Ux BAT_THEME cyberdream-light
+    sed -i '' 's/--dark/--light/g' ~/.config/lazygit/config.yml
+    sed -i '' 's/cyberdream/cyberdream-light/g' ~/.config/opencode/tui.json
+    cp ~/.config/lazygit/light.yml ~/.config/lazygit/config.yml
+    set -Ux fish_terminal_color_theme light
 end
 
 function cy
@@ -122,6 +130,7 @@ if test -f ~/.config/fish/env.fish
 end
 
 if status is-interactive
+    fish_config theme choose cyberdream
     command -q zoxide; and zoxide init fish | source
     command -q starship; and starship init fish | source
     command -q fzf; and fzf --fish | source
