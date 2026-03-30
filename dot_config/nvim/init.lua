@@ -87,7 +87,7 @@ local ok_pack_add, pack_add_err = pcall(vim.pack.add, {
 
   -- Treesitter
   { src = 'https://github.com/nvim-treesitter/nvim-treesitter' },
-  { src = 'https://github.com/windwp/nvim-ts-autotag' },
+  -- { src = 'https://github.com/windwp/nvim-ts-autotag' },
   { src = 'https://github.com/nvim-treesitter/nvim-treesitter-context' },
 
   -- LSP tooling
@@ -481,9 +481,9 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 -- nvim-ts-autotag
-setup('nvim-ts-autotag', {
-  opts = { enable_close = true, enable_rename = true, enable_close_on_slash = true },
-})
+-- setup('nvim-ts-autotag', {
+--   opts = { enable_close = true, enable_rename = true, enable_close_on_slash = true },
+-- })
 
 -- treesitter-context
 setup('treesitter-context', { enable = true })
