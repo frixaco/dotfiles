@@ -33,19 +33,59 @@ alias cc="claude"
 alias oc="opencode"
 alias se="source .venv/bin/activate.fish"
 
-function theme-dark
-    set -Ux BAT_THEME cyberdream
-    sed -i '' 's/--dark/--light/g' ~/.config/lazygit/config.yml
-    sed -i '' 's/cyberdream-light/cyberdream/g' ~/.config/opencode/tui.json
-    cp ~/.config/lazygit/dark.yml ~/.config/lazygit/config.yml
-    set -Ux fish_terminal_color_theme dark
+function __set_opencode_theme --argument-names theme
+    set -l path ~/.config/opencode/tui.json
+
+    if not test -f $path
+        echo "theme: missing file: $path" >&2
+        return 1
+    end
+
+    set -l tmp (mktemp)
+    or return 1
+
+    string replace -r '"theme"[[:space:]]*:[[:space:]]*"[^"]+"' '"theme": "'$theme'"' (string collect < $path) > $tmp
+    or begin
+        rm -f $tmp
+        return 1
+    end
+
+    mv $tmp $path
+    or begin
+        rm -f $tmp
+        return 1
+    end
 end
+
+function __apply_fish_theme --argument-names theme
+    type -q fish_config; or return 0
+    test -f ~/.config/fish/themes/$theme.theme; or return 0
+
+    fish_config theme choose $theme >/dev/null
+end
+
+function theme-dark
+    cp ~/.config/lazygit/dark.yml ~/.config/lazygit/config.yml
+    or return 1
+
+    __set_opencode_theme cyberdream
+    or return 1
+
+    set -Ux BAT_THEME cyberdream
+    set -U theme_mode dark
+    __apply_fish_theme cyberdream
+end
+
 function theme-light
-    set -Ux BAT_THEME cyberdream-light
-    sed -i '' 's/--dark/--light/g' ~/.config/lazygit/config.yml
-    sed -i '' 's/cyberdream/cyberdream-light/g' ~/.config/opencode/tui.json
     cp ~/.config/lazygit/light.yml ~/.config/lazygit/config.yml
-    set -Ux fish_terminal_color_theme light
+    or return 1
+
+    __set_opencode_theme cyberdream-light
+    or return 1
+
+    set -Ux BAT_THEME cyberdream-light
+    set -U theme_mode light
+    __apply_fish_theme cyberdream-light
 end
 
 function cy
@@ -134,7 +174,17 @@ if test -f ~/.config/fish/env.fish
 end
 
 if status is-interactive
-    fish_config theme choose cyberdream
+    if not set -q theme_mode
+        set -U theme_mode dark
+    end
+
+    switch $theme_mode
+        case light
+            __apply_fish_theme cyberdream-light
+        case '*'
+            __apply_fish_theme cyberdream
+    end
+
     command -q zoxide; and zoxide init fish | source
     command -q starship; and starship init fish | source
     command -q fzf; and fzf --fish | source
