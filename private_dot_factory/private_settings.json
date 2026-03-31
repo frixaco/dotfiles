@@ -54,5 +54,8 @@
   "terminalColorMode": "dark",
   "includeCoAuthoredByDroid": false,
   "showThinkingInMainView": true,
-  "showTokenUsageIndicator": true
+  "showTokenUsageIndicator": true,
+  "enabledPlugins": {
+    "core@factory-plugins": true
+  }
 }
