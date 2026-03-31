@@ -14,7 +14,7 @@
       "src": "https://github.com/scottmckendry/cyberdream.nvim"
     },
     "fff.nvim": {
-      "rev": "eecb795a0e14082f4b0c66e6ad80d82da49632ad",
+      "rev": "e83b137be5d9a2947f59e1b68e0b8c4ab3eac2f3",
       "src": "https://github.com/dmtrKovalenko/fff.nvim"
     },
     "gitsigns.nvim": {
@@ -42,7 +42,7 @@
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-tree.lua": {
-      "rev": "b548cfef00a79f0b3e3af24f91ae6bd14f22af95",
+      "rev": "3603f069ff783c31986894a56c2a6755331b0802",
       "src": "https://github.com/nvim-tree/nvim-tree.lua"
     },
     "nvim-treesitter": {

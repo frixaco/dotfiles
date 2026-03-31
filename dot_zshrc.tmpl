@@ -1,3 +1,9 @@
+{{- if eq .chezmoi.os "linux" }}
+if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+{{- end }}
+
 autoload -Uz compinit
 compinit
 
@@ -28,12 +34,91 @@ alias c="clear"
 alias ef="nvim ~/.zshrc"
 alias cc="claude"
 alias oc="opencode"
-# alias amp="bunx @sourcegraph/amp --ide"
-# alias opencode="bunx opencode-ai"
-# alias claude="bunx @anthropic-ai/claude-code"
-# bun i -g @openai/codex
-# bun i -g @mariozechner/pi-coding-agent
 alias se="source .venv/bin/activate"
+
+__set_opencode_theme() {
+  local theme="$1"
+  local config_path="$HOME/.config/opencode/tui.json"
+  local tmp
+
+  if [[ ! -f "$config_path" ]]; then
+    echo "theme: missing file: $config_path" >&2
+    return 1
+  fi
+
+  tmp="$(mktemp)" || return 1
+
+  if ! perl -0pe 's/"theme"\s*:\s*"[^"]+"/"theme": "'"$theme"'"/' "$config_path" > "$tmp"; then
+    rm -f "$tmp"
+    return 1
+  fi
+
+  if ! mv "$tmp" "$config_path"; then
+    rm -f "$tmp"
+    return 1
+  fi
+}
+
+__persist_zsh_export() {
+  local name="$1"
+  local value="$2"
+  local env_path="$HOME/.config/zsh/env.zsh"
+  local tmp
+
+  mkdir -p "${env_path:h}" || return 1
+  tmp="$(mktemp)" || return 1
+
+  if [[ -f "$env_path" ]]; then
+    awk -v name="$name" -v value="$value" '
+      $0 ~ "^export " name "=" {
+        if (!updated) {
+          print "export " name "=\"" value "\""
+          updated = 1
+        }
+        next
+      }
+
+      { print }
+
+      END {
+        if (!updated) {
+          print "export " name "=\"" value "\""
+        }
+      }
+    ' "$env_path" > "$tmp" || {
+      rm -f "$tmp"
+      return 1
+    }
+  else
+    printf 'export %s="%s"\n' "$name" "$value" > "$tmp" || {
+      rm -f "$tmp"
+      return 1
+    }
+  fi
+
+  if ! mv "$tmp" "$env_path"; then
+    rm -f "$tmp"
+    return 1
+  fi
+}
+
+theme-dark() {
+  cp ~/.config/lazygit/dark.yml ~/.config/lazygit/config.yml || return 1
+  __set_opencode_theme cyberdream || return 1
+  export BAT_THEME=cyberdream
+  export theme_mode=dark
+  __persist_zsh_export BAT_THEME "$BAT_THEME" || return 1
+  __persist_zsh_export theme_mode "$theme_mode" || return 1
+}
+
+theme-light() {
+  cp ~/.config/lazygit/light.yml ~/.config/lazygit/config.yml || return 1
+  __set_opencode_theme cyberdream-light || return 1
+  export BAT_THEME=cyberdream-light
+  export theme_mode=light
+  __persist_zsh_export BAT_THEME "$BAT_THEME" || return 1
+  __persist_zsh_export theme_mode "$theme_mode" || return 1
+}
 
 cy() {
   codex \
@@ -125,15 +210,27 @@ function y() {
 }
 
 if [[ -f ~/.config/zsh/env.zsh ]]; then
-    source ~/.config/zsh/env.zsh
+  source ~/.config/zsh/env.zsh
 fi
 
-eval "$(zoxide init zsh)"
-eval "$(starship init zsh)"
-eval "$(fzf --zsh)"
-eval "$(mise activate zsh)"
+export theme_mode="${theme_mode:-dark}"
+
+if [[ -z "${BAT_THEME:-}" ]]; then
+  case "$theme_mode" in
+    light) export BAT_THEME=cyberdream-light ;;
+    *) export BAT_THEME=cyberdream ;;
+  esac
+fi
+
+if [[ -o interactive ]]; then
+  (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
+  (( $+commands[starship] )) && eval "$(starship init zsh)"
+  (( $+commands[fzf] )) && eval "$(fzf --zsh)"
+  (( $+commands[mise] )) && eval "$(mise activate zsh)"
+fi
+
 {{ if and .work (eq .chezmoi.os "darwin") -}}
-eval "$(rbenv init - zsh)"
+(( $+commands[rbenv] )) && eval "$(rbenv init - zsh)"
 {{- end -}}
 
 {{- if eq .chezmoi.os "darwin" }}
