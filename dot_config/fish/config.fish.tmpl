@@ -97,8 +97,6 @@ function cy
         -c sandbox_mode="danger-full-access" \
         -c web_search="live" \
         -c agents.max_depth=2 \
-        -c 'mcp_servers.chrome-devtools.command="bunx"' \
-        -c 'mcp_servers.chrome-devtools.args=["chrome-devtools-mcp@latest"]' \
         -c 'mcp_servers.fff.command="fff-mcp"' \
         -c 'mcp_servers.fff.args=[]' \
         $argv

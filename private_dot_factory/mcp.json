@@ -6,14 +6,5 @@
       "args": [],
       "disabled": false
     },
-    "chrome-devtools": {
-      "type": "stdio",
-      "command": "bun",
-      "args": [
-        "x",
-        "chrome-devtools-mcp@latest"
-      ],
-      "disabled": false
-    }
   }
 }
