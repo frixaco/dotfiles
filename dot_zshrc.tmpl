@@ -59,65 +59,26 @@ __set_opencode_theme() {
   fi
 }
 
-__persist_zsh_export() {
-  local name="$1"
-  local value="$2"
-  local env_path="$HOME/.config/zsh/env.zsh"
-  local tmp
+__persist_bat_theme() {
+  local value="$1"
+  local state_path="$HOME/.local/state/zsh/bat-theme.zsh"
 
-  mkdir -p "${env_path:h}" || return 1
-  tmp="$(mktemp)" || return 1
-
-  if [[ -f "$env_path" ]]; then
-    awk -v name="$name" -v value="$value" '
-      $0 ~ "^export " name "=" {
-        if (!updated) {
-          print "export " name "=\"" value "\""
-          updated = 1
-        }
-        next
-      }
-
-      { print }
-
-      END {
-        if (!updated) {
-          print "export " name "=\"" value "\""
-        }
-      }
-    ' "$env_path" > "$tmp" || {
-      rm -f "$tmp"
-      return 1
-    }
-  else
-    printf 'export %s="%s"\n' "$name" "$value" > "$tmp" || {
-      rm -f "$tmp"
-      return 1
-    }
-  fi
-
-  if ! mv "$tmp" "$env_path"; then
-    rm -f "$tmp"
-    return 1
-  fi
+  mkdir -p "${state_path:h}" || return 1
+  printf 'export BAT_THEME="%s"\n' "$value" > "$state_path" || return 1
 }
 
 theme-dark() {
   cp ~/.config/lazygit/dark.yml ~/.config/lazygit/config.yml || return 1
   __set_opencode_theme cyberdream || return 1
   export BAT_THEME=cyberdream
-  export theme_mode=dark
-  __persist_zsh_export BAT_THEME "$BAT_THEME" || return 1
-  __persist_zsh_export theme_mode "$theme_mode" || return 1
+  __persist_bat_theme "$BAT_THEME" || return 1
 }
 
 theme-light() {
   cp ~/.config/lazygit/light.yml ~/.config/lazygit/config.yml || return 1
   __set_opencode_theme cyberdream-light || return 1
   export BAT_THEME=cyberdream-light
-  export theme_mode=light
-  __persist_zsh_export BAT_THEME "$BAT_THEME" || return 1
-  __persist_zsh_export theme_mode "$theme_mode" || return 1
+  __persist_bat_theme "$BAT_THEME" || return 1
 }
 
 cy() {
@@ -129,6 +90,8 @@ cy() {
     -c sandbox_mode="danger-full-access" \
     -c web_search="live" \
     -c agents.max_depth=2 \
+    -c 'mcp_servers.chrome-devtools.command="bun"' \
+    -c 'mcp_servers.chrome-devtools.args=["x", "chrome-devtools-mcp@latest", "--autoConnect"]' \
     -c 'mcp_servers.fff.command="fff-mcp"' \
     -c 'mcp_servers.fff.args=[]' \
     "$@"
@@ -211,13 +174,8 @@ if [[ -f ~/.config/zsh/env.zsh ]]; then
   source ~/.config/zsh/env.zsh
 fi
 
-export theme_mode="${theme_mode:-dark}"
-
-if [[ -z "${BAT_THEME:-}" ]]; then
-  case "$theme_mode" in
-    light) export BAT_THEME=cyberdream-light ;;
-    *) export BAT_THEME=cyberdream ;;
-  esac
+if [[ -f ~/.local/state/zsh/bat-theme.zsh ]]; then
+  source ~/.local/state/zsh/bat-theme.zsh
 fi
 
 if [[ -o interactive ]]; then
