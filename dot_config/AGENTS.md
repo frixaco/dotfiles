@@ -2,8 +2,8 @@
 
 ## Response Style
 
-- Concise; telegraph style; drop grammar for brevity
-- Plans: bullet-only, no prose
+- Write like a clear senior teammate: brief, direct, and natural; optimize for fast understanding, not minimal word count
+- Present plans in the clearest format for quick execution - usually bullets, sometimes short sections or brief prose
 
 ## Task Rules
 
@@ -24,6 +24,7 @@
 - Handle happy path only
 - Import unneeded complexity
 - Solve problems not asked for
+- Forget to clean temporary files (e.g. in /tmp)
 
 ## Testing
 
