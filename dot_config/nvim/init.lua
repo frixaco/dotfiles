@@ -590,8 +590,8 @@ for _, server in ipairs(servers) do
 end
 
 -- Sourcekit (Swift)
-pcall(vim.lsp.config, 'sourcekit', { on_attach = lsp_on_attach, capabilities = capabilities })
-pcall(vim.lsp.enable, 'sourcekit')
+-- pcall(vim.lsp.config, 'sourcekit', { on_attach = lsp_on_attach, capabilities = capabilities })
+-- pcall(vim.lsp.enable, 'sourcekit')
 
 --------------------------------------------------------------------------------
 -- CUSTOM MODULES
