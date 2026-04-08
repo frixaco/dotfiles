@@ -10,12 +10,12 @@
   "logoAnimation": "off",
   "customModels": [
     {
-      "model": "glm-5",
-      "id": "custom:GLM-5-(OpenCode-Go)-0",
+      "model": "glm-5.1",
+      "id": "custom:GLM-5.1-(OpenCode-Go)-0",
       "index": 0,
       "baseUrl": "https://opencode.ai/zen/go/v1",
       "apiKey": "${OPENCODE_API_KEY}",
-      "displayName": "GLM-5 (OpenCode Go)",
+      "displayName": "GLM-5.1 (OpenCode Go)",
       "noImageSupport": true,
       "provider": "generic-chat-completion-api"
     },
