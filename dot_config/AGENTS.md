@@ -42,6 +42,10 @@ General:
 - Verification-first: define end state, then build toward it
 - Bugs: add regression test when it fits
 
+## Tool and MCP use
+
+- Use `fff` tools when available over `grep`/`ripgrep`
+
 ## Pre-Handoff Checklist
 
 - [ ] Lint passes

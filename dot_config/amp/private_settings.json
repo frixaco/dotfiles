@@ -1,14 +1,6 @@
 {
   "amp.dangerouslyAllowAll": true,
   "amp.mcpServers": {
-    "chrome-devtools": {
-      "command": "bun",
-      "args": [
-        "x",
-        "chrome-devtools-mcp@latest",
-        "--autoConnect"
-      ]
-    },
     "fff": {
       "command": "fff-mcp",
       "args": []

@@ -1,15 +1,5 @@
 {
   "mcpServers": {
-    "chrome-devtools": {
-      "type": "stdio",
-      "command": "bun",
-      "args": [
-        "x",
-        "chrome-devtools-mcp@latest",
-        "--autoConnect"
-      ],
-      "disabled": false
-    },
     "fff": {
       "type": "stdio",
       "command": "fff-mcp",
