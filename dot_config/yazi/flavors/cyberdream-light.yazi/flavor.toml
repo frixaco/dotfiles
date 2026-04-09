@@ -1,29 +1,84 @@
 #:schema https://yazi-rs.github.io/schemas/theme.json
 
+[app]
+overall = { bg = "#ffffff" }
+
 [mgr]
-
-# tmTheme files can be found here: https://github.com/scottmckendry/cyberdream.nvim/tree/main/extras/textmate 
 syntect_theme = "../bat/themes/cyberdream.tmTheme"
-
+border_symbol = "│"
 border_style = { fg = "#acacac" }
 cwd = { fg = "#008c99" }
 find_keyword = { bold = true, fg = "#008b0c" }
 find_position = { fg = "#16181a" }
+symlink_target = { fg = "#7b8496" }
 marker_copied = { bg = "#997b00", fg = "#997b00" }
 marker_cut = { bg = "#d11500", fg = "#d11500" }
+marker_marked = { bg = "#acacac", fg = "#a018ff" }
 marker_selected = { bg = "#acacac", fg = "#008b0c" }
 count_selected = { bg = "#008b0c", fg = "#ffffff" }
 count_copied = { bg = "#997b00", fg = "#ffffff" }
 count_cut = { bg = "#d11500", fg = "#ffffff" }
 
+[indicator]
+parent = { bg = "#acacac", fg = "#16181a" }
+current = { bg = "#0057d1", bold = true, fg = "#ffffff" }
+preview = { bg = "#acacac", fg = "#0057d1" }
+padding = { open = "▐", close = "▌" }
+
 [cmp]
 active = { bg = "#7b8496", fg = "#a018ff" }
 border = { fg = "#0057d1" }
 inactive = { fg = "#16181a" }
+icon_file = ""
+icon_folder = ""
+icon_command = ""
 
 [tabs]
 active = { bg = "#0057d1", fg = "#ffffff" }
 inactive = { bg = "#acacac", fg = "#16181a" }
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+
+[mode]
+normal_main = { bg = "#0057d1", bold = true, fg = "#ffffff" }
+normal_alt = { bg = "#acacac", fg = "#16181a" }
+select_main = { bg = "#008b0c", bold = true, fg = "#ffffff" }
+select_alt = { bg = "#acacac", fg = "#008b0c" }
+unset_main = { bg = "#d100bf", bold = true, fg = "#ffffff" }
+unset_alt = { bg = "#acacac", fg = "#d100bf" }
+
+[status]
+overall = { bg = "#acacac", fg = "#16181a" }
+sep_left = { open = "", close = "█" }
+sep_right = { open = "█", close = "" }
+perm_type = { fg = "#0057d1" }
+perm_read = { fg = "#997b00" }
+perm_write = { fg = "#d11500" }
+perm_exec = { fg = "#008b0c" }
+perm_sep = { fg = "#008c99" }
+progress_error = { bg = "#ffffff", fg = "#d11500" }
+progress_label = { bg = "#ffffff", fg = "#16181a" }
+progress_normal = { bg = "#ffffff", fg = "#16181a" }
+
+[confirm]
+border = { fg = "#0057d1" }
+title = { fg = "#16181a" }
+body = { fg = "#16181a" }
+list = { fg = "#16181a" }
+btn_yes = { bg = "#0057d1", fg = "#ffffff" }
+btn_no = { bg = "#7b8496", fg = "#ffffff" }
+btn_labels = ["  Yes  ", "  No  "]
+
+[spot]
+border = { fg = "#0057d1" }
+title = { fg = "#16181a" }
+tbl_col = { bg = "#acacac", fg = "#0057d1" }
+tbl_cell = { bg = "#acacac", fg = "#16181a" }
+
+[notify]
+title_info = { fg = "#008c99" }
+title_warn = { fg = "#997b00" }
+title_error = { fg = "#d11500" }
 
 [filetype]
 rules = [
@@ -46,47 +101,43 @@ rules = [
     { fg = "#16181a", mime = "*" }
 ]
 
+[icon]
+prepend_conds = [
+    { if = "dir & hovered", text = "", fg = "#0057d1" },
+    { if = "dir", text = "", fg = "#0057d1" },
+]
+
 [help]
-desc = { fg = "#16181a" }
-footer = { fg = "#16181a" }
-hovered = { bg = "#7b8496", fg = "#16181a" }
 on = { fg = "#a018ff" }
 run = { fg = "#008c99" }
+desc = { fg = "#16181a" }
+hovered = { bg = "#7b8496", fg = "#16181a" }
+footer = { fg = "#16181a" }
+icon_info = ""
+icon_warn = ""
+icon_error = ""
 
 [input]
 border = { fg = "#0057d1" }
-selected = { bg = "#7b8496" }
 title = { fg = "#16181a" }
 value = { fg = "#16181a" }
+selected = { bg = "#7b8496" }
 
 [pick]
 active = { fg = "#a018ff" }
 border = { fg = "#0057d1" }
 inactive = { fg = "#16181a" }
 
-[mode]
-normal_main = { bg = "#0057d1", bold = true, fg = "#ffffff" }
-select_main = { bg = "#008b0c", bold = true, fg = "#ffffff" }
-unset_main = { bg = "#d100bf", bold = true, fg = "#ffffff" }
-
-[status]
-perm_sep = { fg = "#008c99" }
-perm_type = { fg = "#0057d1" }
-perm_read = { fg = "#997b00" }
-perm_write = { fg = "#d11500" }
-perm_exec = { fg = "#008b0c" }
-progress_error = { bg = "#ffffff", fg = "#d11500" }
-progress_label = { bg = "#ffffff", fg = "#16181a" }
-progress_normal = { bg = "#ffffff", fg = "#16181a" }
-
 [tasks]
 border = { fg = "#0057d1" }
-hovered = { bg = "#7b8496", fg = "#16181a" }
 title = { fg = "#16181a" }
+hovered = { bg = "#7b8496", fg = "#16181a" }
 
 [which]
-cand = { fg = "#008c99" }
-desc = { fg = "#16181a" }
+cols = 3
 mask = { bg = "#acacac" }
+cand = { fg = "#008c99" }
 rest = { fg = "#d100bf" }
+desc = { fg = "#16181a" }
+separator = " -> "
 separator_style = { fg = "#7b8496" }
