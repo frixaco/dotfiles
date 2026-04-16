@@ -3155,7 +3155,7 @@ env read_from_shell=PATH
 listen_on unix:/tmp/kitty
 allow_remote_control yes
 
-background_opacity 0.95
+background_opacity 1.00
 background_blur 40
 
 hide_window_decorations titlebar-only
@@ -3170,11 +3170,11 @@ include dark-theme.auto.conf
 include light-theme.auto.conf
 include no-preference-theme.auto.conf
 
-[[ if eq .chezmoi.os "darwin" -]]
-shell /opt/homebrew/bin/fish --login --interactive
-[[- else if eq .chezmoi.os "linux" -]]
-shell /usr/bin/fish --login --interactive
-[[- end ]]
+# [[ if eq .chezmoi.os "darwin" -]]
+# shell /opt/homebrew/bin/fish --login --interactive
+# [[- else if eq .chezmoi.os "linux" -]]
+# shell /usr/bin/fish --login --interactive
+# [[- end ]]
 
 map ctrl+1 goto_tab 1
 map ctrl+2 goto_tab 2
@@ -3192,12 +3192,12 @@ map alt+k neighboring_window up
 map alt+l neighboring_window right
 
 map alt+ctrl+l resize_window narrower 2
-map alt+ctrl+k resize_window shorter 2
-map alt+ctrl+j resize_window taller 2
+map alt+ctrl+j resize_window shorter 2
+map alt+ctrl+k resize_window taller 2
 map alt+ctrl+h resize_window wider 2
 
 map ctrl+- launch --type=tab --cwd=current --copy-env yazi
-map ctrl+\ launch --type=tab --cwd=current --copy-env fish -lc lazygit
+map ctrl+\ launch --type=tab --cwd=current --copy-env fish -lc jjui
 
 # tab_bar_style hidden
 map cmd+shift+p command_palette
