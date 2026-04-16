@@ -37,55 +37,47 @@ alias oc="opencode"
 alias se="source .venv/bin/activate"
 alias cx="codex"
 
-__set_opencode_theme() {
-  local theme="$1"
-  local config_path="$HOME/.config/opencode/tui.json"
-  local tmp
-
-  if [[ ! -f "$config_path" ]]; then
-    echo "theme: missing file: $config_path" >&2
-    return 1
-  fi
-
-  tmp="$(mktemp)" || return 1
-
-  if ! perl -0pe 's/"theme"\s*:\s*"[^"]+"/"theme": "'"$theme"'"/' "$config_path" > "$tmp"; then
-    rm -f "$tmp"
-    return 1
-  fi
-
-  if ! mv "$tmp" "$config_path"; then
-    rm -f "$tmp"
-    return 1
-  fi
+__theme_name_for_mode() {
+  case "$1" in
+    light) printf '%s\n' cyberdream-light ;;
+    *) printf '%s\n' cyberdream ;;
+  esac
 }
 
-__persist_theme_state() {
-  local bat_theme="$1"
-  local theme_mode="$2"
-  local state_path="$HOME/.local/state/zsh/theme-state.zsh"
+__current_theme_mode() {
+  local state_path="$HOME/.local/state/theme-mode"
+  local mode
 
-  mkdir -p "${state_path:h}" || return 1
-  {
-    printf 'export BAT_THEME="%s"\n' "$bat_theme"
-    printf 'export THEME_MODE="%s"\n' "$theme_mode"
-  } > "$state_path" || return 1
+  if [[ -f "$state_path" ]]; then
+    IFS= read -r mode < "$state_path"
+    case "$mode" in
+      light|dark)
+        printf '%s\n' "$mode"
+        return 0
+        ;;
+    esac
+  fi
+
+  printf '%s\n' dark
+}
+
+__apply_theme_env() {
+  local mode="$1"
+  local theme
+
+  theme="$(__theme_name_for_mode "$mode")"
+  export THEME_MODE="$mode"
+  export BAT_THEME="$theme"
 }
 
 theme-dark() {
-  cp ~/.config/lazygit/dark.yml ~/.config/lazygit/config.yml || return 1
-  __set_opencode_theme cyberdream || return 1
-  export BAT_THEME=cyberdream
-  export THEME_MODE=dark
-  __persist_theme_state "$BAT_THEME" "$THEME_MODE" || return 1
+  theme-mode dark >/dev/null || return 1
+  __apply_theme_env dark
 }
 
 theme-light() {
-  cp ~/.config/lazygit/light.yml ~/.config/lazygit/config.yml || return 1
-  __set_opencode_theme cyberdream-light || return 1
-  export BAT_THEME=cyberdream-light
-  export THEME_MODE=light
-  __persist_theme_state "$BAT_THEME" "$THEME_MODE" || return 1
+  theme-mode light >/dev/null || return 1
+  __apply_theme_env light
 }
 
 ccd() {
@@ -167,13 +159,7 @@ if [[ -f ~/.config/zsh/env.zsh ]]; then
   source ~/.config/zsh/env.zsh
 fi
 
-if [[ -f ~/.local/state/zsh/theme-state.zsh ]]; then
-  source ~/.local/state/zsh/theme-state.zsh
-fi
-
-if [[ -z "${THEME_MODE:-}" ]]; then
-  export THEME_MODE=dark
-fi
+__apply_theme_env "$(__current_theme_mode)"
 
 if [[ -o interactive ]]; then
   (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"

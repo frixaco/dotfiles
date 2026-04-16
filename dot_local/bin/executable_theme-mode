@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+  echo "Usage: theme-mode [light|dark|current]" >&2
+  exit 1
+}
+
+current_mode() {
+  local state_path="$HOME/.local/state/theme-mode"
+  local mode
+
+  if [[ -f "$state_path" ]]; then
+    IFS= read -r mode < "$state_path"
+    case "$mode" in
+      light|dark)
+        printf '%s\n' "$mode"
+        return 0
+        ;;
+    esac
+  fi
+
+  printf '%s\n' dark
+}
+
+update_opencode_theme() {
+  local theme="$1"
+  local config_path="$HOME/.config/opencode/tui.json"
+  local tmp
+
+  [[ -f "$config_path" ]] || return 0
+
+  tmp="$(mktemp)" || return 1
+
+  if ! perl -0pe 's/"theme"\s*:\s*"[^"]+"/"theme": "'"$theme"'"/' "$config_path" > "$tmp"; then
+    rm -f "$tmp"
+    return 1
+  fi
+
+  if ! mv "$tmp" "$config_path"; then
+    rm -f "$tmp"
+    return 1
+  fi
+}
+
+mode="${1:-current}"
+
+case "$mode" in
+  current)
+    current_mode
+    exit 0
+    ;;
+  light)
+    delta_feature="cyberdream-light"
+    opencode_theme="cyberdream-light"
+    ;;
+  dark)
+    delta_feature="cyberdream"
+    opencode_theme="cyberdream"
+    ;;
+  *)
+    usage
+    ;;
+esac
+
+state_dir="$HOME/.local/state"
+state_path="$state_dir/theme-mode"
+lazygit_dir="$HOME/.config/lazygit"
+lazygit_source="$lazygit_dir/$mode.yml"
+lazygit_target="$lazygit_dir/config.yml"
+
+if [[ ! -f "$lazygit_source" ]]; then
+  echo "theme-mode: missing file: $lazygit_source" >&2
+  exit 1
+fi
+
+mkdir -p "$state_dir"
+
+cp "$lazygit_source" "$lazygit_target"
+
+if command -v git >/dev/null 2>&1; then
+  git config --global delta.features "$delta_feature"
+fi
+
+update_opencode_theme "$opencode_theme"
+
+printf '%s\n' "$mode" > "$state_path"
