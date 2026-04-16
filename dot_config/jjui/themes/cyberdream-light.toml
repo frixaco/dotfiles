@@ -1,0 +1,68 @@
+# Cyberdream Light — https://github.com/scottmckendry/cyberdream.nvim
+#
+# bg:           #ffffff    bg_alt:       #eaeaea    bg_highlight: #acacac
+# fg:           #16181a    grey:         #7b8496
+# blue:         #0057d1    green:        #008b0c    cyan:         #008c99
+# red:          #d11500    yellow:       #997b00    magenta:      #d100bf
+# pink:         #f40064    orange:       #d17c00    purple:       #a018ff
+
+# ── Global ──
+"text"      = { fg = "#16181a", bg = "#ffffff" }
+"dimmed"    = { fg = "#7b8496" }
+"selected"  = { bg = "#d0d4d8", bold = true }
+"border"    = { fg = "#7b8496" }
+"title"     = { fg = "#008c99", bold = true }
+"shortcut"  = { fg = "#d17c00" }
+"matched"   = { fg = "#997b00", underline = true }
+
+# ── Operation markers ──
+"source_marker" = { bg = "#a018ff", fg = "#ffffff" }
+"target_marker" = { bg = "#0057d1", fg = "#ffffff" }
+
+# ── Revset (top bar) ──
+"revset text"                = { bold = true }
+"revset title"               = { fg = "#008c99", bold = true }
+"revset completion selected" = { bg = "#d0d4d8", fg = "#008c99" }
+"revset completion matched"  = { fg = "#997b00", bold = true }
+"revset completion dimmed"   = { fg = "#7b8496" }
+
+# ── Revisions / Oplog ──
+"revisions selected" = { bold = true }
+"oplog selected"     = { bold = true }
+
+# ── Evolog ──
+"evolog selected" = { bg = "#d0d4d8", fg = "#008c99", bold = true }
+
+# ── Status bar ──
+"status"          = { bg = "#eaeaea" }
+"status title"    = { fg = "#ffffff", bg = "#008c99", bold = true }
+"status shortcut" = { fg = "#d17c00" }
+"status dimmed"   = { fg = "#7b8496" }
+
+# ── Help window ──
+"help"        = { bg = "#eaeaea" }
+"help title"  = { fg = "#008c99", bold = true, underline = true }
+"help border" = { fg = "#7b8496" }
+
+# ── Menu ──
+"menu"          = { bg = "#eaeaea" }
+"menu title"    = { fg = "#008c99", bold = true }
+"menu shortcut" = { fg = "#d17c00" }
+"menu dimmed"   = { fg = "#7b8496" }
+"menu border"   = { fg = "#7b8496" }
+"menu selected" = { bg = "#d0d4d8", fg = "#008c99" }
+
+# ── Confirmation dialog ──
+"confirmation"          = { bg = "#eaeaea" }
+"confirmation text"     = { fg = "#16181a" }
+"confirmation selected" = { bg = "#d0d4d8", fg = "#008c99" }
+"confirmation dimmed"   = { fg = "#7b8496" }
+"confirmation border"   = { fg = "#d11500" }
+
+# ── Undo ──
+"undo"                      = { bg = "#eaeaea" }
+"undo confirmation dimmed"   = { fg = "#7b8496" }
+"undo confirmation selected" = { bg = "#d0d4d8", fg = "#008c99" }
+
+# ── Preview ──
+"preview" = { fg = "#16181a" }
