@@ -94,7 +94,7 @@ local ok_pack_add, pack_add_err = pcall(vim.pack.add, {
   { src = 'https://github.com/neovim/nvim-lspconfig' }, -- provides default configs
 
   -- Completion
-  { src = 'https://github.com/saghen/blink.cmp', version = 'v1.8.0' },
+  { src = 'https://github.com/saghen/blink.cmp', version = 'v1.10.2' },
 
   -- Picker & utilities
   { src = 'https://github.com/nvim-tree/nvim-tree.lua' },
