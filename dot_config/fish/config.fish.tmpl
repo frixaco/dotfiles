@@ -145,6 +145,14 @@ function g
   cd $original_dir
 end
 
+function j
+  set -l original_dir (pwd)
+
+  jjui $argv
+
+  cd $original_dir
+end
+
 function y
 	set tmp (mktemp -t "yazi-cwd.XXXXXX")
 	yazi $argv --cwd-file="$tmp"
