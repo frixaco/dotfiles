@@ -44,6 +44,26 @@ update_opencode_theme() {
   fi
 }
 
+update_btop_theme() {
+  local theme="$1"
+  local config_path="$HOME/.config/btop/btop.conf"
+  local tmp
+
+  [[ -f "$config_path" ]] || return 0
+
+  tmp="$(mktemp)" || return 1
+
+  if ! perl -0pe 's/^color_theme = ".*"$/color_theme = "'"$theme"'"/m' "$config_path" > "$tmp"; then
+    rm -f "$tmp"
+    return 1
+  fi
+
+  if ! mv "$tmp" "$config_path"; then
+    rm -f "$tmp"
+    return 1
+  fi
+}
+
 mode="${1:-current}"
 
 case "$mode" in
@@ -54,10 +74,12 @@ case "$mode" in
   light)
     delta_feature="cyberdream-light"
     opencode_theme="cyberdream-light"
+    btop_theme="cyberdream-light"
     ;;
   dark)
     delta_feature="cyberdream"
     opencode_theme="cyberdream"
+    btop_theme="cyberdream"
     ;;
   *)
     usage
@@ -84,5 +106,6 @@ if command -v git >/dev/null 2>&1; then
 fi
 
 update_opencode_theme "$opencode_theme"
+update_btop_theme "$btop_theme"
 
 printf '%s\n' "$mode" > "$state_path"
