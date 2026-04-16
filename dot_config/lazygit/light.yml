@@ -3,7 +3,6 @@ git:
     - colorArg: always
       pager: delta --light --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
 
-# LIGHT THEME
 gui:
   border: rounded
   theme:
@@ -25,26 +24,3 @@ gui:
       - "#d17c00"
     defaultFgColor:
       - "#16181a"
-
-# # DARK THEME
-# gui:
-#   border: square
-#   theme:
-#     activeBorderColor:
-#       - "#5ef1ff"
-#     inactiveBorderColor:
-#       - "#7b8496"
-#     searchingActiveBorderColor:
-#       - "#ff5ef1"
-#     optionsTextColor:
-#       - "#3c4048"
-#     selectedLineBgColor:
-#       - "#3c4048"
-#     cherryPickedCommitBgColor:
-#       - "#3c4048"
-#     cherryPickedCommitFgColor:
-#       - "#ff5ea0"
-#     unstagedChangesColor:
-#       - "#ffbd5e"
-#     defaultFgColor:
-#       - "#ffffff"
