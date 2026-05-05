@@ -6,6 +6,7 @@ deno = 'latest'
 uv = 'latest'
 zig = 'latest'
 usage = 'latest'
+aube = 'latest'
 
 "github:clangd/clangd" = "latest"
 "aqua:LuaLS/lua-language-server" = "latest"
