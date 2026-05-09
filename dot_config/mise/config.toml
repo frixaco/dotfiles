@@ -107,14 +107,16 @@ fi
 
 amp update
 claude update
-bun i -g @mariozechner/pi-coding-agent @openai/codex droid opencode-ai
+bun i -g @earendil-works/pi-coding-agent @openai/codex droid opencode-ai
+curl -L https://dmtrkovalenko.dev/install-fff-mcp.sh | bash
 '''
 
 run_windows = [
   "pwsh -Command \"if (!(Get-Command amp -EA SilentlyContinue)) { irm https://ampcode.com/install.ps1 | iex } else { amp update }\"",
   "pwsh -Command \"if (!(Get-Command claude -EA SilentlyContinue)) { irm https://claude.ai/install.ps1 | iex } else { claude update }\"",
   "pwsh -Command \"if (!(Get-Command opencode -EA SilentlyContinue)) { bun install -g opencode-ai }\"",
-  "bun i -g @mariozechner/pi-coding-agent @openai/codex droid opencode-ai",
+  "bun i -g @earendil-works/pi-coding-agent @openai/codex droid opencode-ai",
+  "curl -L https://dmtrkovalenko.dev/install-fff-mcp.sh | bash",
 ]
 
 [tasks."ai:doctor"]
