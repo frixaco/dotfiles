@@ -37,6 +37,17 @@ uv tool install --upgrade ty
 uv tool install --upgrade clang-format
 rustup component add rust-analyzer --toolchain stable
 '''
+run_windows = [
+  "mise install",
+  "bun install -g @astrojs/language-server@latest @johnnymorganz/stylua-bin@latest @olrtg/emmet-language-server@latest @tailwindcss/language-server@latest @taplo/cli@latest @typescript/native-preview@beta eslint@latest oxfmt@latest oxlint@latest prettier@latest shellcheck@latest typescript-language-server@latest vscode-langservers-extracted@latest",
+  "go install golang.org/x/tools/gopls@latest",
+  "go install golang.org/x/tools/cmd/goimports@latest",
+  "go install mvdan.cc/sh/v3/cmd/shfmt@latest",
+  "uv tool install --upgrade ruff",
+  "uv tool install --upgrade ty",
+  "uv tool install --upgrade clang-format",
+  "rustup component add rust-analyzer --toolchain stable",
+]
 
 [tasks."lsp:doctor"]
 description = "Check LSP binaries on PATH"
@@ -153,12 +164,7 @@ done
 '''
 
 run_windows = [
-  "where amp 2>nul || echo amp -^> NOT FOUND",
-  "where claude 2>nul || echo claude -^> NOT FOUND",
-  "where opencode 2>nul || echo opencode -^> NOT FOUND",
-  "where codex 2>nul || echo codex -^> NOT FOUND",
-  "where pi 2>nul || echo pi -^> NOT FOUND",
-  "where droid 2>nul || echo droid -^> NOT FOUND",
+  "pwsh -NoProfile -Command \"$paths = @($HOME + '\\.amp\\bin', $HOME + '\\.local\\bin', $HOME + '\\.bun\\bin', $HOME + '\\.opencode\\bin'); $env:Path = (($paths + ($env:Path -split ';')) | Where-Object { $_ } | Select-Object -Unique) -join ';'; foreach ($bin in @('amp', 'claude', 'opencode', 'codex', 'pi', 'droid')) { $cmd = Get-Command $bin -ErrorAction SilentlyContinue; if ($cmd) { Write-Output ($bin + ' -> ' + $cmd.Source) } else { Write-Output ($bin + ' -> NOT FOUND') } }\"",
 ]
 
 [tasks."ai:sync"]
