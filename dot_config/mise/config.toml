@@ -153,6 +153,45 @@ run_windows = [
   "curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.sh | bash",
 ]
 
+[tasks."ai:link"]
+description = "Link shared AI agent instructions and skills"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+mkdir -p \
+  ~/.claude \
+  ~/.config/opencode \
+  ~/.pi/agent \
+  ~/.config/amp \
+  ~/.factory \
+  ~/.codex
+
+ln -sfn ~/.config/AGENTS.md ~/.claude/CLAUDE.md
+ln -sfn ~/.config/AGENTS.md ~/.config/opencode/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.pi/agent/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.config/amp/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.factory/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.codex/AGENTS.md
+
+rm -rf ~/.claude/skills
+ln -sfn ~/.agents/skills ~/.claude/skills
+
+rm -rf ~/.factory/skills
+ln -sfn ~/.agents/skills ~/.factory/skills
+'''
+run_windows = [
+  "pwsh -NoProfile -Command \"$paths = @((Join-Path $HOME '.claude'), (Join-Path $HOME '.config\\opencode'), (Join-Path $HOME '.pi\\agent'), (Join-Path $HOME '.config\\amp'), (Join-Path $HOME '.factory'), (Join-Path $HOME '.codex')); New-Item -ItemType Directory -Force -Path $paths | Out-Null\"",
+  "pwsh -NoProfile -Command \"$source = Join-Path $HOME '.config\\AGENTS.md'; $link = Join-Path $HOME '.claude\\CLAUDE.md'; Remove-Item -Force $link -ErrorAction SilentlyContinue; New-Item -ItemType SymbolicLink -Path $link -Target $source | Out-Null\"",
+  "pwsh -NoProfile -Command \"$source = Join-Path $HOME '.config\\AGENTS.md'; $link = Join-Path $HOME '.config\\opencode\\AGENTS.md'; Remove-Item -Force $link -ErrorAction SilentlyContinue; New-Item -ItemType SymbolicLink -Path $link -Target $source | Out-Null\"",
+  "pwsh -NoProfile -Command \"$source = Join-Path $HOME '.config\\AGENTS.md'; $link = Join-Path $HOME '.pi\\agent\\AGENTS.md'; Remove-Item -Force $link -ErrorAction SilentlyContinue; New-Item -ItemType SymbolicLink -Path $link -Target $source | Out-Null\"",
+  "pwsh -NoProfile -Command \"$source = Join-Path $HOME '.config\\AGENTS.md'; $link = Join-Path $HOME '.config\\amp\\AGENTS.md'; Remove-Item -Force $link -ErrorAction SilentlyContinue; New-Item -ItemType SymbolicLink -Path $link -Target $source | Out-Null\"",
+  "pwsh -NoProfile -Command \"$source = Join-Path $HOME '.config\\AGENTS.md'; $link = Join-Path $HOME '.factory\\AGENTS.md'; Remove-Item -Force $link -ErrorAction SilentlyContinue; New-Item -ItemType SymbolicLink -Path $link -Target $source | Out-Null\"",
+  "pwsh -NoProfile -Command \"$source = Join-Path $HOME '.config\\AGENTS.md'; $link = Join-Path $HOME '.codex\\AGENTS.md'; Remove-Item -Force $link -ErrorAction SilentlyContinue; New-Item -ItemType SymbolicLink -Path $link -Target $source | Out-Null\"",
+  "pwsh -NoProfile -Command \"$source = Join-Path $HOME '.agents\\skills'; $link = Join-Path $HOME '.claude\\skills'; Remove-Item -Recurse -Force $link -ErrorAction SilentlyContinue; New-Item -ItemType Junction -Path $link -Target $source | Out-Null\"",
+  "pwsh -NoProfile -Command \"$source = Join-Path $HOME '.agents\\skills'; $link = Join-Path $HOME '.factory\\skills'; Remove-Item -Recurse -Force $link -ErrorAction SilentlyContinue; New-Item -ItemType Junction -Path $link -Target $source | Out-Null\"",
+]
+
 [tasks."ai:doctor"]
 description = "Check AI agent binaries on PATH"
 run = '''
@@ -168,8 +207,9 @@ run_windows = [
 ]
 
 [tasks."ai:sync"]
-description = "Install then verify AI agents"
+description = "Install, link, then verify AI agents"
 run = [
   { task = "ai:install" },
+  { task = "ai:link" },
   { task = "ai:doctor" },
 ]
