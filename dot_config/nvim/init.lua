@@ -325,29 +325,23 @@ if conform_ok then
     format_on_save = false,
     formatters_by_ft = {
       lua = { 'stylua' },
-      python = function(bufnr)
-        if conform.get_formatter_info('ruff_format', bufnr).available then
-          return { 'ruff_format' }
-        else
-          return { 'isort', 'black' }
-        end
-      end,
-      javascript = { 'prettier', 'biome', stop_after_first = true },
-      typescript = { 'prettier', 'biome', stop_after_first = true },
-      javascriptreact = { 'prettier', 'biome', stop_after_first = true },
-      typescriptreact = { 'prettier', 'biome', stop_after_first = true },
-      html = { 'prettier', 'biome', stop_after_first = true },
-      graphql = { 'prettier', 'biome', stop_after_first = true },
-      yaml = { 'prettier', 'biome', stop_after_first = true },
+      python = { 'ruff_format' },
+      javascript = { 'oxfmt' },
+      typescript = { 'oxfmt' },
+      javascriptreact = { 'oxfmt' },
+      typescriptreact = { 'oxfmt' },
+      html = { 'oxfmt' },
+      graphql = { 'oxfmt' },
+      yaml = { 'oxfmt' },
       toml = { 'taplo' },
-      json = { 'prettier', 'biome', stop_after_first = true },
-      jsonc = { 'prettier', 'biome', stop_after_first = true },
+      json = { 'oxfmt' },
+      jsonc = { 'oxfmt' },
       go = { 'goimports', 'gofmt' },
       c = { 'clang_format' },
-      css = { 'prettier', 'biome', stop_after_first = true },
+      css = { 'oxfmt' },
       shell = { 'shfmt', 'shellcheck' },
       zsh = { 'shfmt', 'shellcheck' },
-      markdown = { 'prettier', 'biome', stop_after_first = true },
+      markdown = { 'oxfmt' },
       rust = { 'rustfmt', lsp_format = "fallback" }
     },
   })
@@ -547,6 +541,7 @@ local servers = {
   'ruff',
   'lua_ls',
   'eslint',
+  'oxlint',
   'tsgo',
   'clangd',
   'rust_analyzer',

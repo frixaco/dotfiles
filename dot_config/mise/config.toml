@@ -5,32 +5,38 @@ bun = 'latest'
 deno = 'latest'
 uv = 'latest'
 zig = 'latest'
-usage = 'latest'
-aube = 'latest'
-
-"github:clangd/clangd" = "latest"
-"aqua:LuaLS/lua-language-server" = "latest"
-
-[settings]
-npm.package_manager = "bun"
 
 [tasks."lsp:install"]
-description = "Install LSP tools (mise + uv + bun + rustup)"
-run = [
-  "mise install",
-  "go install golang.org/x/tools/gopls@latest",
-  "uv tool install --upgrade ruff",
-  "uv tool install --upgrade ty",
-  "bun install -g @johnnymorganz/stylua-bin@latest",
-  "bun install -g @olrtg/emmet-language-server@latest",
-  "bun install -g vscode-langservers-extracted@latest",
-  "bun install -g @tailwindcss/language-server@latest",
-  "bun install -g @typescript/native-preview@beta",
-  "bun install -g prettier@latest",
-  "bun install -g eslint@latest",
-  "uv tool install --upgrade clang-format",
-  "rustup component add rust-analyzer --toolchain stable",
-]
+description = "Install LSP tools (mise + go + uv + rustup)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+mise install
+
+bun install -g \
+  @astrojs/language-server@latest \
+  @johnnymorganz/stylua-bin@latest \
+  @olrtg/emmet-language-server@latest \
+  @tailwindcss/language-server@latest \
+  @taplo/cli@latest \
+  @typescript/native-preview@beta \
+  eslint@latest \
+  oxfmt@latest \
+  oxlint@latest \
+  prettier@latest \
+  shellcheck@latest \
+  typescript-language-server@latest \
+  vscode-langservers-extracted@latest
+
+go install golang.org/x/tools/gopls@latest
+go install golang.org/x/tools/cmd/goimports@latest
+go install mvdan.cc/sh/v3/cmd/shfmt@latest
+uv tool install --upgrade ruff
+uv tool install --upgrade ty
+uv tool install --upgrade clang-format
+rustup component add rust-analyzer --toolchain stable
+'''
 
 [tasks."lsp:doctor"]
 description = "Check LSP binaries on PATH"
@@ -40,10 +46,9 @@ set -euo pipefail
 bins=(
   rust-analyzer
   gopls
+  goimports
   stylua
-  clangd
   clang-format
-  lua-language-server
   ruff
   ty
   emmet-language-server
@@ -53,20 +58,30 @@ bins=(
   tailwindcss-language-server
   typescript-language-server
   tsgo
+  astro-ls
+  oxfmt
+  oxlint
+  taplo
+  shfmt
+  shellcheck
   prettier
   eslint
 )
 for bin in "${bins[@]}"; do
-  printf "%s -> %s\n" "$bin" "$(command -v "$bin")"
+  if path="$(command -v "$bin")"; then
+    printf "%s -> %s\n" "$bin" "$path"
+  else
+    printf "%s -> NOT FOUND\n" "$bin" >&2
+    exit 1
+  fi
 done
 '''
 run_windows = [
   "where rust-analyzer",
   "where gopls",
+  "where goimports",
   "where stylua",
-  "where clangd",
   "where clang-format",
-  "where lua-language-server",
   "where ruff",
   "where ty",
   "where emmet-language-server",
@@ -76,6 +91,12 @@ run_windows = [
   "where tailwindcss-language-server",
   "where typescript-language-server",
   "where tsgo",
+  "where astro-ls",
+  "where oxfmt",
+  "where oxlint",
+  "where taplo",
+  "where shfmt",
+  "where shellcheck",
   "where prettier",
   "where eslint",
 ]
@@ -101,21 +122,23 @@ if ! command -v claude &> /dev/null; then
     curl -fsSL https://claude.ai/install.sh | bash
 fi
 
-if ! command -v opencode &> /dev/null; then
-    bun install -g opencode-ai
-fi
+mise install
+bun install -g \
+  @earendil-works/pi-coding-agent@latest \
+  @openai/codex@latest \
+  agent-browser@latest \
+  droid@latest \
+  opencode-ai@latest
 
 amp update
 claude update
-bun i -g @earendil-works/pi-coding-agent @openai/codex droid opencode-ai
 curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.sh | bash
 '''
 
 run_windows = [
   "pwsh -Command \"if (!(Get-Command amp -EA SilentlyContinue)) { irm https://ampcode.com/install.ps1 | iex } else { amp update }\"",
   "pwsh -Command \"if (!(Get-Command claude -EA SilentlyContinue)) { irm https://claude.ai/install.ps1 | iex } else { claude update }\"",
-  "pwsh -Command \"if (!(Get-Command opencode -EA SilentlyContinue)) { bun install -g opencode-ai }\"",
-  "bun i -g @earendil-works/pi-coding-agent @openai/codex droid opencode-ai",
+  "mise install",
   "curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.sh | bash",
 ]
 
