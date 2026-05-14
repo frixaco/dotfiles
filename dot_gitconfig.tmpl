@@ -3,7 +3,9 @@
 	pager = delta
 	preloadindex = true
 	autocrlf = input
-{{- if eq .chezmoi.os "linux" }}
+{{- if eq .chezmoi.os "windows" }}
+	sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
+{{- else if eq .chezmoi.os "linux" }}
 {{- 	if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
 	sshCommand = ssh.exe
 {{- 	end }}
