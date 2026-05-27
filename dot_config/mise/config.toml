@@ -160,6 +160,7 @@ run = '''
 set -euo pipefail
 
 mkdir -p \
+  ~/.agents/skills \
   ~/.claude \
   ~/.config/opencode \
   ~/.pi/agent \
@@ -189,6 +190,7 @@ run = '''
 $ErrorActionPreference = "Stop"
 
 $dirs = @(
+  (Join-Path $HOME ".agents\skills"),
   (Join-Path $HOME ".claude"),
   (Join-Path $HOME ".config\opencode"),
   (Join-Path $HOME ".pi\agent"),

@@ -21,7 +21,7 @@ Individual skills may require additional context — check the skill's preparati
 **Gathering order:**
 1. **Check current instructions (instant)**: If your loaded instructions already contain a **Design Context** section, proceed immediately.
 2. **Check .impeccable.md (fast)**: If not in instructions, read `.impeccable.md` from the project root. If it exists and contains the required context, proceed.
-3. **Run teach-impeccable (REQUIRED)**: If neither source has context, you MUST run the teach-impeccable skill NOW before doing anything else. Do NOT skip this step. Do NOT attempt to infer context from the codebase instead.
+3. **Gather missing context directly**: If neither source has context, ask the user for the minimum missing context before doing design work. Do NOT attempt to infer audience, use cases, or brand personality from the codebase alone.
 
 ---
 
@@ -40,6 +40,21 @@ Then implement working code that is:
 - Visually striking and memorable
 - Cohesive with a clear aesthetic point-of-view
 - Meticulously refined in every detail
+
+## Operating Modes
+
+Use this single skill for the full frontend design lifecycle. Match the mode to the user's request:
+
+- **Create/build**: Implement the actual usable interface, not a landing-page explanation of the interface. Start from the primary workflow the user asked for.
+- **Adapt**: Make the experience work for the target context, not just smaller. Preserve core functionality on mobile, use 44x44px touch targets, avoid hover-only affordances, and test narrow/wide breakpoints.
+- **Animate**: Add motion only when it explains state, provides feedback, prevents jarring changes, or creates a rare signature moment. Respect `prefers-reduced-motion`; animate `transform` and `opacity`, not layout properties.
+- **Onboard**: For first-use and empty states, get users to the product's "aha moment" quickly. Teach in context, provide real actions/templates, make tours skippable, and never repeat dismissed onboarding.
+- **Audit/critique**: If the user asks for a review or audit, report findings instead of fixing them. Lead with the AI-slop verdict, then prioritize issues by user impact and give concrete fix directions.
+- **Polish/ship**: Before calling work done, check alignment, spacing, typography, color contrast, keyboard navigation, focus states, loading states, empty states, error states, long text, responsive behavior, and console/runtime errors.
+- **Harden**: Design for real data: long names, empty values, large lists, failed requests, permission states, slow/offline networks, 200% zoom, RTL/long translations, dates/numbers/currencies, and repeated submissions.
+- **Optimize**: Measure before changing performance-sensitive code. Prioritize LCP/INP/CLS, bundle size, image size, render cost, animation FPS, and user-perceived responsiveness.
+- **Normalize/extract**: Prefer existing design-system components, tokens, and patterns. Extract reusable components/tokens only when the pattern is used repeatedly or clearly belongs in the shared system.
+- **Overdrive**: For technically ambitious UI, propose 2-3 directions before implementation, explain trade-offs, get the user's pick, then verify visually in a browser and iterate.
 
 ## Frontend Aesthetics Guidelines
 
