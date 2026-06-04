@@ -1,7 +1,7 @@
 [tools]
 node = 'lts'
 go = 'latest'
-bun = 'latest'
+"github:oven-sh/bun" = "canary"
 deno = 'latest'
 uv = 'latest'
 zig = 'latest'
