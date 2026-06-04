@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grug Brain"
+  short_description: "Fight complexity with practical judgment"
+  default_prompt: "Use $grug-brain to simplify this design and identify complexity risks."
