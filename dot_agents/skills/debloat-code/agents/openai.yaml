@@ -1,0 +1,4 @@
+interface:
+  display_name: "Debloat Code"
+  short_description: "Refactor code by removing false abstractions"
+  default_prompt: "Use $debloat-code to audit this module for bloat and propose a smaller, cleaner design."
