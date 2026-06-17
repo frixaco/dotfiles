@@ -168,12 +168,12 @@ mkdir -p \
   ~/.factory \
   ~/.codex
 
-# ln -sfn ~/.config/AGENTS.md ~/.claude/CLAUDE.md
-# ln -sfn ~/.config/AGENTS.md ~/.config/opencode/AGENTS.md
-# ln -sfn ~/.config/AGENTS.md ~/.pi/agent/AGENTS.md
-# ln -sfn ~/.config/AGENTS.md ~/.config/amp/AGENTS.md
-# ln -sfn ~/.config/AGENTS.md ~/.factory/AGENTS.md
-# ln -sfn ~/.config/AGENTS.md ~/.codex/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.claude/CLAUDE.md
+ln -sfn ~/.config/AGENTS.md ~/.config/opencode/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.pi/agent/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.config/amp/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.factory/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.codex/AGENTS.md
 
 rm -rf ~/.claude/skills
 ln -sfn ~/.agents/skills ~/.claude/skills
@@ -200,19 +200,19 @@ $dirs = @(
 )
 New-Item -ItemType Directory -Force -Path $dirs | Out-Null
 
-# $agentSource = Join-Path $HOME ".config\AGENTS.md"
-# $agentLinks = @(
-#   (Join-Path $HOME ".claude\CLAUDE.md"),
-#   (Join-Path $HOME ".config\opencode\AGENTS.md"),
-#   (Join-Path $HOME ".pi\agent\AGENTS.md"),
-#   (Join-Path $HOME ".config\amp\AGENTS.md"),
-#   (Join-Path $HOME ".factory\AGENTS.md"),
-#   (Join-Path $HOME ".codex\AGENTS.md")
-# )
-# foreach ($link in $agentLinks) {
-#   Remove-Item -Force -LiteralPath $link -ErrorAction SilentlyContinue
-#   New-Item -ItemType SymbolicLink -Path $link -Target $agentSource | Out-Null
-# }
+$agentSource = Join-Path $HOME ".config\AGENTS.md"
+$agentLinks = @(
+  (Join-Path $HOME ".claude\CLAUDE.md"),
+  (Join-Path $HOME ".config\opencode\AGENTS.md"),
+  (Join-Path $HOME ".pi\agent\AGENTS.md"),
+  (Join-Path $HOME ".config\amp\AGENTS.md"),
+  (Join-Path $HOME ".factory\AGENTS.md"),
+  (Join-Path $HOME ".codex\AGENTS.md")
+)
+foreach ($link in $agentLinks) {
+  Remove-Item -Force -LiteralPath $link -ErrorAction SilentlyContinue
+  New-Item -ItemType SymbolicLink -Path $link -Target $agentSource | Out-Null
+}
 
 $skillsSource = Join-Path $HOME ".agents\skills"
 $skillsLinks = @(

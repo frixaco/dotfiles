@@ -72,6 +72,14 @@ Do not follow this order mechanically if it makes the file harder to read. Prefe
 - Prematurely abstract
 - Write million tiny helpers everywhere
 
+## Implementation policy: no backwards compatibility by default
+
+When making a requested change, implement the final intended solution directly. Do not keep old implementations, fallback paths, compatibility shims, duplicate v1/v2 code, deprecated aliases, or migration layers unless I explicitly ask for them.
+
+Assume breaking changes are acceptable inside this repository. Replace old behavior completely, update all callers/tests/docs/config to match, and remove obsolete code instead of supporting both old and new behavior.
+
+Prefer one clean implementation over additive “just in case” code.
+
 ## Testing
 
 Pick strategy by scenario:
@@ -91,10 +99,5 @@ General:
 ## Tool and MCP use
 
 - Use `fff` tools when available over `grep`/`ripgrep`
-
-## Pre-Handoff Checklist
-
-- [ ] Lint passes
-- [ ] Typecheck passes
-- [ ] Tests pass
-- [ ] No unintended changes to unrelated files
+- For casual browsing use `agent-browser` CLI
+- For debugging, testing, troubleshooting, scraping and similar development oriented workflows, use Chrome DevTools MCP
