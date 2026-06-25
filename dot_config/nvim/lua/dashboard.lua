@@ -258,7 +258,7 @@ local function open_dashboard()
   }
 
   vim.api.nvim_create_autocmd({ 'BufWipeout', 'BufDelete' }, {
-    buffer = buf,
+    buf = buf,
     once = true,
     callback = function()
       if vim.api.nvim_win_is_valid(win) then
@@ -288,8 +288,8 @@ local function open_dashboard()
 
   vim.bo[buf].modifiable = false
 
-  vim.keymap.set('n', 'q', '<cmd>quit<cr>', { buffer = buf, silent = true })
-  vim.keymap.set('n', 'e', '<cmd>enew<cr>', { buffer = buf, silent = true })
+  vim.keymap.set('n', 'q', '<cmd>quit<cr>', { buf = buf, silent = true })
+  vim.keymap.set('n', 'e', '<cmd>enew<cr>', { buf = buf, silent = true })
 end
 
 function M.setup()

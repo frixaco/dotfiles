@@ -90,8 +90,8 @@ local ok_pack_add, pack_add_err = pcall(vim.pack.add, {
   -- { src = 'https://github.com/windwp/nvim-ts-autotag' },
   { src = 'https://github.com/nvim-treesitter/nvim-treesitter-context' },
 
-  -- LSP tooling
-  { src = 'https://github.com/neovim/nvim-lspconfig' }, -- provides default configs
+  -- LSP config data
+  { src = 'https://github.com/neovim/nvim-lspconfig' },
 
   -- Completion
   { src = 'https://github.com/saghen/blink.cmp', version = 'v1.10.2' },
@@ -105,11 +105,6 @@ local ok_pack_add, pack_add_err = pcall(vim.pack.add, {
 if not ok_pack_add then
   vim.notify(('vim.pack.add failed: %s'):format(tostring(pack_add_err)), vim.log.levels.ERROR)
 end
-
--- Manual sync command (opens confirmation UI; hooks run on PackChanged after confirming with :write)
-vim.api.nvim_create_user_command('PackSync', function()
-  vim.pack.update()
-end, { desc = 'Update plugins (confirm with :write)' })
 
 -- Convenience command if you ever need to (re)build fff.nvim manually.
 vim.api.nvim_create_user_command('FffSync', function()
@@ -177,6 +172,13 @@ vim.keymap.set('n', ']e', function()
   vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
 end, { desc = 'Next error' })
 
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic' })
+vim.keymap.set('n', '<leader>r', vim.lsp.buf.rename, { desc = 'LSP: Rename' })
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'LSP: Goto definition' })
+vim.keymap.set('n', 'gr', vim.lsp.buf.references, { desc = 'LSP: References' })
+vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'LSP: Hover documentation' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { desc = 'LSP: Code action' })
+
 --------------------------------------------------------------------------------
 -- AUTOCMDS
 --------------------------------------------------------------------------------
@@ -185,7 +187,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking text',
   group = vim.api.nvim_create_augroup('highlight-yank', { clear = true }),
   callback = function()
-    vim.highlight.on_yank()
+    vim.hl.hl_op()
   end,
 })
 
@@ -271,7 +273,7 @@ if gitsigns_ok then
       local gs = require('gitsigns')
       local function map(mode, l, r, opts)
         opts = opts or {}
-        opts.buffer = bufnr
+        opts.buf = bufnr
         vim.keymap.set(mode, l, r, opts)
       end
       map('n', ']c', function()
@@ -342,7 +344,7 @@ if conform_ok then
       shell = { 'shfmt', 'shellcheck' },
       zsh = { 'shfmt', 'shellcheck' },
       markdown = { 'oxfmt' },
-      rust = { 'rustfmt', lsp_format = "fallback" }
+      rust = { 'rustfmt', lsp_format = 'fallback' },
     },
   })
 
@@ -506,35 +508,19 @@ vim.keymap.set('n', 'fg', function()
 end, { desc = 'Live grep' })
 
 --------------------------------------------------------------------------------
--- NATIVE LSP (vim.lsp.config / vim.lsp.enable)
+-- NATIVE LSP
 --------------------------------------------------------------------------------
 
--- LSP on_attach
-local lsp_on_attach = function(client, bufnr)
-  local map = function(keys, func, desc)
-    vim.keymap.set('n', keys, func, { buffer = bufnr, desc = 'LSP: ' .. desc })
-  end
-  map('gd', vim.lsp.buf.definition, 'Goto Definition')
-  map('gr', vim.lsp.buf.references, 'References')
-  map('gI', vim.lsp.buf.implementation, 'Goto Implementation')
-  map('gy', vim.lsp.buf.type_definition, 'Goto Type Definition')
-  map('<leader>e', vim.diagnostic.open_float, 'Open Floating Diagnostic')
-  map('<leader>r', vim.lsp.buf.rename, 'Rename')
-  map('K', vim.lsp.buf.hover, 'Hover Documentation')
-  vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr, desc = 'Code Action' })
-end
-
--- Get capabilities from blink.cmp (if available)
 local capabilities = {}
 if blink_ok then
-  local blink = require('blink.cmp')
-  capabilities = blink.get_lsp_capabilities({
+  capabilities = require('blink.cmp').get_lsp_capabilities({
     workspace = { didChangeWatchedFiles = { dynamicRegistration = true } },
   })
 end
 
--- LSP servers to enable
-local servers = {
+vim.lsp.config('*', { capabilities = capabilities })
+
+local ok_lsp, lsp_err = pcall(vim.lsp.enable, {
   'gopls',
   'ty',
   'astro',
@@ -552,41 +538,10 @@ local servers = {
   'tailwindcss',
   'svelte',
   'wgsl_analyzer',
-}
-
-local server_overrides = {}
-
--- Optional fallback config (disabled): ts_ls
---[[
-pcall(vim.lsp.config, 'ts_ls', {
-  capabilities = capabilities,
-  on_attach = lsp_on_attach,
-  init_options = {
-    plugins = {
-      { name = 'typescript-svelte-plugin', location = 'node_modules/svelte-language-server' },
-    },
-  },
 })
-pcall(vim.lsp.enable, 'ts_ls')
-]]
-
-for _, server in ipairs(servers) do
-  local config = vim.tbl_deep_extend('force', {
-    capabilities = capabilities,
-    on_attach = lsp_on_attach,
-  }, server_overrides[server] or {})
-
-  local ok = pcall(vim.lsp.config, server, config)
-  if ok then
-    pcall(vim.lsp.enable, server)
-  else
-    vim.notify_once(('Skipping LSP server without config: %s'):format(server), vim.log.levels.WARN)
-  end
+if not ok_lsp then
+  vim.notify_once(('LSP enable failed: %s'):format(tostring(lsp_err)), vim.log.levels.WARN)
 end
-
--- Sourcekit (Swift)
--- pcall(vim.lsp.config, 'sourcekit', { on_attach = lsp_on_attach, capabilities = capabilities })
--- pcall(vim.lsp.enable, 'sourcekit')
 
 --------------------------------------------------------------------------------
 -- CUSTOM MODULES
