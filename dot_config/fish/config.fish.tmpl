@@ -34,56 +34,13 @@ alias oc="opencode"
 alias se="source .venv/bin/activate.fish"
 alias cx="codex"
 
-function __theme_name_for_mode --argument-names mode
-    switch $mode
-        case light
-            echo cyberdream-light
-        case '*'
-            echo cyberdream
-    end
-end
-
-function __current_theme_mode
-    set -l path ~/.local/state/theme-mode
-
-    if test -f $path
-        set -l mode (string trim < $path)
-
-        switch $mode
-            case light dark
-                echo $mode
-                return 0
-        end
-    end
-
-    echo dark
-end
+set -gx BAT_THEME cyberdream
 
 function __apply_fish_theme --argument-names theme
     type -q fish_config; or return 0
     test -f ~/.config/fish/themes/$theme.theme; or return 0
 
     fish_config theme choose $theme >/dev/null
-end
-
-function theme-dark
-    theme-mode dark >/dev/null
-    or return 1
-
-    set -l theme (__theme_name_for_mode dark)
-    set -gx THEME_MODE dark
-    set -gx BAT_THEME $theme
-    __apply_fish_theme $theme
-end
-
-function theme-light
-    theme-mode light >/dev/null
-    or return 1
-
-    set -l theme (__theme_name_for_mode light)
-    set -gx THEME_MODE light
-    set -gx BAT_THEME $theme
-    __apply_fish_theme $theme
 end
 
 function ccd
@@ -164,11 +121,7 @@ if test -f ~/.config/fish/env.fish
 end
 
 if status is-interactive
-    set -l current_mode (__current_theme_mode)
-    set -l theme (__theme_name_for_mode $current_mode)
-    set -gx THEME_MODE $current_mode
-    set -gx BAT_THEME $theme
-    __apply_fish_theme $theme
+    __apply_fish_theme cyberdream
 
     command -q zoxide; and zoxide init fish | source
     command -q starship; and starship init fish | source

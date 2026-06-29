@@ -53,5 +53,4 @@ ln -s ~/.agents/skills ~/.factory/skills
 
 **Theme**
 
-- Run `theme-light` or `theme-dark` after OS theme change
-
+- Cyberdream dark is configured as the default theme

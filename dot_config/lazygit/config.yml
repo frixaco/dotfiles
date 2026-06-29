@@ -1,26 +1,26 @@
 git:
   pagers:
     - colorArg: always
-      pager: delta --features cyberdream-light --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+      pager: delta --features cyberdream --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
 
 gui:
-  border: rounded
+  border: square
   theme:
     activeBorderColor:
-      - "#008c99"
+      - "#5ef1ff"
     inactiveBorderColor:
       - "#7b8496"
     searchingActiveBorderColor:
-      - "#d100bf"
+      - "#ff5ef1"
     optionsTextColor:
-      - "#acacac"
+      - "#3c4048"
     selectedLineBgColor:
-      - "#acacac"
+      - "#3c4048"
     cherryPickedCommitBgColor:
-      - "#acacac"
+      - "#3c4048"
     cherryPickedCommitFgColor:
-      - "#f40064"
+      - "#ff5ea0"
     unstagedChangesColor:
-      - "#d17c00"
+      - "#ffbd5e"
     defaultFgColor:
-      - "#16181a"
+      - "#ffffff"

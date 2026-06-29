@@ -37,48 +37,7 @@ alias oc="opencode"
 alias se="source .venv/bin/activate"
 alias cx="codex"
 
-__theme_name_for_mode() {
-  case "$1" in
-    light) printf '%s\n' cyberdream-light ;;
-    *) printf '%s\n' cyberdream ;;
-  esac
-}
-
-__current_theme_mode() {
-  local state_path="$HOME/.local/state/theme-mode"
-  local mode
-
-  if [[ -f "$state_path" ]]; then
-    IFS= read -r mode < "$state_path"
-    case "$mode" in
-      light|dark)
-        printf '%s\n' "$mode"
-        return 0
-        ;;
-    esac
-  fi
-
-  printf '%s\n' dark
-}
-
-__apply_theme_env() {
-  local mode="$1"
-  local theme
-
-  theme="$(__theme_name_for_mode "$mode")"
-  export THEME_MODE="$mode"
-  export BAT_THEME="$theme"
-}
-
-theme-dark() {
-  theme-mode dark >/dev/null || return 1
-  __apply_theme_env dark
-}
-
-theme-light() {
-  theme-mode light >/dev/null || return 1
-  __apply_theme_env light
-}
+export BAT_THEME=cyberdream
 
 ccd() {
   cd "$(chezmoi source-path)"
@@ -158,8 +117,6 @@ function y() {
 if [[ -f ~/.config/zsh/env.zsh ]]; then
   source ~/.config/zsh/env.zsh
 fi
-
-__apply_theme_env "$(__current_theme_mode)"
 
 if [[ -o interactive ]]; then
   (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"

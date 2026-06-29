@@ -10,11 +10,11 @@
       "src": "https://github.com/stevearc/conform.nvim"
     },
     "cyberdream.nvim": {
-      "rev": "d1866f5b606896ca530be00bafbd12a3e6bb6efd",
+      "rev": "b9cc88378b776f33d3ea77164716f37c3f13ef72",
       "src": "https://github.com/scottmckendry/cyberdream.nvim"
     },
     "fff.nvim": {
-      "rev": "030a583b37802416ce9108295b209d2e6b9d0079",
+      "rev": "a0008b1cde4ce8f29cbdf63b52fde1ab7d0f7f6f",
       "src": "https://github.com/dmtrKovalenko/fff.nvim"
     },
     "gitsigns.nvim": {
