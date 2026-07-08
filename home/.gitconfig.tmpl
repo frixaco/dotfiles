@@ -1,0 +1,54 @@
+[core]
+	editor = nvim
+	pager = delta
+	preloadindex = true
+	autocrlf = input
+{%- if os() == "windows" %}
+	sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
+{%- elif os() == "linux" %}
+{%- if env.WSL_DISTRO_NAME is defined %}
+	sshCommand = ssh.exe
+{%- endif %}
+{%- endif %}
+
+[interactive]
+	diffFilter = delta --color-only
+
+[init]
+	defaultBranch = main
+
+[branch]
+	sort = -committerdate
+
+[maintenance]
+	auto = 1
+
+[include]
+	path = ~/.config/delta/themes/cyberdream.gitconfig
+
+[delta]
+	features = cyberdream
+	navigate = true
+	side-by-side = false
+	line-numbers = true
+
+[difftool]
+	prompt = false
+
+[difftool "difftastic"]
+	cmd = difft "$LOCAL" "$REMOTE"
+
+[diff]
+	tool = difftastic
+
+[merge]
+	conflictStyle = zdiff3
+
+[user]
+	name = frixaco
+	email = rustam21ashurmatov@gmail.com
+
+{% if vars.work -%}
+[includeIf "gitdir:~/Documents/vbrato/"]
+	path = ~/Documents/vbrato/.gitconfig-vbrato
+{%- endif %}

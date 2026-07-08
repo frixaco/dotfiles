@@ -1,0 +1,123 @@
+[settings]
+experimental = true
+dotfiles.root = "~/.dotfiles/home"
+
+# Default machine profile. Override per-machine in mise.local.toml (gitignored),
+# e.g. `[vars]\nwork = true` plus any machine-specific [dotfiles] entries.
+[vars]
+work = false
+
+[bootstrap.hooks.pre-packages]
+run = '''
+case "$(uname -s)" in
+  Darwin) brewfile="$PWD/Brewfile.macos" ;;
+  Linux) brewfile="$PWD/Brewfile.linux" ;;
+  *) exit 0 ;;
+esac
+
+if ! command -v brew >/dev/null 2>&1; then
+  NONINTERACTIVE=1 /bin/bash -c \
+    "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+else
+  echo "Homebrew installation did not provide a supported brew executable" >&2
+  exit 1
+fi
+
+brew bundle --file "$brewfile"
+'''
+
+[bootstrap.hooks.post-dotfiles]
+run = "mise run secure"
+
+# Deploy dotfiles with `mise dotfiles apply` (see setup.sh). Sources resolve
+# relative to this file. Secrets use `copy` + `mise run secure` (git can't keep
+# 0600); OS/work-specific files use `template` (Tera).
+[dotfiles]
+# OS/work-specific (rendered templates)
+"~/.zshrc" = { source = "home/.zshrc.tmpl", mode = "template" }
+"~/.gitconfig" = { source = "home/.gitconfig.tmpl", mode = "template" }
+"~/.config/fish/config.fish" = { source = "home/.config/fish/config.fish.tmpl", mode = "template" }
+"~/.config/ghostty/config" = { source = "home/.config/ghostty/config.tmpl", mode = "template" }
+"~/.config/1Password/ssh/agent.toml" = { source = "home/.config/1Password/ssh/agent.toml.tmpl", mode = "template" }
+
+# Sensitive settings (real file, chmod 0600 via `mise run secure`)
+"~/.factory/settings.json" = { source = "home/.factory/settings.json", mode = "copy" }
+
+# Tool-rewritten config (real files)
+"~/.config/amp/settings.json" = { source = "home/.config/amp/settings.json", mode = "copy" }
+"~/.factory/mcp.json" = { source = "home/.factory/mcp.json", mode = "copy" }
+"~/.config/btop/btop.conf" = { source = "home/.config/btop/btop.conf", mode = "copy" }
+"~/.config/opencode/tui.json" = { source = "home/.config/opencode/tui.json", mode = "copy" }
+"~/.config/mise/config.toml" = { source = "home/.config/mise/config.toml", mode = "copy" }
+
+# Directories (single symlink for the whole tree)
+"~/.config/nvim" = { source = "home/.config/nvim", mode = "symlink" }
+"~/.agents/skills" = { source = "home/.agents/skills", mode = "symlink" }
+
+# Plain files (symlink)
+"~/.config/fish/conf.d/00-mise.fish" = { source = "home/.config/fish/conf.d/00-mise.fish", mode = "symlink" }
+"~/.config/fish/themes/cyberdream.theme" = { source = "home/.config/fish/themes/cyberdream.theme", mode = "symlink" }
+"~/.config/ghostty/themes/cyberdream" = { source = "home/.config/ghostty/themes/cyberdream", mode = "symlink" }
+"~/.config/kitty/kitty.conf" = { source = "home/.config/kitty/kitty.conf", mode = "symlink" }
+"~/.config/kitty/cyberdream.conf" = { source = "home/.config/kitty/cyberdream.conf", mode = "symlink" }
+"~/.config/btop/themes/cyberdream.theme" = { source = "home/.config/btop/themes/cyberdream.theme", mode = "symlink" }
+"~/.config/bat/config" = { source = "home/.config/bat/config", mode = "symlink" }
+"~/.config/bat/themes/cyberdream.tmTheme" = { source = "home/.config/bat/themes/cyberdream.tmTheme", mode = "symlink" }
+"~/.config/delta/themes/cyberdream.gitconfig" = { source = "home/.config/delta/themes/cyberdream.gitconfig", mode = "symlink" }
+"~/.config/git/ignore" = { source = "home/.config/git/ignore", mode = "symlink" }
+"~/.config/jjui/config.toml" = { source = "home/.config/jjui/config.toml", mode = "symlink" }
+"~/.config/jjui/themes/cyberdream-dark.toml" = { source = "home/.config/jjui/themes/cyberdream-dark.toml", mode = "symlink" }
+"~/.config/lazygit/config.yml" = { source = "home/.config/lazygit/config.yml", mode = "symlink" }
+"~/.config/opencode/opencode.json" = { source = "home/.config/opencode/opencode.json", mode = "symlink" }
+"~/.config/opencode/themes/cyberdream.json" = { source = "home/.config/opencode/themes/cyberdream.json", mode = "symlink" }
+"~/.config/starship.toml" = { source = "home/.config/starship.toml", mode = "symlink" }
+"~/.config/yazi/init.lua" = { source = "home/.config/yazi/init.lua", mode = "symlink" }
+"~/.config/yazi/theme.toml" = { source = "home/.config/yazi/theme.toml", mode = "symlink" }
+"~/.config/yazi/yazi.toml" = { source = "home/.config/yazi/yazi.toml", mode = "symlink" }
+"~/.config/yazi/flavors/cyberdream.yazi/flavor.toml" = { source = "home/.config/yazi/flavors/cyberdream.yazi/flavor.toml", mode = "symlink" }
+"~/.config/AGENTS.md" = { source = "home/.config/AGENTS.md", mode = "symlink" }
+"~/.pi/agent/mcp.json" = { source = "home/.pi/agent/mcp.json", mode = "symlink" }
+"~/.pi/agent/settings.json" = { source = "home/.pi/agent/settings.json", mode = "symlink" }
+
+[tasks.secure]
+description = "Restrict permissions on sensitive dotfiles to 0600"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+for f in \
+  ~/.factory/settings.json \
+  ~/.config/1Password/ssh/agent.toml; do
+  [ -f "$f" ] && chmod 600 "$f"
+done
+'''
+
+[tasks.sync]
+description = "Apply dotfiles then fix sensitive permissions"
+run = [
+  "mise dotfiles apply --yes",
+  { task = "secure" },
+]
+
+[tasks."brew:sync"]
+description = "Install and update platform Homebrew packages"
+run = '''
+case "$(uname -s)" in
+  Darwin) brewfile="$PWD/Brewfile.macos" ;;
+  Linux) brewfile="$PWD/Brewfile.linux" ;;
+  *) echo "Homebrew packages are unsupported on this platform" >&2; exit 1 ;;
+esac
+brew bundle --file "$brewfile"
+'''
+
+[tasks.bootstrap]
+description = "Install and verify AI agents and language servers"
+run = [
+  "mise run ai:sync",
+  "mise run lsp:sync",
+]

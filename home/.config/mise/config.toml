@@ -1,0 +1,269 @@
+[tools]
+node = 'lts'
+go = 'latest'
+"github:oven-sh/bun" = "canary"
+deno = 'latest'
+uv = 'latest'
+zig = 'latest'
+
+[tasks."lsp:install"]
+description = "Install LSP tools (mise + go + uv + rustup)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+mise install
+
+bun pm cache rm -g
+bun install -g \
+  @astrojs/language-server@latest \
+  @johnnymorganz/stylua-bin@latest \
+  @olrtg/emmet-language-server@latest \
+  @tailwindcss/language-server@latest \
+  @taplo/cli@latest \
+  @typescript/native-preview@beta \
+  eslint@latest \
+  oxfmt@latest \
+  oxlint@latest \
+  prettier@latest \
+  shellcheck@latest \
+  typescript-language-server@latest \
+  vscode-langservers-extracted@latest
+
+go install golang.org/x/tools/gopls@latest
+go install golang.org/x/tools/cmd/goimports@latest
+go install mvdan.cc/sh/v3/cmd/shfmt@latest
+uv tool install --upgrade ruff
+uv tool install --upgrade ty
+uv tool install --upgrade clang-format
+rustup component add rust-analyzer --toolchain stable
+'''
+run_windows = [
+  "mise install",
+  "bun install -g @astrojs/language-server@latest @johnnymorganz/stylua-bin@latest @olrtg/emmet-language-server@latest @tailwindcss/language-server@latest @taplo/cli@latest @typescript/native-preview@beta eslint@latest oxfmt@latest oxlint@latest prettier@latest shellcheck@latest typescript-language-server@latest vscode-langservers-extracted@latest",
+  "go install golang.org/x/tools/gopls@latest",
+  "go install golang.org/x/tools/cmd/goimports@latest",
+  "go install mvdan.cc/sh/v3/cmd/shfmt@latest",
+  "uv tool install --upgrade ruff",
+  "uv tool install --upgrade ty",
+  "uv tool install --upgrade clang-format",
+  "rustup component add rust-analyzer --toolchain stable",
+]
+
+[tasks."lsp:doctor"]
+description = "Check LSP binaries on PATH"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+bins=(
+  rust-analyzer
+  gopls
+  goimports
+  stylua
+  clang-format
+  ruff
+  ty
+  emmet-language-server
+  vscode-eslint-language-server
+  vscode-html-language-server
+  vscode-css-language-server
+  tailwindcss-language-server
+  typescript-language-server
+  tsgo
+  astro-ls
+  oxfmt
+  oxlint
+  taplo
+  shfmt
+  shellcheck
+  prettier
+  eslint
+)
+for bin in "${bins[@]}"; do
+  if path="$(command -v "$bin")"; then
+    printf "%s -> %s\n" "$bin" "$path"
+  else
+    printf "%s -> NOT FOUND\n" "$bin" >&2
+    exit 1
+  fi
+done
+'''
+run_windows = [
+  "where rust-analyzer",
+  "where gopls",
+  "where goimports",
+  "where stylua",
+  "where clang-format",
+  "where ruff",
+  "where ty",
+  "where emmet-language-server",
+  "where vscode-eslint-language-server",
+  "where vscode-html-language-server",
+  "where vscode-css-language-server",
+  "where tailwindcss-language-server",
+  "where typescript-language-server",
+  "where tsgo",
+  "where astro-ls",
+  "where oxfmt",
+  "where oxlint",
+  "where taplo",
+  "where shfmt",
+  "where shellcheck",
+  "where prettier",
+  "where eslint",
+]
+
+[tasks."lsp:sync"]
+description = "Install then verify LSP stack"
+run = [
+  { task = "lsp:install" },
+  { task = "lsp:doctor" },
+]
+
+[tasks."ai:install"]
+description = "Install/update AI coding agents"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v amp &> /dev/null; then
+    curl -fsSL https://ampcode.com/install.sh | bash
+fi
+
+if ! command -v claude &> /dev/null; then
+    curl -fsSL https://claude.ai/install.sh | bash
+fi
+
+mise install
+bun pm cache rm -g
+bun install -g \
+  @earendil-works/pi-coding-agent@latest \
+  @openai/codex@latest \
+  agent-browser@latest \
+  droid@latest \
+  opencode-ai@latest
+
+amp update
+claude update
+curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.sh | bash
+'''
+
+run_windows = [
+  "pwsh -Command \"if (!(Get-Command amp -EA SilentlyContinue)) { irm https://ampcode.com/install.ps1 | iex } else { amp update }\"",
+  "pwsh -Command \"if (!(Get-Command claude -EA SilentlyContinue)) { irm https://claude.ai/install.ps1 | iex } else { claude update }\"",
+  "mise install",
+  "curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.sh | bash",
+]
+
+[tasks."ai:link"]
+description = "Link shared AI agent instructions and skills"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+mkdir -p \
+  ~/.agents/skills \
+  ~/.claude \
+  ~/.config/opencode \
+  ~/.pi/agent \
+  ~/.config/amp \
+  ~/.factory \
+  ~/.codex
+
+ln -sfn ~/.config/AGENTS.md ~/.claude/CLAUDE.md
+ln -sfn ~/.config/AGENTS.md ~/.config/opencode/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.pi/agent/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.config/amp/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.factory/AGENTS.md
+ln -sfn ~/.config/AGENTS.md ~/.codex/AGENTS.md
+
+rm -rf ~/.claude/skills
+ln -sfn ~/.agents/skills ~/.claude/skills
+
+rm -rf ~/.factory/skills
+ln -sfn ~/.agents/skills ~/.factory/skills
+'''
+run_windows = "mise run ai:link:windows"
+
+[tasks."ai:link:windows"]
+hide = true
+shell = "pwsh -NoProfile -Command"
+run = '''
+$ErrorActionPreference = "Stop"
+
+$dirs = @(
+  (Join-Path $HOME ".agents\skills"),
+  (Join-Path $HOME ".claude"),
+  (Join-Path $HOME ".config\opencode"),
+  (Join-Path $HOME ".pi\agent"),
+  (Join-Path $HOME ".config\amp"),
+  (Join-Path $HOME ".factory"),
+  (Join-Path $HOME ".codex")
+)
+New-Item -ItemType Directory -Force -Path $dirs | Out-Null
+
+$agentSource = Join-Path $HOME ".config\AGENTS.md"
+$agentLinks = @(
+  (Join-Path $HOME ".claude\CLAUDE.md"),
+  (Join-Path $HOME ".config\opencode\AGENTS.md"),
+  (Join-Path $HOME ".pi\agent\AGENTS.md"),
+  (Join-Path $HOME ".config\amp\AGENTS.md"),
+  (Join-Path $HOME ".factory\AGENTS.md"),
+  (Join-Path $HOME ".codex\AGENTS.md")
+)
+foreach ($link in $agentLinks) {
+  Remove-Item -Force -LiteralPath $link -ErrorAction SilentlyContinue
+  New-Item -ItemType SymbolicLink -Path $link -Target $agentSource | Out-Null
+}
+
+$skillsSource = Join-Path $HOME ".agents\skills"
+$skillsLinks = @(
+  (Join-Path $HOME ".claude\skills"),
+  (Join-Path $HOME ".factory\skills")
+)
+foreach ($link in $skillsLinks) {
+  Remove-Item -Recurse -Force -LiteralPath $link -ErrorAction SilentlyContinue
+  New-Item -ItemType Junction -Path $link -Target $skillsSource | Out-Null
+}
+'''
+
+[tasks."ai:doctor"]
+description = "Check AI agent binaries on PATH"
+run = '''
+#!/usr/bin/env bash
+bins=(amp claude opencode codex pi droid)
+for bin in "${bins[@]}"; do
+  printf "%s -> %s\n" "$bin" "$(command -v "$bin" 2>/dev/null || echo "NOT FOUND")"
+done
+'''
+run_windows = "mise run ai:doctor:windows"
+
+[tasks."ai:doctor:windows"]
+hide = true
+shell = "pwsh -NoProfile -Command"
+run = '''
+$paths = @(
+  (Join-Path $HOME ".amp\bin"),
+  (Join-Path $HOME ".local\bin"),
+  (Join-Path $HOME ".bun\bin"),
+  (Join-Path $HOME ".opencode\bin")
+)
+$env:Path = (($paths + ($env:Path -split ";")) | Where-Object { $_ } | Select-Object -Unique) -join ";"
+
+foreach ($bin in @("amp", "claude", "opencode", "codex", "pi", "droid")) {
+  $cmd = Get-Command $bin -ErrorAction SilentlyContinue
+  if ($cmd) {
+    Write-Output "$bin -> $($cmd.Source)"
+  } else {
+    Write-Output "$bin -> NOT FOUND"
+  }
+}
+'''
+
+[tasks."ai:sync"]
+description = "Install, link, then verify AI agents"
+run = [
+  { task = "ai:install" },
+  { task = "ai:link" },
+  { task = "ai:doctor" },
+]

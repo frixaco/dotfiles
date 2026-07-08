@@ -1,0 +1,134 @@
+{%- if os() == "linux" %}
+if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+{%- endif %}
+
+autoload -Uz compinit
+compinit
+
+export EDITOR=nvim
+
+{%- if os() == "macos" %}
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export ANDROID_SDK_ROOT="$ANDROID_HOME"
+export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+{%- endif %}
+
+# for Lazygit config to work
+export XDG_CONFIG_HOME="$HOME/.config"
+
+export PATH="$HOME/.local/bin:$HOME/.bun/bin:$HOME/.amp/bin:$HOME/.opencode/bin:$PATH"
+{%- if os() == "macos" %}
+export PATH="/Applications/Obsidian.app/Contents/MacOS:$PATH"
+{%- elif os() == "linux" %}
+export PATH="/usr/local/bin/obsidian:$PATH"
+{%- endif %}
+
+alias l="eza --color=always --icons --all --long --time modified --sort modified --no-permissions --octal-permissions --git --smart-group --git-repos"
+alias v="nvim"
+alias en="cd ~/.config/nvim && nvim"
+alias sf="source ~/.zshrc"
+alias c="clear"
+alias ef="nvim ~/.zshrc"
+alias cc="claude"
+alias oc="opencode"
+alias se="source .venv/bin/activate"
+alias cx="codex"
+
+export BAT_THEME=cyberdream
+
+ccd() {
+  cd ~/.dotfiles
+}
+
+{%- if os() == "linux" %}
+{%- if env.WSL_DISTRO_NAME is defined %}
+# Copy file(s) to WSL Desktop
+copy-to-desktop() {
+  if [ "$#" -eq 0 ]; then
+    echo "Usage: copy-to-desktop <file1> [file2 ...]"
+    return 1
+  fi
+
+  local target_dir="/mnt/c/Users/frixa/Desktop"
+
+  if [ ! -d "$target_dir" ]; then
+    echo "Error: Desktop directory not found: $target_dir"
+    return 1
+  fi
+
+  for file in "$@"; do
+    if [ -e "$file" ]; then
+      cp "$file" "$target_dir"
+      echo "Copied: $file -> $target_dir/"
+    else
+      echo "Error: File not found: $file"
+    fi
+  done
+}
+
+{%- endif %}
+{%- endif %}
+
+envsource() {
+  if [ ! -f "$1" ]; then
+    echo "Error: File $1 not found"
+    return 1
+  fi
+
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in
+      \#*|"") continue ;;
+    esac
+
+    key="${line%%=*}"
+    value="${line#*=}"
+    value="${value#\"}" ; value="${value%\"}"
+    value="${value#\'}" ; value="${value%\'}"
+
+    export "$key=$value"
+  done < "$1"
+}
+
+function g() {
+    local original_dir="$(pwd)"
+    
+    lazygit "$@"
+    
+    cd "$original_dir"
+}
+function j() {
+    local original_dir="$(pwd)"
+
+    jjui "$@"
+
+    cd "$original_dir"
+}
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
+
+if [[ -f ~/.config/zsh/env.zsh ]]; then
+  source ~/.config/zsh/env.zsh
+fi
+
+if [[ -o interactive ]]; then
+  (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
+  (( $+commands[starship] )) && eval "$(starship init zsh)"
+  (( $+commands[fzf] )) && eval "$(fzf --zsh)"
+  (( $+commands[mise] )) && eval "$(mise activate zsh)"
+fi
+
+{% if vars.work and os() == "macos" -%}
+(( $+commands[rbenv] )) && eval "$(rbenv init - zsh)"
+{%- endif -%}
+
+{%- if os() == "macos" %}
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+{%- endif %}
