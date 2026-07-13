@@ -61,6 +61,7 @@ run = "mise run secure"
 "~/.agents/skills" = { mode = "symlink" }
 
 # Plain files (symlink)
+"~/.config/aerospace/aerospace.toml" = { mode = "symlink" }
 "~/.config/fish/conf.d/00-mise.fish" = { mode = "symlink" }
 "~/.config/fish/themes/cyberdream.theme" = { mode = "symlink" }
 "~/.config/ghostty/themes/cyberdream" = { mode = "symlink" }

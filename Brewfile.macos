@@ -1,5 +1,6 @@
 # Third-party repositories
 tap "modem-dev/tap"
+tap "nikitabobko/tap", trusted: true
 tap "tw93/tap"
 
 # Command-line tools and libraries
@@ -42,6 +43,7 @@ brew "yazi"
 brew "zoxide"
 
 # Applications and fonts
+cask "nikitabobko/tap/aerospace"
 cask "font-blex-mono-nerd-font"
 cask "ghostty"
 cask "keycastr"
