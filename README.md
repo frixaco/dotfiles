@@ -35,7 +35,7 @@ work = true                                    # enables vbrato git identity + r
 
 [dotfiles]
 # work machines: vbrato git identity
-"~/Documents/vbrato/.gitconfig-vbrato" = { source = "home/Documents/vbrato/.gitconfig-vbrato.tmpl", mode = "template" }
+"~/Documents/vbrato/.gitconfig-vbrato" = { mode = "template" }
 ```
 
 **AI agents** — a single `~/.config/AGENTS.md` is shared to every tool and `~/.agents/skills` holds all skills:
