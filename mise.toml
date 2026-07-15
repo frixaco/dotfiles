@@ -1,3 +1,5 @@
+min_version = "2026.7.6"
+
 [settings]
 experimental = true
 dotfiles.root = "~/.dotfiles/home"
@@ -7,29 +9,60 @@ dotfiles.root = "~/.dotfiles/home"
 [vars]
 work = false
 
+# AeroSpace's tap lacks the metadata required by mise, so macOS casks stay in Homebrew.
 [bootstrap.hooks.pre-packages]
 run = '''
-case "$(uname -s)" in
-  Darwin) brewfile="$PWD/Brewfile.macos" ;;
-  Linux) brewfile="$PWD/Brewfile.linux" ;;
-  *) exit 0 ;;
-esac
-
-if ! command -v brew >/dev/null 2>&1; then
+if [ "$(uname -s)" = "Darwin" ] && [ ! -x /opt/homebrew/bin/brew ]; then
   NONINTERACTIVE=1 /bin/bash -c \
     "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
+'''
 
-if [ -x /opt/homebrew/bin/brew ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-else
-  echo "Homebrew installation did not provide a supported brew executable" >&2
-  exit 1
+[bootstrap.brew.taps]
+"modem-dev/tap" = "https://github.com/modem-dev/homebrew-tap.git"
+
+[bootstrap.packages]
+"brew:bat" = "latest"
+"brew:ccache" = "latest"
+"brew:cmake" = "latest"
+"brew:curl" = "latest"
+"brew:difftastic" = "latest"
+"brew:dua-cli" = "latest"
+"brew:eza" = "latest"
+"brew:fd" = "latest"
+"brew:ffmpeg" = "latest"
+"brew:fish" = "latest"
+"brew:fzf" = "latest"
+"brew:gh" = "latest"
+"brew:git" = "latest"
+"brew:git-delta" = "latest"
+"brew:git-filter-repo" = "latest"
+"brew:git-lfs" = "latest"
+"brew:hyperfine" = "latest"
+"brew:imagemagick-full" = "latest"
+"brew:jj" = "latest"
+"brew:jjui" = "latest"
+"brew:jq" = "latest"
+"brew:lazygit" = "latest"
+"brew:mise" = "latest"
+"brew:modem-dev/tap/hunk" = "latest"
+"brew:poppler" = "latest"
+"brew:postgresql@18" = "latest"
+"brew:railway" = "latest"
+"brew:resvg" = "latest"
+"brew:ripgrep" = "latest"
+"brew:sevenzip" = "latest"
+"brew:starship" = "latest"
+"brew:tokei" = "latest"
+"brew:tree-sitter-cli" = "latest"
+"brew:yazi" = "latest"
+"brew:zoxide" = "latest"
+
+[bootstrap.hooks.post-packages]
+run = '''
+if [ "$(uname -s)" = "Darwin" ]; then
+  /opt/homebrew/bin/brew bundle --file "$PWD/Brewfile.macos"
 fi
-
-brew bundle --file "$brewfile"
 '''
 
 [bootstrap.hooks.post-dotfiles]
@@ -102,17 +135,6 @@ done
 [tasks.sync]
 description = "Apply dotfiles then fix sensitive permissions"
 run = ["mise dotfiles apply --yes", { task = "secure" }]
-
-[tasks."brew:sync"]
-description = "Install and update platform Homebrew packages"
-run = '''
-case "$(uname -s)" in
-  Darwin) brewfile="$PWD/Brewfile.macos" ;;
-  Linux) brewfile="$PWD/Brewfile.linux" ;;
-  *) echo "Homebrew packages are unsupported on this platform" >&2; exit 1 ;;
-esac
-brew bundle --file "$brewfile"
-'''
 
 [tasks.bootstrap]
 description = "Install and verify AI agents and language servers"

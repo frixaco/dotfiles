@@ -2,6 +2,26 @@
 
 Deployment uses mise's experimental [`[dotfiles]`](https://mise.jdx.dev/dotfiles.html) feature. The real files live under [`home/`](home/) mirroring `$HOME`; [`mise.toml`](mise.toml) maps each into place.
 
+## Fresh machine
+
+```bash
+curl -fsSL https://dotfiles.frixaco.com | bash
+```
+
+This installs mise, clones the repository to `~/.dotfiles`, and runs the full bootstrap. Personal configuration is the default; work machines can add a [per-machine config](#per-machine-config) afterward.
+
+## Everyday commands
+
+Run from `~/.dotfiles`:
+
+```bash
+mise run sync                    # apply dotfiles and secure sensitive files
+mise bootstrap status --missing # check packages, dotfiles, and tools
+mise bootstrap --only packages  # install missing formulae and applications
+mise bootstrap --dry-run        # preview a full bootstrap
+mise dotfiles add ~/.config/foo # capture a live file into home/
+```
+
 ## Architecture
 
 ```text
@@ -110,13 +130,13 @@ Deployment uses mise's experimental [`[dotfiles]`](https://mise.jdx.dev/dotfiles
           │
           ▼
 ╭──────────────────────────────────────╮
-│ pre-packages hook                    │
+│ Bootstrap packages                   │
 │                                      │
-│ macOS ──▶ Brewfile.macos             │
-│ Linux ──▶ Brewfile.linux             │
+│ Apply [bootstrap.packages]           │
 │                                      │
-│ Install Homebrew if missing          │
-│ Run brew bundle                      │
+│ Install shared Homebrew formulae     │
+│ Install macOS extras from            │
+│ Brewfile.macos                       │
 ╰─────────┬────────────────────────────╯
           │
           ▼
@@ -182,17 +202,7 @@ Deployment uses mise's experimental [`[dotfiles]`](https://mise.jdx.dev/dotfiles
                          ╰──────────────────────╯
 ```
 
-## Fresh machine
-
-```bash
-curl -fsSL https://dotfiles.frixaco.com | bash
-```
-
-The command downloads [`setup.sh`](setup.sh) and runs it with Bash. The script installs mise, clones this repository to `~/.dotfiles`, trusts [`mise.toml`](mise.toml), then runs `mise bootstrap`. Bootstrap installs Homebrew and the platform's [`Brewfile.macos`](Brewfile.macos) or [`Brewfile.linux`](Brewfile.linux) packages, applies dotfiles, fixes sensitive-file permissions, and installs tools + AI agents.
-
-Non-work is the default machine profile. On a work machine, create the [per-machine config](#per-machine-config) after bootstrap, then run `mise run sync` to re-render the work-specific files.
-
-### Installer hosting
+## Installer hosting
 
 Vercel manages DNS for `dotfiles.frixaco.com`. Railway runs the redirect service from [`installer/`](installer/) and checks [`/healthz`](https://dotfiles.frixaco.com/healthz) during deployment. The root URL returns a temporary redirect to the copy of [`setup.sh`](setup.sh) on GitHub, so the short command always uses the script from the `main` branch.
 
@@ -201,19 +211,6 @@ Verify the public endpoint without running the installer:
 ```bash
 curl -fsS https://dotfiles.frixaco.com/healthz
 curl -fsSL https://dotfiles.frixaco.com | cmp - setup.sh
-```
-
-## Daily use
-
-Run from `~/.dotfiles`:
-
-```bash
-mise dotfiles status          # what's applied / missing / drifted
-mise dotfiles apply           # deploy (add --force to replace conflicts)
-mise run secure               # chmod 0600 on sensitive files
-mise run sync                 # apply + secure in one step
-mise run brew:sync            # install/update Brewfile packages
-mise dotfiles add ~/.config/foo # capture a live file back into home/
 ```
 
 ## Deployment modes
