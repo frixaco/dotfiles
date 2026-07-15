@@ -1,0 +1,11 @@
+{
+  "name": "dotfiles-installer",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}

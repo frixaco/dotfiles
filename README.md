@@ -180,7 +180,7 @@ Deployment uses mise's experimental [`[dotfiles]`](https://mise.jdx.dev/dotfiles
 curl -fsSL https://dotfiles.frixaco.com | bash
 ```
 
-The short URL redirects to [`setup.sh`](setup.sh). The script installs mise, clones the repo to `~/.dotfiles`, trusts it, then runs `mise bootstrap`. Bootstrap installs Homebrew and the platform's [`Brewfile.macos`](Brewfile.macos) or [`Brewfile.linux`](Brewfile.linux) packages, applies dotfiles, fixes sensitive-file permissions, and installs tools + AI agents.
+Railway deploys the redirect service in [`installer/`](installer/), while Vercel manages the domain's DNS. The short URL redirects to [`setup.sh`](setup.sh). The script installs mise, clones the repo to `~/.dotfiles`, trusts it, then runs `mise bootstrap`. Bootstrap installs Homebrew and the platform's [`Brewfile.macos`](Brewfile.macos) or [`Brewfile.linux`](Brewfile.linux) packages, applies dotfiles, fixes sensitive-file permissions, and installs tools + AI agents.
 
 Non-work is the default machine profile. On a work machine, create the [per-machine config](#per-machine-config) after bootstrap, then run `mise run sync` to re-render the work-specific files.
 
