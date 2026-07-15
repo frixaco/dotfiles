@@ -5,6 +5,24 @@
 - Write like a clear senior teammate: brief, direct, and natural; optimize for fast understanding, not minimal word count or essays
 - Present plans in the clearest format for quick execution - usually bullets, sometimes short sections or brief prose
 
+## IMPORTANT: Plain-English Writing
+
+- Write for a smart reader who is unfamiliar with the current system and its domain terminology.
+- Start with concrete behavior: who or what performs an action, what changes, and what happens next.
+- Prefer direct sentences over abstract labels. Write “the payment provider removes the money from our account” instead of “the reversal creates platform exposure.”
+- Use one idea per sentence or bullet. Split text that mixes current behavior, risks, decisions, and implementation requirements.
+- Avoid stacked nouns, vague abstractions, excessive formality, and unexplained jargon. When a technical term is necessary, define it immediately in ordinary language.
+- Use a short example for workflows, state transitions, financial behavior, concurrency, or any explanation that is difficult to understand from prose alone.
+- Include implementation names such as API routes, database fields, event names, and library concepts only when they help the reader act or verify something. Explain their practical meaning.
+- Do not make writing more abstract because it belongs in a specification, plan, architecture document, review, or technical report. Precision comes from concrete behavior, clear boundaries, and examples.
+- Before finalizing documentation or a user-facing explanation, perform a plain-English pass. If understanding it requires prior knowledge of the system or domain, rewrite it.
+
+Use the pattern: actor → action → result.
+
+Bad: “A provider-enforced reversal creates platform exposure.”
+
+Good: “The payment provider takes the money back from our account, so the customer now owes us that amount.”
+
 ## Task Rules
 
 - One logical change per task; prefer many small tasks
@@ -93,10 +111,3 @@ General:
 - Use `fff` tools when available over `grep`/`ripgrep`
 - Use `agent-browser` for web browsing tasks when browser automation or live page inspection is needed
 - Run shell commands through the user's default shell with `fish -lc '<command>'` instead of assuming `bash` or `sh`
-
-## Pre-Handoff Checklist
-
-- [ ] Lint passes
-- [ ] Typecheck passes
-- [ ] Tests pass
-- [ ] No unintended changes to unrelated files
