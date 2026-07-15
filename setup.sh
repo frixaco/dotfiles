@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Bootstrap a machine from these dotfiles using mise.
-#   curl -fsSL https://raw.githubusercontent.com/frixaco/dotfiles/main/setup.sh | bash
+#   curl -fsSL https://dotfiles.frixaco.com | bash
 set -euo pipefail
 
 REPO="${DOTFILES_DIR:-$HOME/.dotfiles}"
