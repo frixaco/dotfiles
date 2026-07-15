@@ -101,6 +101,9 @@ gaps.outer.right = 1
 
 # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
 
+cmd-ctrl-b = 'exec-and-forget open -a Helium --args --remote-debugging-port=9222'
+cmd-ctrl-t = 'exec-and-forget open -a cmux'
+
 # See: https://nikitabobko.github.io/AeroSpace/commands#exec-and-forget
 # You can uncomment the following lines to open up terminal with alt + enter shortcut
 # (like in i3)
