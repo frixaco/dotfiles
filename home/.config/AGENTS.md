@@ -1,113 +1,49 @@
-# GLOBAL AGENTS.md
+# Global agent instructions
 
-## Response Style
+## Communication
 
-- Write like a clear senior teammate: brief, direct, and natural; optimize for fast understanding, not minimal word count or essays
-- Present plans in the clearest format for quick execution - usually bullets, sometimes short sections or brief prose
+- Lead with the answer or next action. Skip pleasantries, plan announcements, filler, and closing recaps.
+- Write like a clear senior teammate for a smart reader new to the system: use plain English, direct sentences, one idea per sentence, and define necessary jargon.
+- Explain behavior as actor → action → result. Use short examples for workflows, state changes, money movement, or concurrency when prose is hard to follow. Include implementation names only when they help the reader act or verify.
 
-## IMPORTANT: Plain-English Writing
+For multi-step work:
 
-- Write for a smart reader who is unfamiliar with the current system and its domain terminology.
-- Start with concrete behavior: who or what performs an action, what changes, and what happens next.
-- Prefer direct sentences over abstract labels. Write “the payment provider removes the money from our account” instead of “the reversal creates platform exposure.”
-- Use one idea per sentence or bullet. Split text that mixes current behavior, risks, decisions, and implementation requirements.
-- Avoid stacked nouns, vague abstractions, excessive formality, and unexplained jargon. When a technical term is necessary, define it immediately in ordinary language.
-- Use a short example for workflows, state transitions, financial behavior, concurrency, or any explanation that is difficult to understand from prose alone.
-- Include implementation names such as API routes, database fields, event names, and library concepts only when they help the reader act or verify something. Explain their practical meaning.
-- Do not make writing more abstract because it belongs in a specification, plan, architecture document, review, or technical report. Precision comes from concrete behavior, clear boundaries, and examples.
-- Before finalizing documentation or a user-facing explanation, perform a plain-English pass. If understanding it requires prior knowledge of the system or domain, rewrite it.
+- Number bounded steps. On every turn, state what is done and what comes next.
+- Keep lists to five items; split longer lists into ranked groups.
+- When time matters, use concrete estimates. If work remains, end with one action that takes under two minutes to start; if complete, stop.
 
-Use the pattern: actor → action → result.
+Keep work focused:
 
-Bad: “A provider-enforced reversal creates platform exposure.”
+- Finish the current issue before raising a separate one.
+- Report outcomes concretely: success = what works + how to verify it; failure = failure → cause → fix.
+- Ask one short question when the request is genuinely ambiguous.
+- After three failed debugging turns, stop editing, name the assumption most likely to be wrong, and ask one diagnostic question.
+- Before a destructive action, confirm the exact target and effect.
 
-Good: “The payment provider takes the money back from our account, so the customer now owes us that amount.”
+## Code
 
-## Task Rules
-
-- One logical change per task; prefer many small tasks
-- State assumptions before writing code
-- Fix root causes, not symptoms
-- No fallbacks, no MVP/v1/v2 type of code. Only single final version.
-- Do not be afraid to do simple refactors if the feature/fix you are implementing will be smaller/cleaner or just won't exist
-
-## Code Rules
-
-- Match existing style, patterns, libraries in surrounding code
-- Error paths get equal thought to happy paths
-- Before writing: identify inputs, edge cases, failure modes
-- New dependencies: check recency and adoption first
-- Add comments only when necessary e.g. to explain "black box"-like code
-
-## File structure
-
-Organize files for **top-down readability**. A new reader should understand the module's purpose, public API, domain language, and implementation details in that order.
-
-Use this general order:
-
-1. **Module overview comment, if useful**
-   - Add a short comment only when the file's purpose is not obvious from its name and main export.
-   - Explain the module's intent, invariants, or important context.
-   - Do not duplicate the list of imports, exports, parameters, or return values.
-
-2. **Main export**
-   - Put the primary component, function, class, service, hook, handler, etc. near the top.
-   - Readers should see the module's main API before implementation details.
-
-3. **Exported types and domain vocabulary**
-   - Define exported types, interfaces, schemas, enums, constants, and domain names used by the main export.
-   - These should explain the language of the module: states, variants, events, commands, payloads, operations, etc.
-
-4. **Core implementation logic**
-   - Place the main logic next: transformation, validation, orchestration, rendering, data fetching, state transitions, business rules, etc.
-   - Prefer small, named functions over large inline blocks when it improves readability.
-
-5. **Constants and configuration**
-   - Group defaults, limits, keys, selectors, route names, query names, timing values, and other repeated values in a predictable place.
-   - Avoid scattering magic values throughout the file.
-
-6. **Supporting internal types**
-   - Add non-exported types that exist only to support the implementation: intermediate shapes, internal options, helper result types, local state shapes, etc.
-
-7. **Private helpers**
-   - Put local helper functions near the bottom.
-   - Helpers should be small, focused, and named after what they do.
-   - If a helper becomes reusable across files, move it to a shared module.
-
-8. **Tiny utilities**
-   - Put adapters, singletons, caches, formatters, mappers, and tiny low-level utilities last unless they are central to understanding the file.
-
-Do not follow this order mechanically if it makes the file harder to read. Prefer proximity when a type, constant, or helper is only meaningful next to the code that uses it.
-
-### Do Not
-
-- Guess at correctness — verify it
-- Handle happy path only
-- Import unneeded complexity
-- Solve problems not asked for
-- Forget to clean temporary files (e.g. in /tmp)
-- Over-engineer
-- Prematurely abstract
-- Write million tiny helpers everywhere
+- State assumptions before coding. Make one logical change, fix the root cause, and do not add fallbacks, parallel versions, or MVP-style branches.
+- Make a supporting refactor only when it leaves the requested change simpler. Do not expand into unrelated cleanup; match the surrounding code.
+- Prefer keeping small, local logic at its call site, especially one-liners used only once or twice. A helper should earn its indirection by naming a meaningful domain concept, removing non-trivial duplication, or protecting a runtime boundary. Avoid extracting solely to shorten a caller or moving feature-owned logic into generic `utils`, `helpers`, `shared`, or `services` buckets.
+- Organize modules top-down: overview comment when the purpose or invariant is not obvious → main export → exported types and domain vocabulary → core logic → constants and configuration → internal types → private helpers and utilities. Prefer proximity when it helps; do not split honest workflows into tiny helpers.
+- Comment whenever a reader must pause or infer intent. Explain the reason, invariant, constraint, or tradeoff—not the syntax—in plain English for a reader unfamiliar with the code, and define necessary domain terms.
 
 ## Testing
 
-Pick strategy by scenario:
+- Define the observable end state before implementation. Make core decisions and transformations testable through explicit inputs and outputs; keep network, database, filesystem, clock, and randomness at the boundaries.
+- Test public behavior, not implementation details. Do not add abstractions only for mocking; add a regression test for a bug when practical.
 
-| Scenario                     | Strategy                                            |
-| ---------------------------- | --------------------------------------------------- |
-| Complex/large output         | Snapshot / golden file                              |
-| Logic tangled with I/O       | Functional core + imperative shell                  |
-| External system interaction  | Black-box: verify your input, snapshot their output |
-| OS/runtime-level integration | Full environment (containers, VMs)                  |
+Choose the test strategy by boundary:
 
-General:
+| Situation                   | Strategy                                              |
+| --------------------------- | ----------------------------------------------------- |
+| Complex or large output     | Snapshot or golden file                               |
+| Logic tangled with I/O      | Functional core with an imperative shell              |
+| External system interaction | Black box: verify our input and snapshot their output |
+| OS or runtime integration   | Full environment such as a container or VM            |
 
-- Verification-first: define end state, then build toward it
-- Bugs: add regression test when it fits
+## Tools
 
-## Tool and MCP use
-
-- Use `fff` tools when available over `grep`/`ripgrep`
-- Use `agent-browser` for web browsing tasks when browser automation or live page inspection is needed
-- Run shell commands through the user's default shell with `fish -lc '<command>'` instead of assuming `bash` or `sh`
+- Prefer `fff` tools over `grep` or `ripgrep` when available.
+- Run shell commands through `fish -lc '<command>'`.
+- Use `agent-browser` for browser automation or live page inspection; first check for an existing Helium or Safari session.
