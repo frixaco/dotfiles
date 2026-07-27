@@ -44,6 +44,5 @@ Choose the test strategy by boundary:
 
 ## Tools
 
-- Prefer `fff` tools over `grep` or `ripgrep` when available.
-- Run shell commands through `fish -lc '<command>'`.
-- Use `agent-browser` for browser automation or live page inspection; first check for an existing Helium or Safari session.
+- Prefer `fff` tools over `grep` or `ripgrep`.
+- When using `chrome-devtools` MCP, prefer running Helium browser, otherwise launch it with CDP flag and do not create new profile.
