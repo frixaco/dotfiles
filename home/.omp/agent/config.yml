@@ -1,0 +1,38 @@
+providers: 
+  webSearchOrder: 
+    - exa
+    - perplexity
+    - gemini
+    - anthropic
+    - codex
+    - xai
+    - zai
+    - tinyfish
+    - jina
+    - kagi
+    - tavily
+    - firecrawl
+    - brave
+    - kimi
+    - parallel
+    - synthetic
+    - searxng
+    - startpage
+    - duckduckgo
+    - ecosia
+    - google
+    - mojeek
+    - public
+modelRoles: 
+  default: openai-codex/gpt-5.6-sol
+symbolPreset: nerd
+theme: 
+  dark: titanium
+  light: light
+setupVersion: 1
+lsp: 
+  enabled: true
+fetch: 
+  enabled: true
+dev: 
+  autoqaConsent: granted

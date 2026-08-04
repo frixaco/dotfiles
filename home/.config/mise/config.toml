@@ -135,6 +135,7 @@ mise install
 bun pm cache rm -g
 bun install -g \
   @earendil-works/pi-coding-agent@latest \
+  @oh-my-pi/pi-coding-agent@17.2.8 \
   @openai/codex@latest \
   agent-browser@latest \
   droid@latest \
@@ -204,7 +205,7 @@ foreach ($link in $agentLinks) {
 description = "Check AI agent binaries on PATH"
 run = '''
 #!/usr/bin/env bash
-bins=(amp opencode codex pi droid)
+bins=(amp opencode codex pi omp droid)
 for bin in "${bins[@]}"; do
   printf "%s -> %s\n" "$bin" "$(command -v "$bin" 2>/dev/null || echo "NOT FOUND")"
 done

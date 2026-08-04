@@ -1,17 +1,21 @@
 ---
 name: debloat-code
-description: Codebase de-bloating and refactor triage. Use when the user complains about "bloat", "too many helpers", "junk drawer utils", "over-abstraction", "code quality", "messy components", "should this live in lib", or asks to simplify/refactor modules, layout structure, JSX/markup nesting, Tailwind/class styling, wrappers, helpers, or conditionals while preserving behavior. Guides Codex to inspect usage graphs, runtime boundaries, and ownership; prefer net simplification over cosmetic churn; avoid hiding styling in opaque class-string aliases; and verify behavior.
+description: Codebase de-bloating and refactor triage. Use when the user complains about "bloat", "too many helpers", "junk drawer utils", "over-abstraction", "code quality", "messy components", "should this live in lib", or asks to simplify/refactor modules, layout structure, JSX/markup nesting, Tailwind/class styling, wrappers, helpers, or conditionals while preserving behavior. Applies Ponytail's shortest-working-diff bias, then inspects usage graphs, runtime boundaries, and ownership to keep reductions safe; prefers measurable deletion over cosmetic churn and verifies behavior with the smallest meaningful check.
 ---
 
 # Debloat Code
 
 ## Philosophy
 
-Treat bloat as a responsibility problem, not a line-count problem.
+Prefer the smallest correct codebase. Net removed lines, files, dependencies, and concepts are the primary outcomes; responsibility, ownership, and runtime boundaries prevent unsafe or misleading cuts.
 
-Small files can be good boundaries. Large files can be honest workflow. A helper is not bloat because it exists; it is bloat when it hides one-use logic, crosses runtime boundaries, or creates a vague place where unrelated things accumulate.
+Default to fewer files and inline local logic. Keep a small file or helper only when it protects a real runtime boundary, removes non-trivial duplication, or gives a stable domain concept a necessary home. A large file can be an honest workflow and should not be split merely to look clean.
 
-Prefer fewer, clearer ownership boundaries over more "clean-looking" files. Do not move code into `lib`, `utils`, `model`, `shared`, or `services` unless multiple real callers need it or the boundary is domain-level and stable.
+Do not move code into `lib`, `utils`, `model`, `shared`, or `services` unless multiple real callers need it or the boundary is domain-level and stable. A named concept alone does not earn extraction; first ask whether the code is clearer as one local line.
+
+## Ponytail Priority
+
+Ponytail wins ties. Choose the fewest files, shortest implementation, smallest runnable check, and largest verified deletion unless evidence shows that choice would cross a runtime boundary, change requested public behavior, or remove trust-boundary validation, data-loss protection, security, accessibility, or an explicit requirement.
 
 ## Workflow
 
@@ -33,14 +37,17 @@ Prefer fewer, clearer ownership boundaries over more "clean-looking" files. Do n
    - Pure helpers may be shared; runtime clients usually should not be.
 
 4. **Prefer evidence-backed moves**
-- Delete unused files only after confirming no imports or framework convention usage.
-- Inline one-use helpers when the helper name adds less clarity than the code.
-- Extract only when it removes real duplication, protects a runtime boundary, or gives a stable concept a name.
-- For UI simplification, prefer fewer wrappers, clearer JSX, and inline class names over opaque Tailwind/class-string variables.
+   - Delete unused files only after confirming no imports or framework convention usage.
+   - Collapse needless files and inline one-use helpers by default, including named helpers whose indirection costs more than the local code.
+   - Extract only when it removes non-trivial duplication, protects a runtime boundary, or a stable domain concept is harder to understand inline.
+   - Prefer fewer wrappers, direct JSX, and inline class names over opaque Tailwind/class-string aliases.
+   - Report the net lines, files, and dependencies removed; do not count code merely moved between files as simplification.
 
 5. **Verify behavior**
    - Preserve external behavior unless the user explicitly asks to simplify the product flow.
-   - Run the repo's standard check/lint commands.
+   - Run the smallest existing check that proves the changed public behavior.
+   - If non-trivial logic has no check, leave one small runnable assertion or regression test; do not add a framework, fixtures, or a broad suite unless required.
+   - Expand verification only when repository instructions require it or one check cannot cover the relevant risk boundary.
    - Note pre-existing failures separately from refactor fallout.
 
 ## Good Targets
@@ -51,6 +58,7 @@ Prefer fewer, clearer ownership boundaries over more "clean-looking" files. Do n
 - Duplicate parsing or normalization logic in client and server modules.
 - A generically named file like `api-access.ts` that is really billing, auth, or provider-specific code.
 - Unused framework helper files left behind after patterns changed.
+- Tiny files and wrappers that export one locally used operation without protecting a boundary.
 
 ## Bad Moves
 
@@ -88,13 +96,12 @@ Approach:
 
 1. Read the component and nearby files.
 2. Identify responsibilities: UI, route search, API calls, query config, result shaping, export/download effects.
-3. Move API calls into a feature-local `api.ts`.
-4. Move query keys/options into feature-local `queries.ts`.
-5. Move route search validation into the route or a route-owned helper.
-6. Keep the workflow hook feature-local if it depends on React state, router navigation, toast, DOM, or clipboard APIs.
-7. Leave JSX focused on rendering.
+3. Delete unused helpers and inline one-use transformations, API wrappers, and query configuration when they remain readable.
+4. Keep the workflow together when it serves one component and one runtime.
+5. Extract a feature-local `api.ts`, `queries.ts`, or route helper only for repeated callers or a real browser/server boundary.
+6. Leave the smallest component and file set that still makes the workflow understandable.
 
-Do not move the workflow hook to `lib` just because it is long. If it is only used by one feature and owns UI orchestration, it belongs with that feature.
+Do not move the workflow hook to `lib` or split it merely because it is long. If one feature owns the UI orchestration, keep it with that feature and prefer proximity.
 
 ### Example: Junk Drawer Model File
 
@@ -117,10 +124,10 @@ Approach:
 
 1. Build an import map for every lib file.
 2. Mark runtime type: pure, client-only, server-only, external provider adapter, database/domain.
-3. Keep tiny boundary files when they isolate runtime dependencies, e.g. `db.ts`, `auth-client.ts`, `polar.ts`.
-4. Consolidate duplicated pure logic, e.g. balance parsing in both client and server paths.
-5. Rename misleading files, e.g. `api-access.ts` to `billing-access.ts` if it is billing-specific.
-6. Delete unused files after confirming no imports.
+3. Delete unused files after confirming no imports or framework-owned loading convention.
+4. Inline or combine locally used files that share one runtime and workflow.
+5. Keep a tiny file only when it isolates a runtime dependency, e.g. `db.ts`, `auth-client.ts`, or `polar.ts`.
+6. Rename only surviving boundaries whose current name hides their ownership.
 
 ## Runtime Boundary Checklist
 
@@ -131,7 +138,7 @@ Before merging files, ask:
 - Does the file import browser/client auth, DOM, clipboard, Blob, or React hooks?
 - Can the shared code be made pure and imported by both sides?
 
-Preferred shape:
+Boundary exception when client and server import different parts:
 
 ```txt
 credits.ts          # pure shared math/parsing
@@ -139,11 +146,11 @@ credits-store.ts    # client query key + client fetch
 billing-access.ts   # server auth, credit checks, usage ingestion
 ```
 
-Do not combine all three just because they are about credits.
+Keep this split only when the imports actually cross those runtimes. If one workflow in one runtime owns all three, colocate or inline them instead.
 
 ## Query Abstraction Rule
 
-For TanStack Query, prefer named query option factories over broad custom query wrappers:
+For TanStack Query, keep a one-use `queryOptions` call at its call site. Use a named option factory only when multiple real callers share cache behavior; even then, prefer it over a broad custom query wrapper:
 
 ```ts
 export const fetchJobQueries = {
@@ -155,7 +162,7 @@ export const fetchJobQueries = {
 };
 ```
 
-Use custom hooks for workflow orchestration only when they own UI transitions and side effects. Do not hide TanStack Query behind generic abstractions that make cache keys, enabled states, or invalidation harder to see.
+Do not extract the example for one caller. Use custom hooks only when workflow orchestration owns UI transitions and side effects. Do not hide TanStack Query behind generic abstractions that make cache keys, enabled states, or invalidation harder to see.
 
 ## Final Response Pattern
 
@@ -164,5 +171,6 @@ When reporting a de-bloat pass:
 - Name what moved and why.
 - Name what was deleted.
 - Mention behavior preservation.
-- Mention checks run.
+- Mention the smallest check run.
 - Separate pre-existing failures from new refactor failures.
+- End with measurable impact: `net: -<N> lines, -<M> files, -<D> dependencies.`

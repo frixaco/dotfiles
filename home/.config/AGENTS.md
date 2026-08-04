@@ -22,16 +22,17 @@ Keep work focused:
 
 ## Code
 
-- State assumptions before coding. Make one logical change, fix the root cause, and do not add fallbacks, parallel versions, or MVP-style branches.
-- Make a supporting refactor only when it leaves the requested change simpler. Do not expand into unrelated cleanup; match the surrounding code.
-- Prefer keeping small, local logic at its call site, especially one-liners used only once or twice. A helper should earn its indirection by naming a meaningful domain concept, removing non-trivial duplication, or protecting a runtime boundary. Avoid extracting solely to shorten a caller or moving feature-owned logic into generic `utils`, `helpers`, `shared`, or `services` buckets.
+- State assumptions before coding. Make one logical change, fix the root cause, and do not add fallbacks, parallel versions, or MVP-style branches. Make a supporting refactor only when it leaves the requested change simpler; do not expand into unrelated cleanup.
+- After understanding the task and tracing the affected flow, stop at the first solution that works: skip speculative work → reuse existing code → use the standard library → use a native platform feature → use an installed dependency → keep it to one line → only then write the minimum new code.
+- Prefer the fewest files and keep small local logic at its call site, especially one-liners used once or twice. A helper or file must protect a runtime boundary, remove non-trivial duplication, or give a stable domain concept a necessary home. For bloat, refactoring, module ownership, helpers, or structural simplification, invoke `debloat-code` before editing.
 - Organize modules top-down: overview comment when the purpose or invariant is not obvious → main export → exported types and domain vocabulary → core logic → constants and configuration → internal types → private helpers and utilities. Prefer proximity when it helps; do not split honest workflows into tiny helpers.
 - Comment whenever a reader must pause or infer intent. Explain the reason, invariant, constraint, or tradeoff—not the syntax—in plain English for a reader unfamiliar with the code, and define necessary domain terms.
 
 ## Testing
 
 - Define the observable end state before implementation. Make core decisions and transformations testable through explicit inputs and outputs; keep network, database, filesystem, clock, and randomness at the boundaries.
-- Test public behavior, not implementation details. Do not add abstractions only for mocking; add a regression test for a bug when practical.
+- Leave one smallest runnable check for non-trivial logic. Test public behavior, not implementation details; do not add frameworks, fixtures, per-function suites, or abstractions only for mocking unless the task or risk boundary requires them.
+- For a bug, make that check a regression test when practical. Expand beyond one check only when repository instructions require it or one check cannot establish the requested behavior safely.
 
 Choose the test strategy by boundary:
 

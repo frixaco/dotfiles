@@ -235,11 +235,12 @@ Apply profile changes with `mise run sync`.
 
 ## AI agents
 
-A single `~/.config/AGENTS.md` is shared across the configured AI tools, and `~/.agents/skills` holds their shared skills:
+A single `~/.config/AGENTS.md` is shared across the configured AI tools, and `~/.agents/skills` holds their shared skills. OMP settings, Ponytail, and MCP configuration are tracked under `~/.omp/agent`; authentication, conversations, and generated databases remain machine-local.
 
 ```bash
 mise run ai:sync    # install agents, link AGENTS.md + skills, verify
 mise run lsp:sync   # install + verify LSP/formatter stack
+omp                 # first run on each machine: complete provider authentication
 ```
 
 ## Theme
