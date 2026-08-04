@@ -75,7 +75,6 @@ mise dotfiles add ~/.config/foo # capture a live file into home/
 │  │                                                                        │  │
 │  │  .config/mise/config.toml       copied file                            │  │
 │  │  .config/amp/settings.json      copied file                            │  │
-│  │  .factory/settings.json         copied file + chmod 0600               │  │
 │  │                                                                        │  │
 │  │  Documents/vbrato/                                                     │  │
 │  │    .gitconfig-vbrato            work-only template                     │  │
@@ -107,7 +106,6 @@ mise dotfiles add ~/.config/foo # capture a live file into home/
                          │ ~/.gitconfig           │
                          │ ~/.config/*            │
                          │ ~/.agents/skills       │
-                         │ ~/.factory/*           │
                          │ ~/Documents/vbrato/*   │
                          ╰────────────┬───────────╯
                                       │
@@ -117,7 +115,6 @@ mise dotfiles add ~/.config/foo # capture a live file into home/
                          │                        │
                          │ chmod 0600:            │
                          │ • 1Password agent      │
-                         │ • Factory settings     │
                          ╰────────────────────────╯
 ```
 

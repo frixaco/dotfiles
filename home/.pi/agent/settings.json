@@ -1,14 +1,11 @@
 {
-  "lastChangelogVersion": "0.76.0",
-  "defaultProvider": "openai",
-  "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "high",
+  "lastChangelogVersion": "0.83.0",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
+  "defaultThinkingLevel": "xhigh",
   "hideThinkingBlock": false,
-  "packages": [
-    "npm:pi-subagents",
-    "npm:pi-messenger",
-    "npm:pi-mcp-adapter",
-    "npm:pi-web-access",
-    "npm:pi-btw"
-  ]
+  "packages": [],
+  "theme": "dark",
+  "steeringMode": "one-at-a-time",
+  "followUpMode": "one-at-a-time"
 }

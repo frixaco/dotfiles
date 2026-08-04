@@ -79,12 +79,8 @@ run = "mise run secure"
 "~/.config/ghostty/config" = { mode = "template" }
 "~/.config/1Password/ssh/agent.toml" = { mode = "template" }
 
-# Sensitive settings (real file, chmod 0600 via `mise run secure`)
-"~/.factory/settings.json" = { mode = "copy" }
-
 # Tool-rewritten config (real files)
 "~/.config/amp/settings.json" = { mode = "copy" }
-"~/.factory/mcp.json" = { mode = "copy" }
 "~/.config/btop/btop.conf" = { mode = "copy" }
 "~/.config/opencode/tui.json" = { mode = "copy" }
 "~/.config/mise/config.toml" = { mode = "copy" }
@@ -126,7 +122,6 @@ run = '''
 set -euo pipefail
 for f in \
   home/.config/1Password/ssh/agent.toml \
-  ~/.factory/settings.json \
   ~/.config/1Password/ssh/agent.toml; do
   [ -f "$f" ] && chmod 600 "$f"
 done

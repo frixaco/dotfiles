@@ -130,9 +130,6 @@ if ! command -v amp &> /dev/null; then
     curl -fsSL https://ampcode.com/install.sh | bash
 fi
 
-if ! command -v claude &> /dev/null; then
-    curl -fsSL https://claude.ai/install.sh | bash
-fi
 
 mise install
 bun pm cache rm -g
@@ -144,13 +141,11 @@ bun install -g \
   opencode-ai@latest
 
 amp update
-claude update
 curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.sh | bash
 '''
 
 run_windows = [
   "pwsh -Command \"if (!(Get-Command amp -EA SilentlyContinue)) { irm https://ampcode.com/install.ps1 | iex } else { amp update }\"",
-  "pwsh -Command \"if (!(Get-Command claude -EA SilentlyContinue)) { irm https://claude.ai/install.ps1 | iex } else { claude update }\"",
   "mise install",
   "curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.sh | bash",
 ]
@@ -163,25 +158,16 @@ set -euo pipefail
 
 mkdir -p \
   ~/.agents/skills \
-  ~/.claude \
   ~/.config/opencode \
   ~/.pi/agent \
   ~/.config/amp \
-  ~/.factory \
   ~/.codex
 
-ln -sfn ~/.config/AGENTS.md ~/.claude/CLAUDE.md
 ln -sfn ~/.config/AGENTS.md ~/.config/opencode/AGENTS.md
 ln -sfn ~/.config/AGENTS.md ~/.pi/agent/AGENTS.md
 ln -sfn ~/.config/AGENTS.md ~/.config/amp/AGENTS.md
-ln -sfn ~/.config/AGENTS.md ~/.factory/AGENTS.md
 ln -sfn ~/.config/AGENTS.md ~/.codex/AGENTS.md
 
-rm -rf ~/.claude/skills
-ln -sfn ~/.agents/skills ~/.claude/skills
-
-rm -rf ~/.factory/skills
-ln -sfn ~/.agents/skills ~/.factory/skills
 '''
 run_windows = "mise run ai:link:windows"
 
@@ -193,22 +179,18 @@ $ErrorActionPreference = "Stop"
 
 $dirs = @(
   (Join-Path $HOME ".agents\skills"),
-  (Join-Path $HOME ".claude"),
   (Join-Path $HOME ".config\opencode"),
   (Join-Path $HOME ".pi\agent"),
   (Join-Path $HOME ".config\amp"),
-  (Join-Path $HOME ".factory"),
   (Join-Path $HOME ".codex")
 )
 New-Item -ItemType Directory -Force -Path $dirs | Out-Null
 
 $agentSource = Join-Path $HOME ".config\AGENTS.md"
 $agentLinks = @(
-  (Join-Path $HOME ".claude\CLAUDE.md"),
   (Join-Path $HOME ".config\opencode\AGENTS.md"),
   (Join-Path $HOME ".pi\agent\AGENTS.md"),
   (Join-Path $HOME ".config\amp\AGENTS.md"),
-  (Join-Path $HOME ".factory\AGENTS.md"),
   (Join-Path $HOME ".codex\AGENTS.md")
 )
 foreach ($link in $agentLinks) {
@@ -216,22 +198,13 @@ foreach ($link in $agentLinks) {
   New-Item -ItemType SymbolicLink -Path $link -Target $agentSource | Out-Null
 }
 
-$skillsSource = Join-Path $HOME ".agents\skills"
-$skillsLinks = @(
-  (Join-Path $HOME ".claude\skills"),
-  (Join-Path $HOME ".factory\skills")
-)
-foreach ($link in $skillsLinks) {
-  Remove-Item -Recurse -Force -LiteralPath $link -ErrorAction SilentlyContinue
-  New-Item -ItemType Junction -Path $link -Target $skillsSource | Out-Null
-}
 '''
 
 [tasks."ai:doctor"]
 description = "Check AI agent binaries on PATH"
 run = '''
 #!/usr/bin/env bash
-bins=(amp claude opencode codex pi droid)
+bins=(amp opencode codex pi droid)
 for bin in "${bins[@]}"; do
   printf "%s -> %s\n" "$bin" "$(command -v "$bin" 2>/dev/null || echo "NOT FOUND")"
 done
@@ -250,7 +223,7 @@ $paths = @(
 )
 $env:Path = (($paths + ($env:Path -split ";")) | Where-Object { $_ } | Select-Object -Unique) -join ";"
 
-foreach ($bin in @("amp", "claude", "opencode", "codex", "pi", "droid")) {
+foreach ($bin in @("amp", "opencode", "codex", "pi", "droid")) {
   $cmd = Get-Command $bin -ErrorAction SilentlyContinue
   if ($cmd) {
     Write-Output "$bin -> $($cmd.Source)"
