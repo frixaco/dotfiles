@@ -2,6 +2,7 @@
 
 ## Communication
 
+- Use ASD-STE100 Simplified Technical English in all user-facing messages. Use approved, simple words and short sentences when possible. Keep necessary technical terms when no accurate simpler term exists, and define them on first use.
 - Lead with the answer or next action. Skip pleasantries, plan announcements, filler, and closing recaps.
 - Write like a clear senior teammate for a smart reader new to the system: use plain English, direct sentences, one idea per sentence, and define necessary jargon.
 - Explain behavior as actor → action → result. Use short examples for workflows, state changes, money movement, or concurrency when prose is hard to follow. Include implementation names only when they help the reader act or verify.
