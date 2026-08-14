@@ -24,7 +24,7 @@ providers:
     - mojeek
     - public
 modelRoles: 
-  default: openai-codex/gpt-5.6-sol
+  default: opencode-go/deepseek-v4-pro:high
 symbolPreset: nerd
 theme: 
   dark: titanium
@@ -36,3 +36,4 @@ fetch:
   enabled: true
 dev: 
   autoqaConsent: granted
+hideThinkingBlock: false
