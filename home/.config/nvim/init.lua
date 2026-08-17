@@ -529,7 +529,7 @@ local ok_lsp, lsp_err = pcall(vim.lsp.enable, {
   'eslint',
   'oxlint',
   'denols',
-  'tsgo',
+  'tsc',
   'clangd',
   'rust_analyzer',
   'html',
