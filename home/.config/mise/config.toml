@@ -138,10 +138,10 @@ bun install -g \
   @oh-my-pi/pi-coding-agent@17.2.8 \
   @openai/codex@latest \
   agent-browser@latest \
-  droid@latest \
   opencode-ai@latest
 
 amp update
+pi update --extensions
 curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.sh | bash
 '''
 
@@ -203,7 +203,7 @@ foreach ($link in $agentLinks) {
 description = "Check AI agent binaries on PATH"
 run = '''
 #!/usr/bin/env bash
-bins=(amp opencode codex pi omp droid)
+bins=(amp opencode codex pi omp)
 for bin in "${bins[@]}"; do
   printf "%s -> %s\n" "$bin" "$(command -v "$bin" 2>/dev/null || echo "NOT FOUND")"
 done
@@ -222,7 +222,7 @@ $paths = @(
 )
 $env:Path = (($paths + ($env:Path -split ";")) | Where-Object { $_ } | Select-Object -Unique) -join ";"
 
-foreach ($bin in @("amp", "opencode", "codex", "pi", "droid")) {
+foreach ($bin in @("amp", "opencode", "codex", "pi")) {
   $cmd = Get-Command $bin -ErrorAction SilentlyContinue
   if ($cmd) {
     Write-Output "$bin -> $($cmd.Source)"
