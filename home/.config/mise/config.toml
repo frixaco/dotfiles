@@ -148,7 +148,7 @@ curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install
 run_windows = [
   "pwsh -Command \"if (!(Get-Command amp -EA SilentlyContinue)) { irm https://ampcode.com/install.ps1 | iex } else { amp update }\"",
   "mise install",
-  "bun install -g @earendil-works/pi-coding-agent@latest @oh-my-pi/pi-coding-agent@latest @openai/codex@latest agent-browser@latest droid@latest opencode-ai@latest",
+  "bun install -g @earendil-works/pi-coding-agent@latest @oh-my-pi/pi-coding-agent@latest @openai/codex@latest agent-browser@latest opencode-ai@latest",
   "pwsh -NoProfile -Command \"irm https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.ps1 | iex\"",
 ]
 
@@ -205,6 +205,7 @@ description = "Check AI agent binaries on PATH"
 run = '''
 #!/usr/bin/env bash
 bins=(amp opencode codex pi omp)
+missing=0
 for bin in "${bins[@]}"; do
   if path="$(command -v "$bin" 2>/dev/null)"; then
     printf "%s -> %s\n" "$bin" "$path"
