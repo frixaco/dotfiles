@@ -128,6 +128,25 @@ for f in \
   [ -f "$f" ] && chmod 600 "$f"
 done
 '''
+run_windows = "mise run secure:windows"
+
+[tasks."secure:windows"]
+hide = true
+shell = "pwsh -NoProfile -Command"
+run = '''
+$ErrorActionPreference = "Stop"
+$identity = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+$files = @(
+  (Join-Path $PWD "home\.config\1Password\ssh\agent.toml"),
+  (Join-Path $HOME ".config\1Password\ssh\agent.toml")
+)
+foreach ($file in $files) {
+  if (Test-Path -LiteralPath $file) {
+    & icacls.exe $file /inheritance:r /grant:r "${identity}:(M)" | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw "Could not restrict permissions on $file" }
+  }
+}
+'''
 
 [tasks.sync]
 description = "Apply dotfiles then fix sensitive permissions"
