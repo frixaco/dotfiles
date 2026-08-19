@@ -65,6 +65,9 @@ if [ "$(uname -s)" = "Darwin" ]; then
 fi
 '''
 
+[bootstrap.hooks.pre-dotfiles]
+run = "mise run layout"
+
 [bootstrap.hooks.post-dotfiles]
 run = "mise run secure"
 
@@ -78,6 +81,7 @@ run = "mise run secure"
 "~/.config/fish/config.fish" = { mode = "template" }
 "~/.config/ghostty/config" = { mode = "template" }
 "~/.config/1Password/ssh/agent.toml" = { mode = "template" }
+"~/stuff/code/vbrato/.gitconfig-vbrato" = { mode = "template" }
 
 # Tool-rewritten config (real files)
 "~/.config/amp/settings.json" = { mode = "copy" }
@@ -117,6 +121,28 @@ run = "mise run secure"
 "~/.pi/agent/settings.json" = { mode = "symlink" }
 "~/.omp/agent/config.yml" = { mode = "symlink" }
 
+[tasks.layout]
+description = "Create the shared personal workspace"
+run = '''
+mkdir -p \
+  "$HOME/stuff/code" \
+  "$HOME/stuff/music" \
+  "$HOME/stuff/2d/refs" \
+  "$HOME/stuff/3d/refs" \
+  "$HOME/stuff/dump"
+'''
+run_windows = "mise run layout:windows"
+
+[tasks."layout:windows"]
+hide = true
+shell = "pwsh -NoProfile -Command"
+run = '''
+$ErrorActionPreference = "Stop"
+@("code", "music", "2d\refs", "3d\refs", "dump") | ForEach-Object {
+  New-Item -ItemType Directory -Force -Path (Join-Path $HOME "stuff\$_") | Out-Null
+}
+'''
+
 [tasks.secure]
 description = "Restrict permissions on sensitive dotfiles to 0600"
 run = '''
@@ -149,8 +175,8 @@ foreach ($file in $files) {
 '''
 
 [tasks.sync]
-description = "Apply dotfiles then fix sensitive permissions"
-run = ["mise dotfiles apply --yes", { task = "secure" }]
+description = "Create workspace directories, apply dotfiles, then fix sensitive permissions"
+run = [{ task = "layout" }, "mise dotfiles apply --yes", { task = "secure" }]
 
 [tasks.bootstrap]
 description = "Install and verify AI agents and language servers"

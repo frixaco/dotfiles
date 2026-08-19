@@ -55,8 +55,7 @@ mise dotfiles add ~/.config/foo # capture a live file into home/
 │  │ Shared mappings  │ merge │ [vars]                                      │  │
 │  │ Tasks and hooks  │       │ work = true                                 │  │
 │  │ work = false     │       │                                             │  │
-│  ╰────────┬─────────╯       │ Work-only dotfile mappings                  │  │
-│           │                 ╰─────────────────────────────────────────────╯  │
+│  ╰────────┬─────────╯       ╰─────────────────────────────────────────────╯  │
 │           │                                                                  │
 │           ▼                                                                  │
 │  ╭────────────────────────────────────────────────────────────────────────╮  │
@@ -76,8 +75,8 @@ mise dotfiles add ~/.config/foo # capture a live file into home/
 │  │  .config/mise/config.toml       copied file                            │  │
 │  │  .config/amp/settings.json      copied file                            │  │
 │  │                                                                        │  │
-│  │  Documents/vbrato/                                                     │  │
-│  │    .gitconfig-vbrato            work-only template                     │  │
+│  │  stuff/code/vbrato/                                                    │  │
+│  │    .gitconfig-vbrato            work identity template                 │  │
 │  ╰────────────────────────────────────────────────────────────────────────╯  │
 ╰─────────────────────────────────────┬────────────────────────────────────────╯
                                       │
@@ -106,7 +105,7 @@ mise dotfiles add ~/.config/foo # capture a live file into home/
                          │ ~/.gitconfig           │
                          │ ~/.config/*            │
                          │ ~/.agents/skills       │
-                         │ ~/Documents/vbrato/*   │
+                         │ ~/stuff/*              │
                          ╰────────────┬───────────╯
                                       │
                                       ▼
@@ -220,18 +219,35 @@ Configured in [`mise.toml`](mise.toml):
 
 ## Per-machine config
 
-`mise.local.toml` is gitignored and holds machine-specific variables and dotfiles:
+`mise.local.toml` is gitignored and holds machine-specific variables:
 
 ```toml
 [vars]
-work = true                                    # enables vbrato git identity + rbenv
-
-[dotfiles]
-# work machines: vbrato git identity
-"~/Documents/vbrato/.gitconfig-vbrato" = { mode = "template" }
+work = true # enables the Vbrato Git identity and rbenv
 ```
 
-Apply profile changes with `mise run sync`.
+The work identity file is a shared mapping. The `work` variable only controls
+whether `~/.gitconfig` includes it. Apply profile changes with `mise run sync`.
+
+## Personal workspace
+
+`mise run layout` creates the same workspace on Windows, macOS, and Linux:
+
+```text
+~/stuff/
+├── code/
+├── music/
+├── 2d/
+│   └── refs/
+├── 3d/
+│   └── refs/
+└── dump/
+```
+
+Vbrato repositories live under `~/stuff/code/vbrato/`, next to the deployed
+`.gitconfig-vbrato`. A full bootstrap creates the layout before dotfiles;
+`mise run sync` does the same for existing machines.
+
 
 ## AI agents
 
