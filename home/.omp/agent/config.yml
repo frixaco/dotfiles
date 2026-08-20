@@ -32,7 +32,7 @@ symbolPreset: nerd
 theme: 
   dark: titanium
   light: light
-setupVersion: 1
+setupVersion: 2
 lsp: 
   enabled: true
 fetch: 
@@ -40,3 +40,5 @@ fetch:
 dev: 
   autoqaConsent: granted
 hideThinkingBlock: false
+composer: 
+  shape: box

@@ -238,9 +238,7 @@ whether `~/.gitconfig` includes it. Apply profile changes with `mise run sync`.
 ├── code/
 ├── music/
 ├── 2d/
-│   └── refs/
 ├── 3d/
-│   └── refs/
 └── dump/
 ```
 

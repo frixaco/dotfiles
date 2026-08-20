@@ -127,8 +127,8 @@ run = '''
 mkdir -p \
   "$HOME/stuff/code" \
   "$HOME/stuff/music" \
-  "$HOME/stuff/2d/refs" \
-  "$HOME/stuff/3d/refs" \
+  "$HOME/stuff/2d" \
+  "$HOME/stuff/3d" \
   "$HOME/stuff/dump"
 '''
 run_windows = "mise run layout:windows"
@@ -138,7 +138,7 @@ hide = true
 shell = "pwsh -NoProfile -Command"
 run = '''
 $ErrorActionPreference = "Stop"
-@("code", "music", "2d\refs", "3d\refs", "dump") | ForEach-Object {
+@("code", "music", "2d", "3d", "dump") | ForEach-Object {
   New-Item -ItemType Directory -Force -Path (Join-Path $HOME "stuff\$_") | Out-Null
 }
 '''
