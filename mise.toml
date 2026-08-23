@@ -44,7 +44,6 @@ fi
 "brew:jjui" = "latest"
 "brew:jq" = "latest"
 "brew:lazygit" = "latest"
-"brew:mise" = "latest"
 "brew:modem-dev/tap/hunk" = "latest"
 "brew:poppler" = "latest"
 "brew:postgresql@18" = "latest"
