@@ -1,5 +1,1 @@
 mise.local.toml
-
-# omp lock files (ephemeral; e.g. config.yml.lock, settings.yml.lock)
-*.yml.lock
-*.yaml.lock

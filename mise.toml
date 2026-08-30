@@ -87,12 +87,12 @@ run = "mise run secure"
 "~/.config/btop/btop.conf" = { mode = "copy" }
 "~/.config/opencode/tui.json" = { mode = "copy" }
 "~/.config/mise/config.toml" = { mode = "copy" }
-
-# Directories (single symlink for the whole tree)
-"~/.config/nvim" = { mode = "symlink" }
-
+"~/.omp/agent/config.yml" = { mode = "copy" }
 
 # Plain files (symlink)
+"~/.config/nvim/init.lua" = { mode = "symlink" }
+"~/.config/nvim/lua" = { mode = "symlink" }
+"~/.config/nvim/stylua.toml" = { mode = "symlink" }
 "~/.config/aerospace/aerospace.toml" = { mode = "symlink" }
 "~/.config/fish/conf.d/00-mise.fish" = { mode = "symlink" }
 "~/.config/fish/themes/cyberdream.theme" = { mode = "symlink" }
@@ -118,7 +118,6 @@ run = "mise run secure"
 "~/.omp/agent/mcp.json" = { source = "~/.dotfiles/home/.pi/agent/mcp.json", mode = "symlink" }
 "~/.pi/agent/mcp.json" = { mode = "symlink" }
 "~/.pi/agent/settings.json" = { mode = "symlink" }
-"~/.omp/agent/config.yml" = { mode = "symlink" }
 
 [tasks.layout]
 description = "Create the shared personal workspace"

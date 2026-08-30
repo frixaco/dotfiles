@@ -67,7 +67,7 @@ mise dotfiles add ~/.config/foo # capture a live file into home/
 │  │  .config/ghostty/config          template                              │  │
 │  │  .config/1Password/...           template + chmod 0600                 │  │
 │  │                                                                        │  │
-│  │  .config/nvim/                  symlinked directory                    │  │
+│  │  .config/nvim/{init,lua,...}    symlinked paths                        │  │
 │  │  .agents/skills/                symlinked directory                    │  │
 │  │  .config/aerospace/...          symlinked file                         │  │
 │  │  .config/kitty/...              symlinked files                        │  │
