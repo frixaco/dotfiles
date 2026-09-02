@@ -42,8 +42,7 @@ Choose the test strategy by boundary:
 
 ## Tools
 
-- Prefer `fff` tools over `grep` or `ripgrep`.
-- When using `chrome-devtools` MCP, prefer running Helium browser (should be running with `--remote-debugging-protocol` flag) with its current profile.
+- If a task requires/assumes user to be signed in to a website, always connect to already running Helium browser using `chrome-devtools` MCP. If not, (re-)launch it with `--remote-debugging-protocol` flag without creating new profile. Otherwise, you are free to do however you prefer (e.g. built-in browser).
 
 ## On-command behaviors
 
