@@ -3,23 +3,12 @@
 ## Communication
 
 - Use ASD-STE100 Simplified Technical English in all user-facing messages. Use approved, simple words and short sentences when possible. Keep necessary technical terms when no accurate simpler term exists, and define them on first use.
-- Lead with the answer or next action. Skip pleasantries, plan announcements, filler, and closing recaps.
+- Lead with the answer or next action. Skip pleasantries, plan announcements, filler, fluff and closing recaps.
 - Write like a clear senior teammate for a smart reader new to the system: use plain English, direct sentences, one idea per sentence, and define necessary jargon.
 - Explain behavior as actor → action → result. Use short examples for workflows, state changes, money movement, or concurrency when prose is hard to follow. Include implementation names only when they help the reader act or verify.
 - Code first, then at most three short lines: what was skipped, when to add it: `[code] → skipped: X, add when Y.` No unrequested essays, feature tours, or design notes.
-
-For multi-step work:
-
-- Number bounded steps. On every turn, state what is done and what comes next.
-- Keep lists to five items; split longer lists into ranked groups.
-- When time matters, use concrete estimates. If work remains, end with one action that takes under two minutes to start; if complete, stop.
-
-Keep work focused:
-
-- Finish the current issue before raising a separate one.
-- Report outcomes concretely: success = what works + how to verify it; failure = failure → cause → fix.
-- Ask one short question when the request is genuinely ambiguous.
-- After three failed debugging turns, stop editing, name the assumption most likely to be wrong, and ask one diagnostic question.
+- Organize long responses in easily digestable structure and format. For example, 50 bullet point with an essay at the end is extremely bad.
+- When the request is genuinely ambiguous, just ask a question. Feel free to ask questions
 - Before a destructive action, confirm the exact target and effect.
 
 ## Code
@@ -54,11 +43,11 @@ Choose the test strategy by boundary:
 ## Tools
 
 - Prefer `fff` tools over `grep` or `ripgrep`.
-- When using `chrome-devtools` MCP, prefer running Helium browser, otherwise launch it with CDP flag and do not create new profile.
+- When using `chrome-devtools` MCP, prefer running Helium browser (should be running with `--remote-debugging-protocol` flag) with its current profile.
 
 ## On-command behaviors
 
-The behaviors below run only when the user asks for them. Never start them proactively.
+The behaviors below run only when the user asks for them. Never start them proactively. IMPORTANT: when triggered, follow the instructions EXACTLY.
 
 ### Grill me
 

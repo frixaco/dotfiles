@@ -4,6 +4,16 @@
     "fff": {
       "command": "fff-mcp",
       "args": []
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--no-usage-statistics",
+        "--browserUrl",
+        "http://127.0.0.1:9222"
+      ]
     }
   },
   "amp.agent.deepReasoningEffort": "xhigh"
