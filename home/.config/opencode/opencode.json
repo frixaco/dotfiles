@@ -2,11 +2,6 @@
   "$schema": "https://opencode.ai/config.json",
   "lsp": false,
   "mcp": {
-    "fff": {
-      "type": "local",
-      "command": ["fff-mcp"],
-      "enabled": true
-    },
     "chrome-devtools": {
       "type": "local",
       "command": [

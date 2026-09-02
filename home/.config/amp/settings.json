@@ -1,10 +1,6 @@
 {
   "amp.dangerouslyAllowAll": true,
   "amp.mcpServers": {
-    "fff": {
-      "command": "fff-mcp",
-      "args": []
-    },
     "chrome-devtools": {
       "command": "npx",
       "args": [
