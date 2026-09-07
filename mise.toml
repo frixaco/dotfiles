@@ -1,4 +1,4 @@
-min_version = "2026.7.6"
+min_version = "2026.8.15"
 
 [settings]
 experimental = true
@@ -70,9 +70,9 @@ run = "mise run layout"
 [bootstrap.hooks.post-dotfiles]
 run = "mise run secure"
 
-# Deploy dotfiles with `mise dotfiles apply` (see setup.sh). Sources resolve
-# under dotfiles.root. Secrets use `copy` + `mise run secure` (git can't keep
-# 0600); OS/work-specific files use `template` (Tera).
+# Deploy with `mise bootstrap dotfiles apply`; its hooks create the workspace
+# and restore sensitive permissions. Sources resolve under dotfiles.root.
+# Capture edits to copied files with `mise bootstrap dotfiles add --changed`.
 [dotfiles]
 # OS/work-specific (rendered templates)
 "~/.zshrc" = { mode = "template" }
@@ -174,7 +174,8 @@ foreach ($file in $files) {
 
 [tasks.sync]
 description = "Create workspace directories, apply dotfiles, then fix sensitive permissions"
-run = [{ task = "layout" }, "mise dotfiles apply --yes", { task = "secure" }]
+# The dotfiles command runs layout and secure through the hooks above.
+run = "mise bootstrap dotfiles apply --yes"
 
 [tasks.bootstrap]
 description = "Install and verify AI agents and language servers"
