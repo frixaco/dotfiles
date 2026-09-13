@@ -14,5 +14,18 @@
       ],
       "enabled": true
     }
+  },
+  "model": "openai/gpt-6-astra",
+  "small_model": "openai/gpt-6-astra",
+  "provider": {
+    "openai": {
+      "models": {
+        "gpt-6-astra": {
+          "options": {
+            "reasoningEffort": "medium"
+          }
+        }
+      }
+    }
   }
 }

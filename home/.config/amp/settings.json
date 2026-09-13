@@ -11,6 +11,5 @@
         "http://127.0.0.1:9222"
       ]
     }
-  },
-  "amp.agent.deepReasoningEffort": "xhigh"
+  }
 }

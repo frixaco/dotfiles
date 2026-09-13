@@ -66,7 +66,7 @@ origin can publish earlier checkpoints as well as future edits.
 
 ```bash
 mise bootstrap --only packages  # install missing formulae and applications
-mise run ai:sync                # install agents, link AGENTS.md + skills, verify
+mise run ai:sync                # install agents, link AGENTS.md + configure browser MCP, verify
 mise run lsp:sync                # install + verify language tools
 mise bootstrap status --missing # check dotfiles, packages, and tools
 mise bootstrap --dry-run        # preview a full machine setup
@@ -88,7 +88,13 @@ whether `~/.gitconfig` includes it. Apply profile changes with `mise run sync`.
 
 ## AI agents
 
-A single `~/.config/AGENTS.md` is shared across the configured AI tools, and `~/.agents/skills` holds their shared skills. OMP settings, Ponytail, and MCP configuration are tracked under `~/.omp/agent`; authentication, conversations, and generated databases remain machine-local.
+A single `~/.config/AGENTS.md` is shared across the configured AI tools. Optional workflows live in `~/.config/agent-workflows/` as plain Markdown files and are read only when requested. This setup does not install or share skills.
+
+Codex, PI, OMP, and OpenCode use Astra with medium reasoning. All OMP model roles use `openai-codex/gpt-6-astra:medium`. Live agent settings and workflow files have local mise history. Authentication, conversations, and generated databases remain machine-local.
+
+`ai:link` configures Codex’s Chrome DevTools MCP connection to the same browser endpoint used by PI, OMP, Amp, and OpenCode: `http://127.0.0.1:9222`. Start Helium with `--remote-debugging-port=9222` using the existing signed-in profile. Restart the Codex session after changing its MCP configuration. The connection requires Helium to be running; setup does not restart the browser.
+
+Amp model and effort pins are account settings, not local dotfiles. In [Settings → Mode Dial → Tune Modes](https://ampcode.com/docs/the-dial#tune-the-modes), select Astra with medium reasoning for Main Agent, Oracle, and Subagents in each mode, then save. These pins still need to be applied through a signed-in Amp session.
 
 Run `omp` on each new machine to complete provider authentication.
 

@@ -24,10 +24,10 @@ providers:
     - mojeek
     - public
 modelRoles: 
-  default: openai-codex/gpt-5.6-sol:high
-  tiny: opencode-go/deepseek-v4-flash:high
-  advisor: opencode-go/deepseek-v4-pro:max
-  vision: opencode-zen/gpt-5.6-sol:xhigh
+  default: openai-codex/gpt-6-astra:medium
+  tiny: openai-codex/gpt-6-astra:medium
+  advisor: openai-codex/gpt-6-astra:medium
+  vision: openai-codex/gpt-6-astra:medium
 symbolPreset: nerd
 theme: 
   dark: titanium
