@@ -250,3 +250,52 @@ run = [
   { task = "ai:link" },
   { task = "ai:doctor" },
 ]
+
+# Tracking must be declared globally so the watcher sees it from any directory.
+[settings]
+experimental = true
+history.sync = "manual"
+
+[dotfiles]
+"~/.config/amp/settings.json" = { mode = "track" }
+"~/.config/btop/btop.conf" = { mode = "track" }
+"~/.config/opencode/tui.json" = { mode = "track" }
+"~/.config/mise/config.toml" = { mode = "track" }
+"~/.omp/agent/config.yml" = { mode = "track" }
+"~/.config/nvim/init.lua" = { mode = "track" }
+"~/.config/nvim/lua" = { mode = "track" }
+"~/.config/nvim/stylua.toml" = { mode = "track" }
+"~/.config/aerospace/aerospace.toml" = { mode = "track" }
+"~/.config/fish/conf.d/00-mise.fish" = { mode = "track" }
+"~/.config/fish/themes/cyberdream.theme" = { mode = "track" }
+"~/.config/ghostty/themes/cyberdream" = { mode = "track" }
+"~/.config/kitty/kitty.conf" = { mode = "track" }
+"~/.config/kitty/cyberdream.conf" = { mode = "track" }
+"~/.config/btop/themes/cyberdream.theme" = { mode = "track" }
+"~/.config/bat/config" = { mode = "track" }
+"~/.config/bat/themes/cyberdream.tmTheme" = { mode = "track" }
+"~/.config/delta/themes/cyberdream.gitconfig" = { mode = "track" }
+"~/.config/git/ignore" = { mode = "track" }
+"~/.config/jjui/config.toml" = { mode = "track" }
+"~/.config/jjui/themes/cyberdream-dark.toml" = { mode = "track" }
+"~/.config/lazygit/config.yml" = { mode = "track" }
+"~/.config/opencode/opencode.json" = { mode = "track" }
+"~/.config/opencode/themes/cyberdream.json" = { mode = "track" }
+"~/.config/starship.toml" = { mode = "track" }
+"~/.config/yazi/init.lua" = { mode = "track" }
+"~/.config/yazi/theme.toml" = { mode = "track" }
+"~/.config/yazi/yazi.toml" = { mode = "track" }
+"~/.config/yazi/flavors/cyberdream.yazi/flavor.toml" = { mode = "track" }
+"~/.config/AGENTS.md" = { mode = "track" }
+"~/.pi/agent/mcp.json" = { mode = "track" }
+"~/.pi/agent/settings.json" = { mode = "track" }
+"~/.dotfiles/home/.zshrc" = { mode = "track" }
+"~/.dotfiles/home/.gitconfig" = { mode = "track" }
+"~/.dotfiles/home/.config/fish/config.fish" = { mode = "track" }
+"~/.dotfiles/home/.config/ghostty/config" = { mode = "track" }
+"~/.dotfiles/home/.config/1Password/ssh/agent.toml" = { mode = "track" }
+"~/.dotfiles/home/stuff/code/vbrato/.gitconfig-vbrato" = { mode = "track" }
+"~/.dotfiles/mise.toml" = { mode = "track" }
+
+[bootstrap.services.mise-history]
+builtin = "history-watch"

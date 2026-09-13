@@ -1,82 +1,66 @@
 # My dotfiles, managed by [`mise`](https://mise.jdx.dev)
 
-Sources live in [`home/`](home/), mirroring `$HOME`. [`mise.toml`](mise.toml) deploys them with mise's experimental [dotfiles](https://mise.jdx.dev/dotfiles.html) feature.
+Templates and setup snapshots live in [`home/`](home/), mirroring `$HOME`. Mise tracks ordinary live configs and saves their history locally.
 
-## Quick setup
+## Existing installer
 
 ```bash
 curl -fsSL https://dotfiles.frixaco.com | bash
 cd ~/.dotfiles
 ```
 
-Requires mise 2026.8.15 or newer. Update an older installation with `mise self-update` before setup. The installer installs mise if missing, clones the repo, and runs bootstrap. Personal settings are the default; see [per-machine config](#per-machine-config) for work settings.
+Requires mise 2026.9.2 or newer. Update an older installation with `mise self-update` before setup. The installer installs mise if missing, clones the repo, and runs bootstrap.
+This machine has migrated to local tracking. The installer does not yet restore
+tracked live files on a new machine; restore them from a backup before enabling
+the watcher. The `home/` snapshots retain the pre-migration ordinary configs. Personal settings are the default; see [per-machine config](#per-machine-config) for work settings.
 
 ## Daily workflow
 
-Run commands from `~/.dotfiles`. **`mise run sync` applies repo → machine. It does not sync both ways.**
+Requires mise 2026.9.2 or newer. Ordinary configs are regular live files tracked by
+`~/.config/mise/config.toml`. The `mise-history` user service saves edits locally.
+No history origin is connected; nothing is uploaded automatically.
 
-| What you changed | Next action |
-| --- | --- |
-| A symlinked file, from either path | Nothing to copy. The repo source already has your edit. |
-| A copied file in `home/` | `mise run sync` applies it to the live file. |
-| A live copied file | `mise bootstrap dotfiles add --changed` captures changed copies into `home/`. |
-| A source template in `home/` | `mise run sync` renders the live file. |
-
-For one editing command across all modes, pass the live path:
+Edit live files with your usual editor. Inspect or restore saved versions with:
 
 ```bash
-mise bootstrap dotfiles edit --apply ~/.gitconfig
+mise bootstrap dotfiles status
+mise bootstrap dotfiles history --path ~/.config/starship.toml
+mise bootstrap dotfiles rollback ~/.config/starship.toml --dry-run
+mise bootstrap dotfiles rollback ~/.config/starship.toml
+mise bootstrap dotfiles undo
 ```
 
-Mise opens the managed source in your editor and applies it after the editor exits. Use this for templates: editing the rendered live file cannot update the source template's OS/work conditions. The next apply overwrites that live edit.
-
-For symlinks, direct editing also works. For example, editing `~/.config/nvim/init.lua` changes its repo source immediately.
-
-### Capture edits from live copies
+Templates still live in `home/`. Edit their source files, then run from `~/.dotfiles`:
 
 ```bash
-mise bootstrap dotfiles add --changed
-git diff
-git status --short
+mise run sync
+mise bootstrap dotfiles status --missing
 ```
 
-Capture wanted live edits before applying repo changes. Capture does not merge competing edits from both sides; review them before choosing which version to keep. It updates regular copy-mode sources only, not templates or directory copies. It does not stage or commit Git changes.
+`sync` renders templates and maintains the shared OMP/PI MCP link. It does not
+copy ordinary configs or publish history. Template sources also have automatic
+local history. OMP and PI use the same live `~/.pi/agent/mcp.json` file.
 
-### Apply repo changes
+To track another live file:
 
 ```bash
-mise bootstrap dotfiles diff             # preview repo-to-machine changes
-mise run sync                           # apply files and run layout/secure hooks
-mise bootstrap dotfiles status --missing # fail if any dotfile is out of sync
+mise bootstrap dotfiles track ~/.config/example.conf
 ```
 
-Review and commit repo changes with Git after either workflow.
+Tracking declarations must be in the global mise config, not project `mise.toml`.
+The repository's non-template `home/` files are setup snapshots; live edits no
+longer update those snapshots. Git pull alone does not update tracked live files.
+The repository copy of the global mise config is also a setup snapshot.
 
-## Start managing a file
-
-Run from the repo. For an ordinary file you edit yourself:
+Check or start the background service with:
 
 ```bash
-mise bootstrap dotfiles add --mode symlink ~/.config/example.conf
+mise bootstrap services status
+mise bootstrap services apply --yes
 ```
 
-Mise stores the file under `home/`, writes its `[dotfiles]` entry, and replaces the live file with a link. For a file an application rewrites, use `--mode copy` instead. Review and stage both `mise.toml` and the new source, then commit. Git tracking alone does not deploy files in this repo; the explicit mise entry selects them.
-
-## Stop managing a file
-
-To keep the live file, first replace its symlink with a regular copy of its current contents. Check the link target before removing only the link; keep its source until the live copy is verified. Copy-mode and rendered template targets are already regular files.
-
-Then remove the target's `[dotfiles]` entry from the config that declares it. Remove the repo source only if no other mapping uses it. For example, both `~/.pi/agent/mcp.json` and `~/.omp/agent/mcp.json` use the same source. Review and commit the changes. Removing the entry alone leaves an existing link connected to the repo.
-
-To remove the deployed file as well, preview and then unapply it **before** removing its config entry:
-
-```bash
-mise bootstrap dotfiles unapply --dry-run ~/.config/example.conf
-# The next command removes the deployed file or link.
-mise bootstrap dotfiles unapply ~/.config/example.conf
-```
-
-Unapply keeps the config entry and repo source. Changed copies and templates are protected from removal; preserve wanted edits before proceeding. If a directory mapping owns the file, update that mapping rather than assuming a separate file entry exists.
+History is local until a separate origin is explicitly configured. Connecting an
+origin can publish earlier checkpoints as well as future edits.
 
 ## Packages and tools
 
@@ -131,7 +115,7 @@ Vbrato repositories live under `~/stuff/code/vbrato/`, next to the deployed
 
 ## Architecture
 
-[`mise.toml`](mise.toml) owns file mappings, tasks, and hooks. `mise.local.toml` adds machine settings. Sources stay in one `home/` tree: symlinks for direct editing, copies for app-rewritten files, and [Tera templates](https://mise.jdx.dev/templates.html) for OS/work settings.
+[`mise.toml`](mise.toml) owns file mappings, tasks, and hooks. `mise.local.toml` adds machine settings. The global mise config owns live tracking and the history service. `home/` retains template sources and setup snapshots.
 
 The `secure` hook restores `0600` on the 1Password source and rendered target because Git cannot preserve those permissions. On Windows it restricts access with `icacls`. Windows file symlinks can fall back to copies when link privileges are unavailable; automatic edit-through requires an actual link.
 

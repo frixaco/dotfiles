@@ -1,4 +1,4 @@
-min_version = "2026.8.15"
+min_version = "2026.9.2"
 
 [settings]
 experimental = true
@@ -72,7 +72,8 @@ run = "mise run secure"
 
 # Deploy with `mise bootstrap dotfiles apply`; its hooks create the workspace
 # and restore sensitive permissions. Sources resolve under dotfiles.root.
-# Capture edits to copied files with `mise bootstrap dotfiles add --changed`.
+# Tracking and its watcher are declared in ~/.config/mise/config.toml.
+# Only templates and the shared MCP alias are deployed here.
 [dotfiles]
 # OS/work-specific (rendered templates)
 "~/.zshrc" = { mode = "template" }
@@ -82,42 +83,8 @@ run = "mise run secure"
 "~/.config/1Password/ssh/agent.toml" = { mode = "template" }
 "~/stuff/code/vbrato/.gitconfig-vbrato" = { mode = "template" }
 
-# Tool-rewritten config (real files)
-"~/.config/amp/settings.json" = { mode = "copy" }
-"~/.config/btop/btop.conf" = { mode = "copy" }
-"~/.config/opencode/tui.json" = { mode = "copy" }
-"~/.config/mise/config.toml" = { mode = "copy" }
-"~/.omp/agent/config.yml" = { mode = "copy" }
-
-# Plain files (symlink)
-"~/.config/nvim/init.lua" = { mode = "symlink" }
-"~/.config/nvim/lua" = { mode = "symlink" }
-"~/.config/nvim/stylua.toml" = { mode = "symlink" }
-"~/.config/aerospace/aerospace.toml" = { mode = "symlink" }
-"~/.config/fish/conf.d/00-mise.fish" = { mode = "symlink" }
-"~/.config/fish/themes/cyberdream.theme" = { mode = "symlink" }
-"~/.config/ghostty/themes/cyberdream" = { mode = "symlink" }
-"~/.config/kitty/kitty.conf" = { mode = "symlink" }
-"~/.config/kitty/cyberdream.conf" = { mode = "symlink" }
-"~/.config/btop/themes/cyberdream.theme" = { mode = "symlink" }
-"~/.config/bat/config" = { mode = "symlink" }
-"~/.config/bat/themes/cyberdream.tmTheme" = { mode = "symlink" }
-"~/.config/delta/themes/cyberdream.gitconfig" = { mode = "symlink" }
-"~/.config/git/ignore" = { mode = "symlink" }
-"~/.config/jjui/config.toml" = { mode = "symlink" }
-"~/.config/jjui/themes/cyberdream-dark.toml" = { mode = "symlink" }
-"~/.config/lazygit/config.yml" = { mode = "symlink" }
-"~/.config/opencode/opencode.json" = { mode = "symlink" }
-"~/.config/opencode/themes/cyberdream.json" = { mode = "symlink" }
-"~/.config/starship.toml" = { mode = "symlink" }
-"~/.config/yazi/init.lua" = { mode = "symlink" }
-"~/.config/yazi/theme.toml" = { mode = "symlink" }
-"~/.config/yazi/yazi.toml" = { mode = "symlink" }
-"~/.config/yazi/flavors/cyberdream.yazi/flavor.toml" = { mode = "symlink" }
-"~/.config/AGENTS.md" = { mode = "symlink" }
-"~/.omp/agent/mcp.json" = { source = "~/.dotfiles/home/.pi/agent/mcp.json", mode = "symlink" }
-"~/.pi/agent/mcp.json" = { mode = "symlink" }
-"~/.pi/agent/settings.json" = { mode = "symlink" }
+# Both agents must keep using the same MCP configuration.
+"~/.omp/agent/mcp.json" = { source = "~/.pi/agent/mcp.json", mode = "symlink" }
 
 [tasks.layout]
 description = "Create the shared personal workspace"
