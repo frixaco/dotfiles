@@ -33,6 +33,38 @@ alias oc="opencode"
 alias se="source .venv/bin/activate.fish"
 alias cx="codex"
 
+function upall --description 'Update tools and sync dotfiles without confirmation'
+    # Use the dotfiles project, regardless of the caller's working directory.
+    pushd ~/.dotfiles; or return 1
+    set -lx MISE_YES 1
+    set -lx HOMEBREW_NO_ASK 1
+    set -l failed
+
+    for step in 'mise self-update' 'brew update' 'brew upgrade --no-ask' \
+            'mise run sync' 'mise up' 'mise exec -- npm update -g' \
+            'mise exec -- bun update -g' 'mise lsp:sync' 'mise ai:sync'
+        printf '\n==> %s\n' "$step"
+        set -l args (string split ' ' -- "$step")
+        command $args
+        set -l result $status
+        # Continue after errors, but stop if the user interrupts an update.
+        if contains -- $result 130 143
+            popd
+            return $result
+        end
+        if test $result -ne 0
+            set -a failed "$step"
+        end
+    end
+
+    popd
+    if test (count $failed) -gt 0
+        printf '\nFailed: %s\n' $failed >&2
+        return 1
+    end
+    return 0
+end
+
 set -gx BAT_THEME cyberdream
 
 function __apply_fish_theme --argument-names theme

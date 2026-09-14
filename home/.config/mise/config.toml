@@ -5,9 +5,12 @@ bun = 'latest'
 deno = 'latest'
 uv = 'latest'
 zig = 'latest'
+# Route Cargo through the shared build cache and keep its language server in sync.
+rust = { version = 'latest', mr_boxington = true, components = ['rust-analyzer'] }
+mr-boxington = 'latest'
 
 [tasks."lsp:install"]
-description = "Install LSP tools (mise + go + uv + rustup)"
+description = "Install LSP tools (mise + go + uv)"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
@@ -36,7 +39,6 @@ go install mvdan.cc/sh/v3/cmd/shfmt@latest
 uv tool install --upgrade ruff
 uv tool install --upgrade ty
 uv tool install --upgrade clang-format
-rustup component add rust-analyzer --toolchain stable
 '''
 run_windows = [
   "mise install",
@@ -47,7 +49,6 @@ run_windows = [
   "uv tool install --upgrade ruff",
   "uv tool install --upgrade ty",
   "uv tool install --upgrade clang-format",
-  "rustup component add rust-analyzer --toolchain stable",
 ]
 
 [tasks."lsp:doctor"]
