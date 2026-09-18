@@ -37,7 +37,7 @@ mise run sync
 mise bootstrap dotfiles status --missing
 ```
 
-`sync` renders templates and maintains the shared OMP/PI MCP link. It does not
+`sync` renders templates and maintains the workflow directory link and shared OMP/PI MCP link. It does not
 copy ordinary configs or publish history. Template sources also have automatic
 local history. OMP and PI use the same live `~/.pi/agent/mcp.json` file.
 
@@ -89,6 +89,11 @@ whether `~/.gitconfig` includes it. Apply profile changes with `mise run sync`.
 ## AI agents
 
 A single `~/.config/AGENTS.md` is shared across the configured AI tools. Optional workflows live in `~/.config/agent-workflows/` as plain Markdown files and are read only when requested. This setup does not install or share skills.
+
+Mise links the workflow directory to `home/.config/agent-workflows` in this repository.
+After pulling on another machine, run `mise run sync` from `~/.dotfiles` to install
+the link. Later pulls update the workflows through that link. Edit workflow files
+in either location; both paths refer to the same files.
 
 Codex, PI, OMP, and OpenCode use Astra with medium reasoning. All OMP model roles use `openai-codex/gpt-6-astra:medium`. Live agent settings and workflow files have local mise history. Authentication, conversations, and generated databases remain machine-local.
 

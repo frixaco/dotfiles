@@ -73,7 +73,7 @@ run = "mise run secure"
 # Deploy with `mise bootstrap dotfiles apply`; its hooks create the workspace
 # and restore sensitive permissions. Sources resolve under dotfiles.root.
 # Tracking and its watcher are declared in ~/.config/mise/config.toml.
-# Only templates and the shared MCP alias are deployed here.
+# Templates, shared workflows, and the shared MCP alias are deployed here.
 [dotfiles]
 # OS/work-specific (rendered templates)
 "~/.zshrc" = { mode = "template" }
@@ -82,6 +82,9 @@ run = "mise run secure"
 "~/.config/ghostty/config" = { mode = "template" }
 "~/.config/1Password/ssh/agent.toml" = { mode = "template" }
 "~/stuff/code/vbrato/.gitconfig-vbrato" = { mode = "template" }
+
+# Keep the workflows named in AGENTS.md available after setup and Git pulls.
+"~/.config/agent-workflows" = { mode = "symlink" }
 
 # Both agents must keep using the same MCP configuration.
 "~/.omp/agent/mcp.json" = { source = "~/.pi/agent/mcp.json", mode = "symlink" }
