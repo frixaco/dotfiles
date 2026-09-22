@@ -88,14 +88,9 @@ whether `~/.gitconfig` includes it. Apply profile changes with `mise run sync`.
 
 ## AI agents
 
-A single `~/.config/AGENTS.md` is shared across the configured AI tools. Optional workflows live in `~/.config/agent-workflows/` as plain Markdown files and are read only when requested. This setup does not install or share skills.
+A single `~/.config/AGENTS.md` is shared across the configured AI tools. This setup does not install or share skills or workflows.
 
-Mise links the workflow directory to `home/.config/agent-workflows` in this repository.
-After pulling on another machine, run `mise run sync` from `~/.dotfiles` to install
-the link. Later pulls update the workflows through that link. Edit workflow files
-in either location; both paths refer to the same files.
-
-Codex, PI, OMP, and OpenCode use Astra with medium reasoning. All OMP model roles use `openai-codex/gpt-6-astra:medium`. Live agent settings and workflow files have local mise history. Authentication, conversations, and generated databases remain machine-local.
+Codex, PI, OMP, and OpenCode use Astra with medium reasoning. All OMP model roles use `openai-codex/gpt-6-astra:medium`. Live agent settings have local mise history. Authentication, conversations, and generated databases remain machine-local.
 
 `ai:link` configures Codex’s Chrome DevTools MCP connection to the same browser endpoint used by PI, OMP, Amp, and OpenCode: `http://127.0.0.1:9222`. Start Helium with `--remote-debugging-port=9222` using the existing signed-in profile. Restart the Codex session after changing its MCP configuration. The connection requires Helium to be running; setup does not restart the browser.
 
