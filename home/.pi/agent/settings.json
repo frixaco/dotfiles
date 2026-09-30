@@ -1,12 +1,9 @@
 {
-  "lastChangelogVersion": "0.84.4",
+  "lastChangelogVersion": "0.99.1",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-6-astra",
+  "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "medium",
   "hideThinkingBlock": false,
-  "packages": [
-    "npm:pi-mcp-adapter"
-  ],
   "theme": "dark",
   "steeringMode": "one-at-a-time",
   "followUpMode": "one-at-a-time"
