@@ -50,7 +50,6 @@ fi
 "brew:railway" = "latest"
 "brew:resvg" = "latest"
 "brew:ripgrep" = "latest"
-"brew:sevenzip" = "latest"
 "brew:starship" = "latest"
 "brew:tokei" = "latest"
 "brew:tree-sitter-cli" = "latest"
