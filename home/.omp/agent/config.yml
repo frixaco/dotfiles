@@ -1,33 +1,9 @@
-providers: 
-  webSearchOrder: 
-    - exa
-    - perplexity
-    - gemini
-    - anthropic
-    - codex
-    - xai
-    - zai
-    - tinyfish
-    - jina
-    - kagi
-    - tavily
-    - firecrawl
-    - brave
-    - kimi
-    - parallel
-    - synthetic
-    - searxng
-    - startpage
-    - duckduckgo
-    - ecosia
-    - google
-    - mojeek
-    - public
 modelRoles: 
   default: openai-codex/gpt-6-astra:medium
   tiny: openai-codex/gpt-6-astra:medium
   advisor: openai-codex/gpt-6-astra:medium
   vision: openai-codex/gpt-6-astra:medium
+  web: openai-codex/gpt-5.6-luna
 symbolPreset: nerd
 theme: 
   dark: titanium
@@ -42,3 +18,6 @@ dev:
 hideThinkingBlock: false
 composer: 
   shape: box
+retry:
+  fallbackChains:
+    web: []
