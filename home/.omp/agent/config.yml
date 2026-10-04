@@ -1,9 +1,9 @@
 modelRoles: 
-  default: openai-codex/gpt-6-astra:medium
+  default: opencode-go/glm-5.3-flash
   tiny: openai-codex/gpt-6-astra:medium
   advisor: openai-codex/gpt-6-astra:medium
-  vision: openai-codex/gpt-6-astra:medium
-  web: openai-codex/gpt-5.6-luna
+  vision: opencode-go/gpt-6-luna:medium
+  web: opencode-go/gpt-6-luna:medium
 symbolPreset: nerd
 theme: 
   dark: titanium

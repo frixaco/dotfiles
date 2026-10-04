@@ -1,10 +1,11 @@
 {
   "lastChangelogVersion": "1.0.0",
-  "defaultProvider": "openai-codex",
+  "defaultProvider": "openai",
   "defaultModel": "gpt-6.1-sol",
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "high",
   "hideThinkingBlock": false,
   "theme": "dark",
   "steeringMode": "one-at-a-time",
-  "followUpMode": "one-at-a-time"
+  "followUpMode": "one-at-a-time",
+  "deviceId": "3e3fd6b9-fa13-4528-8f4c-3351c145a303"
 }
