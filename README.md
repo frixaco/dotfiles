@@ -74,6 +74,8 @@ mise bootstrap --dry-run        # preview a full machine setup
 
 Use the full `mise bootstrap` when you also want packages, tools, and the final bootstrap task.
 
+On other Macs, import [Vorssaint Settings.plist](<Vorssaint Settings.plist>) in Vorssaint under Settings → Advanced → Import settings.
+
 ## Per-machine config
 
 `mise.local.toml` is gitignored and holds machine-specific variables:
