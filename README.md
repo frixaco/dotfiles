@@ -113,7 +113,7 @@ Vbrato repositories live under `~/stuff/code/vbrato/`, next to the deployed
 
 ## Architecture
 
-[`mise.toml`](mise.toml) owns file mappings, tasks, and hooks. Its native `symlink-each` mapping links individual repo-owned files without replacing their parent directories or unrelated files. Neovim's Lua directory keeps its explicit directory link; templates and app-written snapshots are excluded. `mise.local.toml` adds machine settings. The linked global mise config owns tools, agent/LSP tasks, local tracking, and the history service.
+[`mise.toml`](mise.toml) owns file mappings, tasks, and hooks. Its native `symlink-each` mapping links individual repo-owned files without replacing their parent directories or unrelated files. Neovim's Lua files use the same per-file links; templates and app-written snapshots are excluded. `mise.local.toml` adds machine settings. The linked global mise config owns tools, agent/LSP tasks, local tracking, and the history service.
 
 The `secure` hook restores `0600` on the 1Password source and rendered target because Git cannot preserve those permissions. On Windows it restricts access with `icacls`. Windows file symlinks can fall back to copies when link privileges are unavailable; automatic edit-through requires an actual link.
 

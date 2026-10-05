@@ -87,11 +87,7 @@ run = "mise run secure"
   ".config/opencode/tui.json",
   ".omp/agent/config.yml",
   ".pi/agent/settings.json",
-  ".config/nvim/lua",
 ] }
-
-# Keep the existing directory link; per-file links would follow it into the source.
-"~/.config/nvim/lua" = { mode = "symlink" }
 
 # OS/work-specific (rendered templates)
 "~/.zshrc" = { mode = "template" }
