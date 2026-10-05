@@ -79,6 +79,9 @@ tbl_cell = { bg = "#3c4048", fg = "#ffffff" }
 title_info = { fg = "#5ef1ff" }
 title_warn = { fg = "#f1ff5e" }
 title_error = { fg = "#ff6e5e" }
+icon_info = ""
+icon_warn = ""
+icon_error = ""
 
 [filetype]
 rules = [
@@ -108,14 +111,10 @@ prepend_conds = [
 ]
 
 [help]
-on = { fg = "#bd5eff" }
-run = { fg = "#5ef1ff" }
-desc = { fg = "#ffffff" }
+border = { fg = "#5ea1ff" }
+chord = { fg = "#bd5eff" }
+action = { fg = "#5ef1ff" }
 hovered = { bg = "#7b8496", fg = "#ffffff" }
-footer = { fg = "#ffffff" }
-icon_info = ""
-icon_warn = ""
-icon_error = ""
 
 [input]
 border = { fg = "#5ea1ff" }

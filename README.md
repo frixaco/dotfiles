@@ -1,6 +1,6 @@
 # My dotfiles, managed by [`mise`](https://mise.jdx.dev)
 
-Templates and setup snapshots live in [`home/`](home/), mirroring `$HOME`. Mise tracks ordinary live configs and saves their history locally.
+Repo-owned configs and templates live in [`home/`](home/), mirroring `$HOME`. Mise links those configs, renders templates, and saves app-written settings in local history.
 
 ## Existing installer
 
@@ -10,36 +10,30 @@ cd ~/.dotfiles
 ```
 
 Requires mise 2026.9.2 or newer. Update an older installation with `mise self-update` before setup. The installer installs mise if missing, clones the repo, and runs bootstrap.
-This machine has migrated to local tracking. The installer does not yet restore
-tracked live files on a new machine; restore them from a backup before enabling
-the watcher. The `home/` snapshots retain the pre-migration ordinary configs. Personal settings are the default; see [per-machine config](#per-machine-config) for work settings.
+Personal settings are the default; see [per-machine config](#per-machine-config) for work settings. App-written settings are machine-local: configure them in the app or restore a backup on a new machine. Their `home/` snapshots are references and are not deployed.
 
 ## Daily workflow
 
-Requires mise 2026.9.2 or newer. Ordinary configs are regular live files tracked by
-`~/.config/mise/config.toml`. The `mise-history` user service saves edits locally.
-No history origin is connected; nothing is uploaded automatically.
-
-Edit live files with your usual editor. Inspect or restore saved versions with:
-
-```bash
-mise bootstrap dotfiles status
-mise bootstrap dotfiles history --path ~/.config/starship.toml
-mise bootstrap dotfiles rollback ~/.config/starship.toml --dry-run
-mise bootstrap dotfiles rollback ~/.config/starship.toml
-mise bootstrap dotfiles undo
-```
-
-Templates still live in `home/`. Edit their source files, then run from `~/.dotfiles`:
+Edit repo-owned configs and template sources in `home/`. After editing or pulling repository updates, run from `~/.dotfiles`:
 
 ```bash
 mise run sync
-mise bootstrap dotfiles status --missing
 ```
 
-`sync` renders templates and maintains the workflow directory link and shared OMP/PI MCP link. It does not
-copy ordinary configs or publish history. Template sources also have automatic
-local history. OMP and PI use the same live `~/.pi/agent/mcp.json` file.
+`sync` applies native file links and templates, restores sensitive permissions, ensures the history service is running, and fails if deployment is incomplete. It repairs missing links and includes new repo-owned files automatically. Existing conflicting regular files require an explicit migration; daily sync never forces them. OMP and PI share the repo-owned MCP config, and all five agents share `AGENTS.md`.
+
+The linked global mise config keeps tool declarations and tasks current too. Updating installed tools is separate: use `ai:sync` or `lsp:sync` below. Sync cannot fix configuration keys changed by a future app release; those source changes still need review.
+
+Edit app-written settings through the app or their live file. The global mise config tracks Amp settings, btop settings, OpenCode TUI settings, OMP settings, Codex settings, and PI settings. Sync preserves those files and never deploys their repository snapshots. Git handles repo-owned configs; the `mise-history` user service handles these local settings.
+
+Inspect or restore app settings with:
+
+```bash
+mise bootstrap dotfiles history --path ~/.pi/agent/settings.json
+mise bootstrap dotfiles rollback ~/.pi/agent/settings.json --dry-run
+mise bootstrap dotfiles rollback ~/.pi/agent/settings.json
+mise bootstrap dotfiles undo
+```
 
 To track another live file:
 
@@ -47,10 +41,7 @@ To track another live file:
 mise bootstrap dotfiles track ~/.config/example.conf
 ```
 
-Tracking declarations must be in the global mise config, not project `mise.toml`.
-The repository's non-template `home/` files are setup snapshots; live edits no
-longer update those snapshots. Git pull alone does not update tracked live files.
-The repository copy of the global mise config is also a setup snapshot.
+Tracking declarations must be in the global mise config, not project `mise.toml`. Edit its linked source at `home/.config/mise/config.toml`. If a new app-written snapshot is added under `home/`, also exclude it from the root `symlink-each` mapping before running sync.
 
 Check or start the background service with:
 
@@ -59,14 +50,13 @@ mise bootstrap services status
 mise bootstrap services apply --yes
 ```
 
-History is local until a separate origin is explicitly configured. Connecting an
-origin can publish earlier checkpoints as well as future edits.
+No history origin is connected; nothing is uploaded automatically. Connecting an origin can publish earlier checkpoints as well as future edits.
 
 ## Packages and tools
 
 ```bash
 mise bootstrap --only packages  # install missing formulae and applications
-mise run ai:sync                # install agents, link AGENTS.md + configure browser MCP, verify
+mise run ai:sync                # install agents, configure browser MCP, verify
 mise run lsp:sync                # install + verify language tools
 mise bootstrap status --missing # check dotfiles, packages, and tools
 mise bootstrap --dry-run        # preview a full machine setup
@@ -92,7 +82,7 @@ whether `~/.gitconfig` includes it. Apply profile changes with `mise run sync`.
 
 A single `~/.config/AGENTS.md` is shared across the configured AI tools. This setup does not install or share skills or workflows.
 
-Codex, PI, OMP, and OpenCode use Astra with medium reasoning. All OMP model roles use `openai-codex/gpt-6-astra:medium`. Live agent settings have local mise history. Authentication, conversations, and generated databases remain machine-local.
+Model and reasoning preferences live in each agent's settings; OMP has separate model roles. App-written agent settings have local mise history. OpenCode's main config is repo-owned; its TUI settings are local. Authentication, conversations, and generated databases remain machine-local.
 
 `ai:link` configures Codex’s Chrome DevTools MCP connection to the same browser endpoint used by PI, OMP, Amp, and OpenCode: `http://127.0.0.1:9222`. Start Helium with `--remote-debugging-port=9222` using the existing signed-in profile. Restart the Codex session after changing its MCP configuration. The connection requires Helium to be running; setup does not restart the browser.
 
@@ -123,13 +113,13 @@ Vbrato repositories live under `~/stuff/code/vbrato/`, next to the deployed
 
 ## Architecture
 
-[`mise.toml`](mise.toml) owns file mappings, tasks, and hooks. `mise.local.toml` adds machine settings. The global mise config owns live tracking and the history service. `home/` retains template sources and setup snapshots.
+[`mise.toml`](mise.toml) owns file mappings, tasks, and hooks. Its native `symlink-each` mapping links individual repo-owned files without replacing their parent directories or unrelated files. Neovim's Lua directory keeps its explicit directory link; templates and app-written snapshots are excluded. `mise.local.toml` adds machine settings. The linked global mise config owns tools, agent/LSP tasks, local tracking, and the history service.
 
 The `secure` hook restores `0600` on the 1Password source and rendered target because Git cannot preserve those permissions. On Windows it restricts access with `icacls`. Windows file symlinks can fall back to copies when link privileges are unavailable; automatic edit-through requires an actual link.
 
 ## Bootstrap lifecycle
 
-`mise run sync` calls `mise bootstrap dotfiles apply --yes`: `layout` runs once before apply, and `secure` runs once afterward. Full bootstrap runs:
+`mise run sync` applies dotfiles, applies services, then checks dotfile status. `layout` runs once before dotfile apply, and `secure` runs once afterward. Full bootstrap runs:
 
 1. Shared Homebrew packages and macOS extras from `Brewfile.macos`.
 2. `layout` to create workspace directories.

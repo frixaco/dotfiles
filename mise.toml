@@ -70,10 +70,29 @@ run = "mise run layout"
 run = "mise run secure"
 
 # Deploy with `mise bootstrap dotfiles apply`; its hooks create the workspace
-# and restore sensitive permissions. Sources resolve under dotfiles.root.
-# Tracking and its watcher are declared in ~/.config/mise/config.toml.
-# Templates and the shared MCP alias are deployed here.
+# and restore sensitive permissions. Template sources resolve under dotfiles.root.
+# App-written settings and their watcher are declared in the global mise config.
 [dotfiles]
+# Link repo-owned files individually, leaving other files in each directory alone.
+# App-written snapshots are references; templates are rendered separately below.
+"~" = { source = "home", mode = "symlink-each", exclude = [
+  ".zshrc",
+  ".gitconfig",
+  ".config/fish/config.fish",
+  ".config/ghostty/config",
+  ".config/1Password/ssh/agent.toml",
+  "stuff/code/vbrato/.gitconfig-vbrato",
+  ".config/amp/settings.json",
+  ".config/btop/btop.conf",
+  ".config/opencode/tui.json",
+  ".omp/agent/config.yml",
+  ".pi/agent/settings.json",
+  ".config/nvim/lua",
+] }
+
+# Keep the existing directory link; per-file links would follow it into the source.
+"~/.config/nvim/lua" = { mode = "symlink" }
+
 # OS/work-specific (rendered templates)
 "~/.zshrc" = { mode = "template" }
 "~/.gitconfig" = { mode = "template" }
@@ -82,8 +101,13 @@ run = "mise run secure"
 "~/.config/1Password/ssh/agent.toml" = { mode = "template" }
 "~/stuff/code/vbrato/.gitconfig-vbrato" = { mode = "template" }
 
-# Both agents must keep using the same MCP configuration.
-"~/.omp/agent/mcp.json" = { source = "~/.pi/agent/mcp.json", mode = "symlink" }
+# Shared agent instructions and MCP configuration.
+"~/.config/opencode/AGENTS.md" = { source = "home/.config/AGENTS.md", mode = "symlink" }
+"~/.pi/agent/AGENTS.md" = { source = "home/.config/AGENTS.md", mode = "symlink" }
+"~/.omp/agent/AGENTS.md" = { source = "home/.config/AGENTS.md", mode = "symlink" }
+"~/.config/amp/AGENTS.md" = { source = "home/.config/AGENTS.md", mode = "symlink" }
+"~/.codex/AGENTS.md" = { source = "home/.config/AGENTS.md", mode = "symlink" }
+"~/.omp/agent/mcp.json" = { source = "home/.pi/agent/mcp.json", mode = "symlink" }
 
 [tasks.layout]
 description = "Create the shared personal workspace"
@@ -139,9 +163,13 @@ foreach ($file in $files) {
 '''
 
 [tasks.sync]
-description = "Create workspace directories, apply dotfiles, then fix sensitive permissions"
+description = "Apply dotfiles, ensure local history is running, and check deployment"
 # The dotfiles command runs layout and secure through the hooks above.
-run = "mise bootstrap dotfiles apply --yes"
+run = [
+  "mise bootstrap dotfiles apply --yes",
+  "mise bootstrap services apply --yes",
+  "mise bootstrap dotfiles status --missing",
+]
 
 [tasks.bootstrap]
 description = "Install and verify AI agents and language servers"

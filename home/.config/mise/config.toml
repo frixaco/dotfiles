@@ -8,6 +8,8 @@ zig = 'latest'
 # Route Cargo through the shared build cache and keep its language server in sync.
 rust = { version = 'latest', mr_boxington = true, components = ['rust-analyzer'] }
 mr-boxington = 'latest'
+lua-language-server = 'latest'
+"github:wgsl-analyzer/wgsl-analyzer" = { version = 'latest', matching = 'wgsl-analyzer-', bin = 'wgsl-analyzer' }
 
 [tasks."lsp:install"]
 description = "Install LSP tools (mise + go + uv)"
@@ -26,10 +28,12 @@ bun install -g \
   @taplo/cli@latest \
   @typescript/native-preview@beta \
   eslint@latest \
+  graphql-language-service-cli@latest \
   oxfmt@latest \
   oxlint@latest \
   prettier@latest \
   shellcheck@latest \
+  svelte-language-server@latest \
   typescript-language-server@latest \
   vscode-langservers-extracted@latest
 
@@ -42,7 +46,7 @@ uv tool install --upgrade clang-format
 '''
 run_windows = [
   "mise install",
-  "bun install -g @astrojs/language-server@latest @johnnymorganz/stylua-bin@latest @olrtg/emmet-language-server@latest @tailwindcss/language-server@latest @taplo/cli@latest @typescript/native-preview@beta eslint@latest oxfmt@latest oxlint@latest prettier@latest shellcheck@latest typescript-language-server@latest vscode-langservers-extracted@latest",
+  "bun install -g @astrojs/language-server@latest @johnnymorganz/stylua-bin@latest @olrtg/emmet-language-server@latest @tailwindcss/language-server@latest @taplo/cli@latest @typescript/native-preview@beta eslint@latest graphql-language-service-cli@latest oxfmt@latest oxlint@latest prettier@latest shellcheck@latest svelte-language-server@latest typescript-language-server@latest vscode-langservers-extracted@latest",
   "go install golang.org/x/tools/gopls@latest",
   "go install golang.org/x/tools/cmd/goimports@latest",
   "go install mvdan.cc/sh/v3/cmd/shfmt@latest",
@@ -57,6 +61,11 @@ run = '''
 #!/usr/bin/env bash
 set -euo pipefail
 bins=(
+  lua-language-server
+  wgsl-analyzer
+  graphql-lsp
+  svelteserver
+  clangd
   rust-analyzer
   gopls
   goimports
@@ -90,6 +99,11 @@ for bin in "${bins[@]}"; do
 done
 '''
 run_windows = [
+  "where lua-language-server",
+  "where wgsl-analyzer",
+  "where graphql-lsp",
+  "where svelteserver",
+  "where clangd",
   "where rust-analyzer",
   "where gopls",
   "where goimports",
@@ -154,58 +168,8 @@ run_windows = [
 ]
 
 [tasks."ai:link"]
-description = "Link shared AI agent instructions and configure the Codex browser MCP"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-
-mkdir -p \
-  ~/.config/opencode \
-  ~/.pi/agent \
-  ~/.config/amp \
-  ~/.codex
-
-ln -sfn ~/.config/AGENTS.md ~/.config/opencode/AGENTS.md
-ln -sfn ~/.config/AGENTS.md ~/.pi/agent/AGENTS.md
-ln -sfn ~/.config/AGENTS.md ~/.config/amp/AGENTS.md
-ln -sfn ~/.config/AGENTS.md ~/.codex/AGENTS.md
-
-# Reuse the existing signed-in browser, as the other agents do.
-codex mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest --no-usage-statistics --browserUrl http://127.0.0.1:9222
-
-'''
-run_windows = "mise run ai:link:windows"
-
-[tasks."ai:link:windows"]
-hide = true
-shell = "pwsh -NoProfile -Command"
-run = '''
-$ErrorActionPreference = "Stop"
-
-$dirs = @(
-  (Join-Path $HOME ".config\opencode"),
-  (Join-Path $HOME ".pi\agent"),
-  (Join-Path $HOME ".config\amp"),
-  (Join-Path $HOME ".codex")
-)
-New-Item -ItemType Directory -Force -Path $dirs | Out-Null
-
-$agentSource = Join-Path $HOME ".config\AGENTS.md"
-$agentLinks = @(
-  (Join-Path $HOME ".config\opencode\AGENTS.md"),
-  (Join-Path $HOME ".pi\agent\AGENTS.md"),
-  (Join-Path $HOME ".config\amp\AGENTS.md"),
-  (Join-Path $HOME ".codex\AGENTS.md")
-)
-foreach ($link in $agentLinks) {
-  Remove-Item -Force -LiteralPath $link -ErrorAction SilentlyContinue
-  New-Item -ItemType SymbolicLink -Path $link -Target $agentSource | Out-Null
-}
-
-codex mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest --no-usage-statistics --browserUrl http://127.0.0.1:9222
-if ($LASTEXITCODE -ne 0) { throw "Failed to configure Codex browser MCP" }
-
-'''
+description = "Configure the Codex browser MCP"
+run = "codex mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest --no-usage-statistics --browserUrl http://127.0.0.1:9222"
 
 [tasks."ai:doctor"]
 description = "Check AI agent binaries on PATH"
@@ -238,7 +202,7 @@ $paths = @(
 )
 $env:Path = (($paths + ($env:Path -split ";")) | Where-Object { $_ } | Select-Object -Unique) -join ";"
 
-foreach ($bin in @("amp", "opencode", "codex", "pi")) {
+foreach ($bin in @("amp", "opencode", "codex", "pi", "omp")) {
   $cmd = Get-Command $bin -ErrorAction SilentlyContinue
   if ($cmd) {
     Write-Output "$bin -> $($cmd.Source)"
@@ -251,7 +215,7 @@ if ($missing) { throw "Missing AI agents: $($missing -join ', ')" }
 '''
 
 [tasks."ai:sync"]
-description = "Install, link, then verify AI agents"
+description = "Install agents, configure Codex MCP, and verify binaries"
 run = [
   { task = "ai:install" },
   { task = "ai:link" },
@@ -263,48 +227,14 @@ run = [
 experimental = true
 history.sync = "manual"
 
+# App-written settings stay live and machine-local. Repo-owned files use Git.
 [dotfiles]
 "~/.config/amp/settings.json" = { mode = "track" }
 "~/.config/btop/btop.conf" = { mode = "track" }
 "~/.config/opencode/tui.json" = { mode = "track" }
-"~/.config/mise/config.toml" = { mode = "track" }
 "~/.omp/agent/config.yml" = { mode = "track" }
-"~/.config/nvim/init.lua" = { mode = "track" }
-"~/.config/nvim/lua" = { mode = "track" }
-"~/.config/nvim/stylua.toml" = { mode = "track" }
-"~/.config/aerospace/aerospace.toml" = { mode = "track" }
-"~/.config/fish/conf.d/00-mise.fish" = { mode = "track" }
-"~/.config/fish/themes/cyberdream.theme" = { mode = "track" }
-"~/.config/ghostty/themes/cyberdream" = { mode = "track" }
-"~/.config/kitty/kitty.conf" = { mode = "track" }
-"~/.config/kitty/cyberdream.conf" = { mode = "track" }
-"~/.config/btop/themes/cyberdream.theme" = { mode = "track" }
-"~/.config/bat/config" = { mode = "track" }
-"~/.config/bat/themes/cyberdream.tmTheme" = { mode = "track" }
-"~/.config/delta/themes/cyberdream.gitconfig" = { mode = "track" }
-"~/.config/git/ignore" = { mode = "track" }
-"~/.config/jjui/config.toml" = { mode = "track" }
-"~/.config/jjui/themes/cyberdream-dark.toml" = { mode = "track" }
-"~/.config/lazygit/config.yml" = { mode = "track" }
-"~/.config/opencode/opencode.json" = { mode = "track" }
-"~/.config/opencode/themes/cyberdream.json" = { mode = "track" }
-"~/.config/starship.toml" = { mode = "track" }
-"~/.config/yazi/init.lua" = { mode = "track" }
-"~/.config/yazi/theme.toml" = { mode = "track" }
-"~/.config/yazi/yazi.toml" = { mode = "track" }
-"~/.config/yazi/flavors/cyberdream.yazi/flavor.toml" = { mode = "track" }
-"~/.config/AGENTS.md" = { mode = "track" }
-"~/.config/agent-workflows" = { mode = "track" }
 "~/.codex/config.toml" = { mode = "track" }
-"~/.pi/agent/mcp.json" = { mode = "track" }
 "~/.pi/agent/settings.json" = { mode = "track" }
-"~/.dotfiles/home/.zshrc" = { mode = "track" }
-"~/.dotfiles/home/.gitconfig" = { mode = "track" }
-"~/.dotfiles/home/.config/fish/config.fish" = { mode = "track" }
-"~/.dotfiles/home/.config/ghostty/config" = { mode = "track" }
-"~/.dotfiles/home/.config/1Password/ssh/agent.toml" = { mode = "track" }
-"~/.dotfiles/home/stuff/code/vbrato/.gitconfig-vbrato" = { mode = "track" }
-"~/.dotfiles/mise.toml" = { mode = "track" }
 
 [bootstrap.services.mise-history]
 builtin = "history-watch"

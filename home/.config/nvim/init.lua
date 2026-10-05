@@ -341,8 +341,8 @@ if conform_ok then
       go = { 'goimports', 'gofmt' },
       c = { 'clang_format' },
       css = { 'oxfmt' },
-      shell = { 'shfmt', 'shellcheck' },
-      zsh = { 'shfmt', 'shellcheck' },
+      sh = { 'shfmt', 'shellcheck' },
+      zsh = { 'shfmt' },
       markdown = { 'oxfmt' },
       rust = { 'rustfmt', lsp_format = 'fallback' },
     },
@@ -489,7 +489,7 @@ local blink_ok = setup('blink.cmp', {
   appearance = { use_nvim_cmp_as_default = true, nerd_font_variant = 'mono' },
   fuzzy = {
     implementation = 'rust',
-    prebuilt_binaries = { download = true, force_version = 'v1.8.0' },
+    prebuilt_binaries = { download = true },
   },
   completion = {
     menu = { draw = { columns = { { 'kind_icon', 'label', 'label_description', 'source_name', gap = 1 } }, treesitter = { 'lsp' } } },
