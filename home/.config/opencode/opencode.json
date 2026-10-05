@@ -27,9 +27,5 @@
         }
       }
     }
-  },
-  "enabled_providers": [
-    "openai",
-    "opencode-go"
-  ]
+  }
 }
