@@ -134,7 +134,7 @@
 		<key>commandBarPositionOffset</key>
 		<string></string>
 		<key>commandBarRowShortcuts</key>
-		<string>{"link.48B7E022-F34B-4984-B731-9ED8737A7989":"control+command:11","app.bundle.com.mitchellh.ghostty":"control+command:17"}</string>
+		<string>{"app.bundle.com.mitchellh.ghostty":"control+command:17","link.48B7E022-F34B-4984-B731-9ED8737A7989":"control+command:11"}</string>
 		<key>commandBarShortcut</key>
 		<string>command:49</string>
 		<key>commandBarShortcutEnabled</key>
@@ -182,7 +182,7 @@
 		<key>extraBrightnessLevel</key>
 		<integer>100</integer>
 		<key>fanControlCoolingLevel</key>
-		<integer>100</integer>
+		<integer>75</integer>
 		<key>fanControlCurves</key>
 		<string>[{"points":[{"coolingLevel":0,"temperature":50},{"coolingLevel":100,"temperature":70}],"sensor":"hottestSoC"}]</string>
 		<key>fanControlMode</key>
@@ -410,7 +410,7 @@
 		<key>lastUpdateIntroVersion</key>
 		<string>3.4.0</string>
 		<key>launchAtLoginWanted</key>
-		<false/>
+		<true/>
 		<key>liquidGlassEnabled</key>
 		<false/>
 		<key>mediaGIFEnd</key>
@@ -1180,7 +1180,7 @@
 		<key>screenshotWatermarkPresets</key>
 		<string>[]</string>
 		<key>screenshotWatermarkStyle</key>
-		<string>{"size":0.3,"text":"","opacity":0.4,"rotation":0,"kind":"none","anchor":"bottomTrailing","color":"white"}</string>
+		<string>{"text":"","opacity":0.4,"anchor":"bottomTrailing","size":0.3,"rotation":0,"color":"white","kind":"none"}</string>
 		<key>scrollHorizontalEnabled</key>
 		<false/>
 		<key>scrollHorizontalModifier</key>
