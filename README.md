@@ -20,7 +20,7 @@ Edit repo-owned configs and template sources in `home/`. After editing or pullin
 mise run sync
 ```
 
-`sync` applies native file links and templates, restores sensitive permissions, ensures the history service is running, and fails if deployment is incomplete. It repairs missing links and includes new repo-owned files automatically. Existing conflicting regular files require an explicit migration; daily sync never forces them. OMP and PI share the repo-owned MCP config, and all five agents share `AGENTS.md`.
+`sync` applies native file links and templates, restores sensitive permissions, ensures the history service is running, and fails if deployment is incomplete. It repairs missing links, overwrites conflicting files at managed targets, and includes new repo-owned files automatically. OMP and PI share the repo-owned MCP config, and all five agents share `AGENTS.md`.
 
 The linked global mise config keeps tool declarations and tasks current too. Updating installed tools is separate: use `ai:sync` or `lsp:sync` below. Sync cannot fix configuration keys changed by a future app release; those source changes still need review.
 
@@ -62,7 +62,7 @@ mise bootstrap status --missing # check dotfiles, packages, and tools
 mise bootstrap --dry-run        # preview a full machine setup
 ```
 
-Use the full `mise bootstrap` when you also want packages, tools, and the final bootstrap task.
+Use `mise bootstrap --force-dotfiles --yes` when you also want packages, tools, and the final bootstrap task. The installer uses these flags to replace conflicting files at managed targets.
 
 On other Macs, import [Vorssaint Settings.plist](<Vorssaint Settings.plist>) in Vorssaint under Settings → Advanced → Import settings.
 
@@ -119,7 +119,7 @@ The `secure` hook restores `0600` on the 1Password source and rendered target be
 
 ## Bootstrap lifecycle
 
-`mise run sync` applies dotfiles, applies services, then checks dotfile status. `layout` runs once before dotfile apply, and `secure` runs once afterward. Full bootstrap runs:
+`mise run sync` force-applies dotfiles, overwriting conflicting files at managed targets, applies services, then checks dotfile status. `layout` runs once before dotfile apply, and `secure` runs once afterward. Full bootstrap runs:
 
 1. Shared Homebrew packages and macOS extras from `Brewfile.macos`.
 2. `layout` to create workspace directories.

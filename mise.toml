@@ -162,7 +162,7 @@ foreach ($file in $files) {
 description = "Apply dotfiles, ensure local history is running, and check deployment"
 # The dotfiles command runs layout and secure through the hooks above.
 run = [
-  "mise bootstrap dotfiles apply --yes",
+  "mise bootstrap dotfiles apply --force --yes",
   "mise bootstrap services apply --yes",
   "mise bootstrap dotfiles status --missing",
 ]

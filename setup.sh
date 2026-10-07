@@ -16,4 +16,4 @@ fi
 cd "$REPO"
 
 mise trust
-mise bootstrap --yes
+mise bootstrap --force-dotfiles --yes
