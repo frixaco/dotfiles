@@ -24,7 +24,7 @@ mise run sync
 
 The linked global mise config keeps tool declarations and tasks current too. Updating installed tools is separate: use `ai:sync` or `lsp:sync` below. Sync cannot fix configuration keys changed by a future app release; those source changes still need review.
 
-Edit app-written settings through the app or their live file. The global mise config tracks Amp settings, btop settings, OpenCode TUI settings, OMP settings, Codex settings, and PI settings. Sync preserves those files and never deploys their repository snapshots. Git handles repo-owned configs; the `mise-history` user service handles these local settings.
+Edit app-written settings through the app or their live file. The global mise config tracks Amp settings, btop settings, OpenCode CLI settings, OMP settings, Codex settings, and PI settings. Sync preserves those files and never deploys their repository snapshots. Git handles repo-owned configs; the `mise-history` user service handles these local settings.
 
 Inspect or restore app settings with:
 
@@ -82,7 +82,9 @@ whether `~/.gitconfig` includes it. Apply profile changes with `mise run sync`.
 
 A single `~/.config/AGENTS.md` is shared across the configured AI tools. This setup does not install or share skills or workflows.
 
-Model and reasoning preferences live in each agent's settings; OMP has separate model roles. App-written agent settings have local mise history. OpenCode's main config is repo-owned; its TUI settings are local. Authentication, conversations, and generated databases remain machine-local.
+`ai:install` installs missing agents and upgrades installed ones on every run. Claude Code, Codex, PI, OMP, and Amp use their standalone installers on every platform; `claude update`, a rerun of the Codex installer, `pi update --all`, `omp update`, and `amp update` handle upgrades. OMP installs its prebuilt binary, not the Bun package its installer prefers. OpenCode V2 uses its curl installer and `opencode upgrade` on macOS and Linux, and its Bun package `@opencode/cli` on Windows. agent-browser stays a global Bun package. The task removes older Bun installs of Codex, PI, OMP, and OpenCode V1 first. A first PI install asks for one keypress when a terminal is attached.
+
+Model and reasoning preferences live in each agent's settings; OMP has separate model roles. App-written agent settings have local mise history. OpenCode's main config is repo-owned and uses the native V2 format; its CLI settings (`cli.json`, which replaced V1's `tui.json`) are local. Authentication, conversations, and generated databases remain machine-local.
 
 `ai:link` configures Codex’s Chrome DevTools MCP connection to the same browser endpoint used by PI, OMP, Amp, and OpenCode: `http://127.0.0.1:9222`. Start Helium with `--remote-debugging-port=9222` using the existing signed-in profile. Restart the Codex session after changing its MCP configuration. The connection requires Helium to be running; setup does not restart the browser.
 

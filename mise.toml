@@ -84,7 +84,7 @@ run = "mise run secure"
   "stuff/code/vbrato/.gitconfig-vbrato",
   ".config/amp/settings.json",
   ".config/btop/btop.conf",
-  ".config/opencode/tui.json",
+  ".config/opencode/cli.json",
   ".omp/agent/config.yml",
   ".pi/agent/settings.json",
 ] }
