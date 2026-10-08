@@ -134,7 +134,7 @@
 		<key>commandBarPositionOffset</key>
 		<string></string>
 		<key>commandBarRowShortcuts</key>
-		<string>{"app.bundle.com.mitchellh.ghostty":"control+command:17","link.48B7E022-F34B-4984-B731-9ED8737A7989":"control+command:11"}</string>
+		<string>{"app.bundle.com.mitchellh.ghostty":"option:18","link.48B7E022-F34B-4984-B731-9ED8737A7989":"option:19"}</string>
 		<key>commandBarShortcut</key>
 		<string>command:49</string>
 		<key>commandBarShortcutEnabled</key>
@@ -322,7 +322,7 @@
 		<key>featureAvailable.superKey</key>
 		<false/>
 		<key>featureAvailable.switcher</key>
-		<false/>
+		<true/>
 		<key>featureAvailable.textSnippets</key>
 		<false/>
 		<key>featureAvailable.uninstaller</key>
@@ -1180,7 +1180,7 @@
 		<key>screenshotWatermarkPresets</key>
 		<string>[]</string>
 		<key>screenshotWatermarkStyle</key>
-		<string>{"text":"","opacity":0.4,"anchor":"bottomTrailing","size":0.3,"rotation":0,"color":"white","kind":"none"}</string>
+		<string>{"text":"","rotation":0,"anchor":"bottomTrailing","opacity":0.4,"color":"white","kind":"none","size":0.3}</string>
 		<key>scrollHorizontalEnabled</key>
 		<false/>
 		<key>scrollHorizontalModifier</key>
@@ -1288,7 +1288,7 @@
 		<key>switcherWindowShortcut</key>
 		<string>command:50</string>
 		<key>switcherWindowlessApps</key>
-		<string>finder</string>
+		<string>off</string>
 		<key>temperatureUnit</key>
 		<string>celsius</string>
 		<key>textSnippetsEnabled</key>
