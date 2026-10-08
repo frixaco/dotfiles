@@ -217,10 +217,37 @@ if (Get-Command amp -ErrorAction SilentlyContinue) {
 Invoke-Native { mise install }
 
 # Codex, PI, and OMP use standalone installs; OpenCode V2 uses its Bun package.
+# `bun remove -g` drops the package but leaves its launchers in ~/.bun/bin, and a
+# stale launcher makes the PI installer refuse to install and the Codex installer
+# warn about an ambiguous second copy. Read each package's bin names first, then
+# delete whatever survives the removal.
 $globalModules = Join-Path $HOME ".bun\install\global\node_modules"
+$bunBin = Join-Path $HOME ".bun\bin"
 foreach ($pkg in @("@openai/codex", "@earendil-works/pi-coding-agent", "@oh-my-pi/pi-coding-agent", "opencode-ai")) {
-  if (Test-Path -LiteralPath (Join-Path $globalModules $pkg)) {
-    Invoke-Native { bun remove -g $pkg }
+  $pkgRoot = Join-Path $globalModules $pkg
+  if (-not (Test-Path -LiteralPath $pkgRoot)) { continue }
+
+  # npm semantics: "bin" is either a name->path map or a bare path, which means the
+  # package's own (unscoped) name. Asking the package keeps this correct if it
+  # renames or adds a launcher.
+  $shims = @()
+  $manifest = Join-Path $pkgRoot "package.json"
+  if (Test-Path -LiteralPath $manifest) {
+    $bin = (Get-Content -Raw -LiteralPath $manifest | ConvertFrom-Json).bin
+    if ($bin -is [string]) {
+      $shims = @(($pkg -split "/")[-1])
+    } elseif ($bin) {
+      $shims = @($bin.PSObject.Properties.Name)
+    }
+  }
+
+  Invoke-Native { bun remove -g $pkg }
+
+  foreach ($name in $shims) {
+    foreach ($leaf in @($name, "$name.exe", "$name.bunx", "$name.cmd", "$name.ps1")) {
+      $shim = Join-Path $bunBin $leaf
+      if (Test-Path -LiteralPath $shim) { Remove-Item -LiteralPath $shim -Force }
+    }
   }
 }
 
@@ -245,7 +272,15 @@ $pi = Join-Path $HOME ".pi\agent\bin\pi.cmd"
 if (Test-Path -LiteralPath (Join-Path $HOME ".pi\agent\install\current-version")) {
   Invoke-Native { & $pi update --all }
 } else {
-  irm https://pi.dev/install.ps1 | iex
+  # install.ps1 completes the install and then throws refreshing PATH, because
+  # $script:PiPathRefreshEntries is unset when it runs through `irm | iex`. Tolerate
+  # a failure after the binary exists, but still fail if the install never happened.
+  try {
+    irm https://pi.dev/install.ps1 | iex
+  } catch {
+    if (-not (Test-Path -LiteralPath $pi)) { throw }
+    Write-Host "PI installed; ignoring installer PATH step: $($_.Exception.Message)"
+  }
   Invoke-Native { & $pi update --extensions }
 }
 
