@@ -32,6 +32,7 @@ alias ef="nvim ~/.config/fish/config.fish"
 alias oc="opencode"
 alias se="source .venv/bin/activate.fish"
 alias cx="codex"
+alias cl="claude --dangerously-skip-permissions"
 
 function upall --description 'Update tools and sync dotfiles without confirmation'
     # Use the dotfiles project, regardless of the caller's working directory.
