@@ -67,7 +67,7 @@ fi
 run = "mise run layout"
 
 [bootstrap.hooks.post-dotfiles]
-run = "mise run secure"
+run = "mise run secure{% if os() == 'windows' %} && mise run powershell:profile{% endif %}"
 
 # Deploy with `mise bootstrap dotfiles apply`; its hooks create the workspace
 # and restore sensitive permissions. Template sources resolve under dotfiles.root.
@@ -79,6 +79,7 @@ run = "mise run secure"
   ".zshrc",
   ".gitconfig",
   ".config/fish/config.fish",
+  ".config/powershell/profile.ps1",
   ".config/ghostty/config",
   ".config/1Password/ssh/agent.toml",
   "stuff/code/vbrato/.gitconfig-vbrato",
@@ -96,6 +97,9 @@ run = "mise run secure"
 "~/.config/ghostty/config" = { mode = "template" }
 "~/.config/1Password/ssh/agent.toml" = { mode = "template" }
 "~/stuff/code/vbrato/.gitconfig-vbrato" = { mode = "template" }
+
+# Windows only; copy so profile deployment does not need symlink privileges.
+"~/.config/powershell/profile.ps1" = { mode = "copy", variants = [{ os = "windows" }] }
 
 # Shared agent instructions and MCP configuration.
 "~/.config/opencode/AGENTS.md" = { source = "home/.config/AGENTS.md", mode = "symlink" }
@@ -156,6 +160,18 @@ foreach ($file in $files) {
     if ($LASTEXITCODE -ne 0) { throw "Could not restrict permissions on $file" }
   }
 }
+'''
+
+[tasks."powershell:profile"]
+description = "Install the Windows PowerShell profile loader"
+hide = true
+shell = "pwsh -NoProfile -Command"
+run = '''
+$ErrorActionPreference = "Stop"
+# Resolve the deployed config before replacing the native profile.
+Get-Item -LiteralPath (Join-Path $HOME ".config/powershell/profile.ps1") | Out-Null
+New-Item -ItemType Directory -Force -Path (Split-Path $PROFILE.CurrentUserAllHosts) | Out-Null
+Set-Content -LiteralPath $PROFILE.CurrentUserAllHosts -Value '. "$HOME\.config\powershell\profile.ps1"' -Encoding utf8
 '''
 
 [tasks.sync]

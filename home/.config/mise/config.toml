@@ -194,7 +194,6 @@ else
 fi
 
 amp update
-curl -fsSL https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.sh | bash
 '''
 run_windows = "mise run ai:install:windows"
 
@@ -292,7 +291,6 @@ if (Test-Path -LiteralPath $omp) {
   & ([scriptblock]::Create((irm https://omp.sh/install.ps1))) -Binary
 }
 
-irm https://raw.githubusercontent.com/dmtrKovalenko/fff.nvim/main/install-mcp.ps1 | iex
 '''
 
 [tasks."ai:link"]
@@ -327,8 +325,7 @@ $paths = @(
   (Join-Path $HOME ".bun\bin"),
   (Join-Path $HOME ".pi\agent\bin"),
   (Join-Path $env:LOCALAPPDATA "Programs\OpenAI\Codex\bin"),
-  (Join-Path $env:LOCALAPPDATA "omp"),
-  (Join-Path $env:LOCALAPPDATA "fff-mcp\bin")
+  (Join-Path $env:LOCALAPPDATA "omp")
 )
 $env:Path = (($paths + ($env:Path -split ";")) | Where-Object { $_ } | Select-Object -Unique) -join ";"
 

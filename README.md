@@ -24,6 +24,8 @@ mise run sync
 
 The linked global mise config keeps tool declarations and tasks current too. Updating installed tools is separate: use `ai:sync` or `lsp:sync` below. Sync cannot fix configuration keys changed by a future app release; those source changes still need review.
 
+The Windows PowerShell profile lives in `home/.config/powershell/profile.ps1`. On Windows only, sync and bootstrap copy it to `~/.config/powershell/profile.ps1` and install a one-line loader at `$PROFILE.CurrentUserAllHosts`, respecting the actual Documents location and requiring no symlink privileges. Unix machines skip both. Use `ef` to edit the repo source, run `mise run sync` to deploy it, then `sf` to reload. Machine-specific environment settings stay in the untracked `~/.config/powershell/env.ps1`.
+
 Edit app-written settings through the app or their live file. The global mise config tracks Amp settings, btop settings, OpenCode CLI settings, OMP settings, Codex settings, and PI settings. Sync preserves those files and never deploys their repository snapshots. Git handles repo-owned configs; the `mise-history` user service handles these local settings.
 
 Inspect or restore app settings with:
@@ -117,7 +119,7 @@ Vbrato repositories live under `~/stuff/code/vbrato/`, next to the deployed
 
 [`mise.toml`](mise.toml) owns file mappings, tasks, and hooks. Its native `symlink-each` mapping links individual repo-owned files without replacing their parent directories or unrelated files. Neovim's Lua files use the same per-file links; templates and app-written snapshots are excluded. `mise.local.toml` adds machine settings. The linked global mise config owns tools, agent/LSP tasks, local tracking, and the history service.
 
-The `secure` hook restores `0600` on the 1Password source and rendered target because Git cannot preserve those permissions. On Windows it restricts access with `icacls`. Windows file symlinks can fall back to copies when link privileges are unavailable; automatic edit-through requires an actual link.
+The `secure` hook restores `0600` on the 1Password source and rendered target because Git cannot preserve those permissions. On Windows it restricts access with `icacls`, then the post-dotfiles hook installs the PowerShell loader. Windows file symlinks can fall back to copies when link privileges are unavailable; automatic edit-through requires an actual link.
 
 ## Bootstrap lifecycle
 
