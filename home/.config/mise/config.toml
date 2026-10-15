@@ -369,6 +369,7 @@ history.sync = "manual"
 "~/.omp/agent/config.yml" = { mode = "track" }
 "~/.codex/config.toml" = { mode = "track" }
 "~/.pi/agent/settings.json" = { mode = "track" }
+"~/.claude/settings.json" = { mode = "track" }
 
 [bootstrap.services.mise-history]
 builtin = "history-watch"

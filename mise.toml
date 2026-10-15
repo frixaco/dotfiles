@@ -88,6 +88,7 @@ run = "mise run secure{% if os() == 'windows' %} && mise run powershell:profile{
   ".config/opencode/cli.json",
   ".omp/agent/config.yml",
   ".pi/agent/settings.json",
+  ".claude/settings.json",
 ] }
 
 # OS/work-specific (rendered templates)
