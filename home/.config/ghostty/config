@@ -24,7 +24,7 @@ macos-option-as-alt = left
 window-vsync = false
 
 font-size = 14
-font-family = "BlexMono Nerd Font"
+font-family = "Paper Mono"
 
 window-inherit-working-directory = true
 tab-inherit-working-directory = true
