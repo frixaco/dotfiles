@@ -23,11 +23,7 @@
 [maintenance]
 	auto = 1
 
-[include]
-	path = ~/.config/delta/themes/cyberdream.gitconfig
-
 [delta]
-	features = cyberdream
 	navigate = true
 	side-by-side = false
 	line-numbers = true

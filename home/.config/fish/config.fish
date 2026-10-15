@@ -66,15 +66,6 @@ function upall --description 'Update tools and sync dotfiles without confirmatio
     return 0
 end
 
-set -gx BAT_THEME cyberdream
-
-function __apply_fish_theme --argument-names theme
-    type -q fish_config; or return 0
-    test -f ~/.config/fish/themes/$theme.theme; or return 0
-
-    fish_config theme choose $theme >/dev/null
-end
-
 function ccd
     cd ~/.dotfiles
 end
@@ -153,8 +144,6 @@ if test -f ~/.config/fish/env.fish
 end
 
 if status is-interactive
-    __apply_fish_theme cyberdream
-
     command -q zoxide; and zoxide init fish | source
     command -q starship; and starship init fish | source
     command -q fzf; and fzf --fish | source

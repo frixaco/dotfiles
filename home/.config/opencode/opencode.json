@@ -15,22 +15,5 @@
         "disabled": false
       }
     }
-  },
-  "model": "openai/gpt-6-astra",
-  "agents": {
-    "title": {
-      "model": "openai/gpt-6-astra"
-    }
-  },
-  "providers": {
-    "openai": {
-      "models": {
-        "gpt-6-astra": {
-          "settings": {
-            "reasoningEffort": "medium"
-          }
-        }
-      }
-    }
   }
 }

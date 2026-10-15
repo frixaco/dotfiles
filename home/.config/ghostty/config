@@ -1,5 +1,4 @@
 auto-update-channel = tip
-theme = cyberdream
 
 {%- if os() == "macos" %}
 command = /opt/homebrew/bin/fish --login --interactive

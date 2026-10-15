@@ -1,6 +1,5 @@
 $env:EDITOR = "nvim"
 $env:XDG_CONFIG_HOME = Join-Path $HOME ".config"
-$env:BAT_THEME = "cyberdream"
 
 $userPaths = @(
     (Join-Path $HOME ".local/bin")

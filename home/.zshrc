@@ -36,8 +36,6 @@ alias oc="opencode"
 alias se="source .venv/bin/activate"
 alias cx="codex"
 
-export BAT_THEME=cyberdream
-
 ccd() {
   cd ~/.dotfiles
 }
