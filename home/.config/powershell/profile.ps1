@@ -1,5 +1,8 @@
 $env:EDITOR = "nvim"
+# Point nvim, yazi, and lazygit at ~/.config on Windows too.
 $env:XDG_CONFIG_HOME = Join-Path $HOME ".config"
+$env:YAZI_CONFIG_HOME = Join-Path $env:XDG_CONFIG_HOME "yazi"
+$env:LG_CONFIG_FILE = Join-Path $env:XDG_CONFIG_HOME "lazygit/config.yml"
 
 $userPaths = @(
     (Join-Path $HOME ".local/bin")
@@ -60,7 +63,7 @@ function en {
 }
 
 function sf {
-    . $PROFILE.CurrentUserAllHosts
+    . (Join-Path $HOME ".dotfiles/home/.config/powershell/profile.ps1")
 }
 
 function ef {
@@ -87,42 +90,12 @@ function ccd {
 }
 
 function upall {
-    $originalLocation = Get-Location
-    $originalMiseYes = $env:MISE_YES
-    $failed = @()
-    try {
-        Set-Location -LiteralPath (Join-Path $HOME ".dotfiles") -ErrorAction Stop
-        $env:MISE_YES = "1"
-        # Scoop owns mise too, so it also updates the mise executable.
-        foreach ($step in @(
-            "scoop update", "scoop update --all",
-            "mise run sync", "mise up", "mise exec -- npm update -g",
-            "mise exec -- bun update -g", "mise lsp:sync", "mise ai:sync"
-        )) {
-            Write-Host "`n==> $step"
-            $command, $commandArgs = $step -split " "
-            $commandArgs = @($commandArgs)
-            $global:LASTEXITCODE = 0
-            try {
-                & $command @commandArgs
-                $result = $LASTEXITCODE
-            } catch {
-                Write-Warning $_.Exception.Message
-                $result = if ($LASTEXITCODE) { $LASTEXITCODE } else { 1 }
-            }
-            # Continue after failures, but stop on Unix or Windows interruption codes.
-            if ($result -in @(130, 143, -1073741510)) {
-                $global:LASTEXITCODE = $result
-                return
-            }
-            if ($result -ne 0) { $failed += $step }
-        }
-    } finally {
-        Set-Location -LiteralPath $originalLocation.Path
-        $env:MISE_YES = $originalMiseYes
+    # Scoop owns mise on Windows and can't update it while a mise task runs.
+    if ($IsWindows) {
+        scoop update
+        scoop update --all
     }
-    $global:LASTEXITCODE = if ($failed) { 1 } else { 0 }
-    if ($failed) { Write-Error "Failed: $($failed -join ', ')" }
+    mise -C (Join-Path $HOME ".dotfiles") run up
 }
 
 function envsource {

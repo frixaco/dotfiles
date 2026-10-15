@@ -1,189 +1,144 @@
-min_version = "2026.9.2"
+min_version = "2026.10.7"
 
 [settings]
-experimental = true
 dotfiles.root = "~/.dotfiles/home"
 
 # Default machine profile. Override per-machine in mise.local.toml (gitignored),
-# e.g. `[vars]\nwork = true` plus any machine-specific [dotfiles] entries.
+# e.g. `[vars]\nwork = true`.
 [vars]
 work = false
 
-# AeroSpace's tap lacks the metadata required by mise, so macOS casks stay in Homebrew.
-[bootstrap.hooks.pre-packages]
-run = '''
-if [ "$(uname -s)" = "Darwin" ] && [ ! -x /opt/homebrew/bin/brew ]; then
-  NONINTERACTIVE=1 /bin/bash -c \
-    "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
-'''
-
-[bootstrap.brew.taps]
-"modem-dev/tap" = "https://github.com/modem-dev/homebrew-tap.git"
-
+# Platform extras. mise installs formulae and casks itself; Homebrew is optional.
+# Cross-platform CLI tools live in [tools] of the global config instead.
 [bootstrap.packages]
-"brew:bat" = "latest"
+# No upstream macOS binaries for these, so brew on macOS and Scoop on Windows.
+"brew:eza" = "latest"
+"brew:tokei" = "latest"
+"brew:resvg" = "latest"
+"scoop:eza" = "latest"
+"scoop:tokei" = "latest"
+"scoop:resvg" = "latest"
 "brew:ccache" = "latest"
 "brew:cmake" = "latest"
 "brew:curl" = "latest"
-"brew:difftastic" = "latest"
-"brew:dua-cli" = "latest"
-"brew:eza" = "latest"
-"brew:fd" = "latest"
 "brew:ffmpeg" = "latest"
 "brew:fish" = "latest"
-"brew:fzf" = "latest"
-"brew:gh" = "latest"
 "brew:git" = "latest"
-"brew:git-delta" = "latest"
 "brew:git-filter-repo" = "latest"
 "brew:git-lfs" = "latest"
-"brew:hyperfine" = "latest"
 "brew:imagemagick-full" = "latest"
-"brew:jj" = "latest"
-"brew:jjui" = "latest"
-"brew:jq" = "latest"
-"brew:lazygit" = "latest"
-"brew:modem-dev/tap/hunk" = "latest"
+"brew:mpv" = "latest"
 "brew:poppler" = "latest"
 "brew:postgresql@18" = "latest"
-"brew:railway" = "latest"
-"brew:resvg" = "latest"
-"brew:ripgrep" = "latest"
-"brew:starship" = "latest"
-"brew:tokei" = "latest"
-"brew:tree-sitter-cli" = "latest"
-"brew:yazi" = "latest"
-"brew:zoxide" = "latest"
+"brew:tw93/tap/mole" = "latest"
+# TODO: kitty and Ghostty use "Paper Mono" (installed by hand); install it here or switch the configs to this font.
+"brew-cask:font-blex-mono-nerd-font" = "latest"
+"brew-cask:ghostty" = "latest"
+"brew-cask:keycastr" = "latest"
+"brew-cask:kitty" = "latest"
+"brew-cask:macpacker" = "latest"
+"brew-cask:orbstack" = "latest"
+"brew-cask:zulu@17" = "latest"
 
-[bootstrap.hooks.post-packages]
-run = '''
-if [ "$(uname -s)" = "Darwin" ]; then
-  /opt/homebrew/bin/brew bundle --file "$PWD/Brewfile.macos"
-fi
-'''
+[bootstrap.hooks]
+post-dotfiles = "{% if os() == 'windows' %}mise run powershell:profile{% else %}true{% endif %}"
 
-[bootstrap.hooks.pre-dotfiles]
-run = "mise run layout"
+# Everything in home/ mirrors into ~ (copies on Windows). Entries below are cut
+# out of that walk automatically; their sources resolve under dotfiles.root.
+[dotfile_groups.home]
+root = "."
+exclude = [
+  "/.claude/settings.json",              # reference snapshot; the live file is tracked
+  "/.claude.json",                       # merge source below
+  "/.config/amp/settings.json",          # merge sources below
+  "/.codex/config.toml",
+  "/.config/powershell/profile.ps1",     # Windows loads it straight from the repo
+]
 
-[bootstrap.hooks.post-dotfiles]
-run = "mise run secure{% if os() == 'windows' %} && mise run powershell:profile{% endif %}"
-
-# Deploy with `mise bootstrap dotfiles apply`; its hooks create the workspace
-# and restore sensitive permissions. Template sources resolve under dotfiles.root.
-# App-written settings and their watcher are declared in the global mise config.
-[dotfiles]
-# Link repo-owned files individually, leaving other files in each directory alone.
-# App-written snapshots are references; templates are rendered separately below.
-"~" = { source = "home", mode = "symlink-each", exclude = [
-  ".zshrc",
-  ".gitconfig",
-  ".config/fish/config.fish",
-  ".config/powershell/profile.ps1",
-  ".config/ghostty/config",
-  ".config/1Password/ssh/agent.toml",
-  "stuff/code/vbrato/.gitconfig-vbrato",
-  ".config/amp/settings.json",
-  ".config/btop/btop.conf",
-  ".config/opencode/cli.json",
-  ".omp/agent/config.yml",
-  ".pi/agent/settings.json",
-  ".claude/settings.json",
-] }
-
-# OS/work-specific (rendered templates)
-"~/.zshrc" = { mode = "template" }
+[dotfile_groups.home.entries]
+"~/.zshrc" = { source = ".zshrc", mode = "template", variants = [{ os = "unix" }] }
 "~/.gitconfig" = { mode = "template" }
 "~/.config/fish/config.fish" = { mode = "template" }
 "~/.config/ghostty/config" = { mode = "template" }
-"~/.config/1Password/ssh/agent.toml" = { mode = "template" }
 "~/stuff/code/vbrato/.gitconfig-vbrato" = { mode = "template" }
+"~/.config/1Password/ssh/agent.toml" = { mode = "template", permissions = "0600", variants = [
+  { os = "windows", target = "~/AppData/Local/1Password/config/ssh/agent.toml" },
+  { default = true },
+] }
 
-# Windows only; copy so profile deployment does not need symlink privileges.
-"~/.config/powershell/profile.ps1" = { mode = "copy", variants = [{ os = "windows" }] }
+# One AGENTS.md and one MCP config shared by every agent.
+"~/.codex/AGENTS.md" = { source = ".config/AGENTS.md" }
+"~/.claude/CLAUDE.md" = { source = ".config/AGENTS.md" }
+"~/.config/opencode/AGENTS.md" = { source = ".config/AGENTS.md" }
+"~/.config/amp/AGENTS.md" = { source = ".config/AGENTS.md" }
+"~/.pi/agent/AGENTS.md" = { source = ".config/AGENTS.md" }
+"~/.omp/agent/AGENTS.md" = { source = ".config/AGENTS.md" }
+"~/.pi/agent/mcp.json" = {}
+"~/.omp/agent/mcp.json" = { source = ".pi/agent/mcp.json" }
 
-# Shared agent instructions and MCP configuration.
-"~/.config/opencode/AGENTS.md" = { source = "home/.config/AGENTS.md", mode = "symlink" }
-"~/.pi/agent/AGENTS.md" = { source = "home/.config/AGENTS.md", mode = "symlink" }
-"~/.omp/agent/AGENTS.md" = { source = "home/.config/AGENTS.md", mode = "symlink" }
-"~/.config/amp/AGENTS.md" = { source = "home/.config/AGENTS.md", mode = "symlink" }
-"~/.codex/AGENTS.md" = { source = "home/.config/AGENTS.md", mode = "symlink" }
-"~/.omp/agent/mcp.json" = { source = "home/.pi/agent/mcp.json", mode = "symlink" }
+# Apps rewrite these files; mise owns only the keys in the repo copy.
+[dotfiles]
+"~/.claude.json/mcp" = { merge = true }  # user-scope MCP servers only
+"~/.config/amp/settings.json/shared" = { merge = true }
+"~/.codex/config.toml/shared" = { merge = true }
 
 [tasks.layout]
 description = "Create the shared personal workspace"
-run = '''
-mkdir -p \
-  "$HOME/stuff/code" \
-  "$HOME/stuff/music" \
-  "$HOME/stuff/2d" \
-  "$HOME/stuff/3d" \
-  "$HOME/stuff/dump"
-'''
-run_windows = "mise run layout:windows"
-
-[tasks."layout:windows"]
-hide = true
-shell = "pwsh -NoProfile -Command"
-run = '''
-$ErrorActionPreference = "Stop"
-@("code", "music", "2d", "3d", "dump") | ForEach-Object {
-  New-Item -ItemType Directory -Force -Path (Join-Path $HOME "stuff\$_") | Out-Null
-}
-'''
-
-[tasks.secure]
-description = "Restrict permissions on sensitive dotfiles to 0600"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-for f in \
-  home/.config/1Password/ssh/agent.toml \
-  ~/.config/1Password/ssh/agent.toml; do
-  [ -f "$f" ] && chmod 600 "$f"
-done
-'''
-run_windows = "mise run secure:windows"
-
-[tasks."secure:windows"]
-hide = true
-shell = "pwsh -NoProfile -Command"
-run = '''
-$ErrorActionPreference = "Stop"
-$identity = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-$files = @(
-  (Join-Path $PWD "home\.config\1Password\ssh\agent.toml"),
-  (Join-Path $HOME ".config\1Password\ssh\agent.toml")
-)
-foreach ($file in $files) {
-  if (Test-Path -LiteralPath $file) {
-    & icacls.exe $file /inheritance:r /grant:r "${identity}:(M)" | Out-Null
-    if ($LASTEXITCODE -ne 0) { throw "Could not restrict permissions on $file" }
-  }
-}
-'''
+run = "mkdir -p ~/stuff/code ~/stuff/music ~/stuff/2d ~/stuff/3d ~/stuff/dump"
+run_windows = 'pwsh -NoProfile -Command "New-Item -ItemType Directory -Force -Path ~/stuff/code,~/stuff/music,~/stuff/2d,~/stuff/3d,~/stuff/dump | Out-Null"'
 
 [tasks."powershell:profile"]
-description = "Install the Windows PowerShell profile loader"
+description = "Point the native PowerShell profile at the repo profile"
 hide = true
 shell = "pwsh -NoProfile -Command"
 run = '''
 $ErrorActionPreference = "Stop"
-# Resolve the deployed config before replacing the native profile.
-Get-Item -LiteralPath (Join-Path $HOME ".config/powershell/profile.ps1") | Out-Null
 New-Item -ItemType Directory -Force -Path (Split-Path $PROFILE.CurrentUserAllHosts) | Out-Null
-Set-Content -LiteralPath $PROFILE.CurrentUserAllHosts -Value '. "$HOME\.config\powershell\profile.ps1"' -Encoding utf8
+Set-Content -LiteralPath $PROFILE.CurrentUserAllHosts -Value '. "$HOME\.dotfiles\home\.config\powershell\profile.ps1"' -Encoding utf8
 '''
 
 [tasks.sync]
-description = "Apply dotfiles, ensure local history is running, and check deployment"
-# The dotfiles command runs layout and secure through the hooks above.
+description = "Apply dotfiles, remove ones no longer in the repo, start history, check"
 run = [
-  "mise bootstrap dotfiles apply --force --yes",
+  "mise bootstrap dotfiles apply --force --prune --yes",
   "mise bootstrap services apply --yes",
   "mise bootstrap dotfiles status --missing",
 ]
 
+[tasks.up]
+description = "Sync dotfiles, then update mise, packages, tools, and agents; keeps going after failures"
+run = '''
+#!/usr/bin/env bash
+failed=()
+for step in "mise run sync" "mise self-update --yes" "mise bootstrap packages upgrade --yes" \
+    "mise upgrade --yes" "mise run ai:install"; do
+  printf '\n==> %s\n' "$step"
+  $step
+  status=$?
+  # Stop if the user interrupts; otherwise note the failure and continue.
+  case $status in 0) ;; 130|143) exit "$status" ;; *) failed+=("$step") ;; esac
+done
+if [ ${#failed[@]} -gt 0 ]; then printf '\nFailed: %s\n' "${failed[@]}" >&2; exit 1; fi
+'''
+run_windows = "mise run up:windows"
+
+# Scoop can't update mise while it runs, so upall updates Scoop and mise first.
+[tasks."up:windows"]
+hide = true
+shell = "pwsh -NoProfile -Command"
+run = '''
+$failed = @()
+foreach ($step in @("mise run sync", "mise bootstrap packages upgrade --yes", "mise upgrade --yes", "mise run ai:install")) {
+  Write-Host "`n==> $step"
+  $command, $commandArgs = $step -split " "
+  & $command @commandArgs
+  if ($LASTEXITCODE -in @(130, -1073741510)) { exit $LASTEXITCODE }
+  if ($LASTEXITCODE) { $failed += $step }
+}
+if ($failed) { Write-Error "Failed: $($failed -join ', ')"; exit 1 }
+'''
+
+# Runs last in `mise bootstrap`, after packages, dotfiles, and [tools].
 [tasks.bootstrap]
-description = "Install and verify AI agents and language servers"
-run = ["mise run ai:sync", "mise run lsp:sync"]
+description = "Create the workspace, then install and verify AI agents"
+run = [{ task = "layout" }, { task = "ai:install" }, { task = "ai:doctor" }]

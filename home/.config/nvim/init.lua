@@ -537,7 +537,6 @@ local ok_lsp, lsp_err = pcall(vim.lsp.enable, {
   'graphql',
   'cssls',
   'tailwindcss',
-  'svelte',
   'wgsl_analyzer',
 })
 if not ok_lsp then

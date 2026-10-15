@@ -10,6 +10,7 @@ compinit
 export EDITOR=nvim
 
 {%- if os() == "macos" %}
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export ANDROID_SDK_ROOT="$ANDROID_HOME"
@@ -19,7 +20,7 @@ export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
 # for Lazygit config to work
 export XDG_CONFIG_HOME="$HOME/.config"
 
-export PATH="$HOME/.local/bin:$HOME/.bun/bin:$HOME/.amp/bin:$HOME/.opencode/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.bun/bin:$HOME/.opencode/bin:$PATH"
 {%- if os() == "macos" %}
 export PATH="/Applications/Obsidian.app/Contents/MacOS:$PATH"
 {%- elif os() == "linux" %}
@@ -31,7 +32,7 @@ alias v="nvim"
 alias en="cd ~/.config/nvim && nvim"
 alias sf="source ~/.zshrc"
 alias c="clear"
-alias ef="nvim ~/.zshrc"
+alias ef="nvim ~/.dotfiles/home/.zshrc"
 alias oc="opencode"
 alias se="source .venv/bin/activate"
 alias cx="codex"
@@ -115,12 +116,11 @@ if [[ -f ~/.config/zsh/env.zsh ]]; then
   source ~/.config/zsh/env.zsh
 fi
 
-if [[ -o interactive ]]; then
-  (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
-  (( $+commands[starship] )) && eval "$(starship init zsh)"
-  (( $+commands[fzf] )) && eval "$(fzf --zsh)"
-  (( $+commands[mise] )) && eval "$(mise activate zsh)"
-fi
+# mise first: it puts zoxide, starship, and fzf on PATH.
+eval "$(mise activate zsh)"
+(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
+(( $+commands[starship] )) && eval "$(starship init zsh)"
+(( $+commands[fzf] )) && eval "$(fzf --zsh)"
 
 {% if vars.work and os() == "macos" -%}
 (( $+commands[rbenv] )) && eval "$(rbenv init - zsh)"

@@ -1,6 +1,23 @@
-{%- if os() == "linux" -%}
+{%- if os() == "macos" -%}
+fish_add_path -g /opt/homebrew/bin /opt/homebrew/sbin
+{%- elif os() == "linux" -%}
 /home/linuxbrew/.linuxbrew/bin/brew shellenv | source
 {%- endif %}
+fish_add_path -g ~/.local/bin ~/.bun/bin ~/.opencode/bin
+{%- if os() == "macos" %}
+set -gx ANDROID_HOME "$HOME/Library/Android/sdk"
+fish_add_path -g "$ANDROID_HOME/platform-tools" "$ANDROID_HOME/emulator" /Applications/Obsidian.app/Contents/MacOS
+{%- elif os() == "linux" %}
+fish_add_path -g /usr/local/bin/obsidian
+{%- endif %}
+
+# After every fish_add_path: those reorder PATH and would bury mise's tools.
+# Full activation at the prompt, shims for scripts and editors.
+if status is-interactive
+    mise activate fish | source
+else
+    mise activate fish --shims | source
+end
 
 set -g fish_greeting
 
@@ -8,62 +25,25 @@ set -gx EDITOR nvim
 
 {%- if os() == "macos" %}
 set -gx JAVA_HOME /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
-set -gx ANDROID_HOME "$HOME/Library/Android/sdk"
 set -gx ANDROID_SDK_ROOT "$ANDROID_HOME"
-fish_add_path "$ANDROID_HOME/platform-tools" "$ANDROID_HOME/emulator"
 {%- endif %}
 
 # for Lazygit config to work
 set -gx XDG_CONFIG_HOME "$HOME/.config"
-
-fish_add_path ~/.local/bin ~/.bun/bin ~/.amp/bin ~/.opencode/bin
-{%- if os() == "macos" %}
-fish_add_path /Applications/Obsidian.app/Contents/MacOS
-{%- elif os() == "linux" %}
-fish_add_path /usr/local/bin/obsidian
-{%- endif %}
 
 alias l="eza --color=always --icons --all --long --time modified --sort modified --no-permissions --octal-permissions --git --smart-group --git-repos"
 alias v="nvim"
 alias en="cd ~/.config/nvim && nvim"
 alias sf="source ~/.config/fish/config.fish"
 alias c="clear"
-alias ef="nvim ~/.config/fish/config.fish"
+alias ef="nvim ~/.dotfiles/home/.config/fish/config.fish"
 alias oc="opencode"
 alias se="source .venv/bin/activate.fish"
 alias cx="codex"
 alias cl="claude --dangerously-skip-permissions"
 
-function upall --description 'Update tools and sync dotfiles without confirmation'
-    # Use the dotfiles project, regardless of the caller's working directory.
-    pushd ~/.dotfiles; or return 1
-    set -lx MISE_YES 1
-    set -lx HOMEBREW_NO_ASK 1
-    set -l failed
-
-    for step in 'mise self-update' 'brew update' 'brew upgrade --no-ask' \
-            'mise run sync' 'mise up' 'mise exec -- npm update -g' \
-            'mise exec -- bun update -g' 'mise lsp:sync' 'mise ai:sync'
-        printf '\n==> %s\n' "$step"
-        set -l args (string split ' ' -- "$step")
-        command $args
-        set -l result $status
-        # Continue after errors, but stop if the user interrupts an update.
-        if contains -- $result 130 143
-            popd
-            return $result
-        end
-        if test $result -ne 0
-            set -a failed "$step"
-        end
-    end
-
-    popd
-    if test (count $failed) -gt 0
-        printf '\nFailed: %s\n' $failed >&2
-        return 1
-    end
-    return 0
+function upall --description 'Update mise, packages, tools, agents, and dotfiles'
+    mise -C ~/.dotfiles run up
 end
 
 function ccd

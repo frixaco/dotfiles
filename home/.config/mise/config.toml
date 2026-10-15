@@ -1,3 +1,4 @@
+# `mise up` updates everything here. Language servers sit next to their runtimes.
 [tools]
 node = 'lts'
 go = 'latest'
@@ -8,168 +9,65 @@ zig = 'latest'
 # Route Cargo through the shared build cache and keep its language server in sync.
 rust = { version = 'latest', mr_boxington = true, components = ['rust-analyzer'] }
 mr-boxington = 'latest'
+
+# CLI tools, same on macOS and Windows.
+bat = 'latest'
+delta = 'latest'
+difftastic = 'latest'
+dua = 'latest'
+fd = 'latest'
+fzf = 'latest'
+gh = 'latest'
+hunk = 'latest'
+hyperfine = 'latest'
+jj = 'latest'
+jjui = 'latest'
+jq = 'latest'
+lazygit = 'latest'
+railway = 'latest'
+ripgrep = 'latest'
+starship = 'latest'
+tree-sitter = 'latest'
+yazi = 'latest'
+zoxide = 'latest'
+"npm:agent-browser" = 'latest'
+
+# Language servers, formatters, and linters.
 lua-language-server = 'latest'
+stylua = 'latest'
 "github:wgsl-analyzer/wgsl-analyzer" = { version = 'latest', matching = 'wgsl-analyzer-', bin = 'wgsl-analyzer' }
+"go:golang.org/x/tools/gopls" = 'latest'
+"go:golang.org/x/tools/cmd/goimports" = 'latest'
+ruff = 'latest'
+ty = 'latest'
+"pipx:clang-format" = 'latest'
+shfmt = 'latest'
+shellcheck = 'latest'
+taplo = 'latest'
+"npm:@astrojs/language-server" = 'latest'
+"npm:@olrtg/emmet-language-server" = 'latest'
+"npm:@tailwindcss/language-server" = 'latest'
+"npm:@typescript/native-preview" = { version = 'latest', prerelease = true }
+"npm:typescript-language-server" = 'latest'
+"npm:vscode-langservers-extracted" = 'latest'
+"npm:graphql-language-service-cli" = 'latest'
+"npm:eslint" = 'latest'
+"npm:oxlint" = 'latest'
+"npm:oxfmt" = 'latest'
+"npm:prettier" = 'latest'
 
-[tasks."lsp:install"]
-description = "Install LSP tools (mise + go + uv)"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-
-mise install
-
-bun pm cache rm -g
-bun install -g \
-  @astrojs/language-server@latest \
-  @johnnymorganz/stylua-bin@latest \
-  @olrtg/emmet-language-server@latest \
-  @tailwindcss/language-server@latest \
-  @taplo/cli@latest \
-  @typescript/native-preview@beta \
-  eslint@latest \
-  graphql-language-service-cli@latest \
-  oxfmt@latest \
-  oxlint@latest \
-  prettier@latest \
-  shellcheck@latest \
-  svelte-language-server@latest \
-  typescript-language-server@latest \
-  vscode-langservers-extracted@latest
-
-go install golang.org/x/tools/gopls@latest
-go install golang.org/x/tools/cmd/goimports@latest
-go install mvdan.cc/sh/v3/cmd/shfmt@latest
-uv tool install --upgrade ruff
-uv tool install --upgrade ty
-uv tool install --upgrade clang-format
-'''
-run_windows = [
-  "mise install",
-  "bun install -g @astrojs/language-server@latest @johnnymorganz/stylua-bin@latest @olrtg/emmet-language-server@latest @tailwindcss/language-server@latest @taplo/cli@latest @typescript/native-preview@beta eslint@latest graphql-language-service-cli@latest oxfmt@latest oxlint@latest prettier@latest shellcheck@latest svelte-language-server@latest typescript-language-server@latest vscode-langservers-extracted@latest",
-  "go install golang.org/x/tools/gopls@latest",
-  "go install golang.org/x/tools/cmd/goimports@latest",
-  "go install mvdan.cc/sh/v3/cmd/shfmt@latest",
-  "uv tool install --upgrade ruff",
-  "uv tool install --upgrade ty",
-  "uv tool install --upgrade clang-format",
-]
-
-[tasks."lsp:doctor"]
-description = "Check LSP binaries on PATH"
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-bins=(
-  lua-language-server
-  wgsl-analyzer
-  graphql-lsp
-  svelteserver
-  clangd
-  rust-analyzer
-  gopls
-  goimports
-  stylua
-  clang-format
-  ruff
-  ty
-  emmet-language-server
-  vscode-eslint-language-server
-  vscode-html-language-server
-  vscode-css-language-server
-  tailwindcss-language-server
-  typescript-language-server
-  tsgo
-  astro-ls
-  oxfmt
-  oxlint
-  taplo
-  shfmt
-  shellcheck
-  prettier
-  eslint
-)
-for bin in "${bins[@]}"; do
-  if path="$(command -v "$bin")"; then
-    printf "%s -> %s\n" "$bin" "$path"
-  else
-    printf "%s -> NOT FOUND\n" "$bin" >&2
-    exit 1
-  fi
-done
-'''
-run_windows = [
-  "where lua-language-server",
-  "where wgsl-analyzer",
-  "where graphql-lsp",
-  "where svelteserver",
-  "where clangd",
-  "where rust-analyzer",
-  "where gopls",
-  "where goimports",
-  "where stylua",
-  "where clang-format",
-  "where ruff",
-  "where ty",
-  "where emmet-language-server",
-  "where vscode-eslint-language-server",
-  "where vscode-html-language-server",
-  "where vscode-css-language-server",
-  "where tailwindcss-language-server",
-  "where typescript-language-server",
-  "where tsgo",
-  "where astro-ls",
-  "where oxfmt",
-  "where oxlint",
-  "where taplo",
-  "where shfmt",
-  "where shellcheck",
-  "where prettier",
-  "where eslint",
-]
-
-[tasks."lsp:sync"]
-description = "Install then verify LSP stack"
-run = [
-  { task = "lsp:install" },
-  { task = "lsp:doctor" },
-]
-
+# Standalone installers; each one installs or upgrades in place.
 [tasks."ai:install"]
-description = "Install/update AI coding agents"
+description = "Install or update AI coding agents"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
-
-# Standalone installers use these directories; check them before PATH reloads.
 export PATH="$HOME/.local/bin:$HOME/.opencode/bin:$PATH"
 
-if ! command -v amp &> /dev/null; then
-    curl -fsSL https://ampcode.com/install.sh | bash
-fi
-
-
-mise install
-
-# Codex, PI, OMP, and OpenCode use standalone installs; remove old global packages.
-for pkg in @openai/codex @earendil-works/pi-coding-agent @oh-my-pi/pi-coding-agent opencode-ai @opencode-ai/cli @opencode/cli; do
-  if [ -e "$HOME/.bun/install/global/node_modules/$pkg" ]; then
-    bun remove -g "$pkg"
-  fi
-done
-
-bun pm cache rm -g
-bun install -g agent-browser@latest
-
-# Claude Code also updates itself in the background.
-if [ -x "$HOME/.local/bin/claude" ]; then
-  claude update
-else
-  curl -fsSL https://claude.ai/install.sh | bash
-fi
-
-# The Codex installer upgrades an existing standalone install in place.
+if command -v amp >/dev/null; then amp update; else curl -fsSL https://ampcode.com/install.sh | bash; fi
+if command -v claude >/dev/null; then claude update; else curl -fsSL https://claude.ai/install.sh | bash; fi
 curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh
+curl -fsSL https://opencode.ai/v2/install | bash -s -- --no-modify-path
 
 # A first PI install asks for one keypress when a terminal is attached.
 if [ -f "$HOME/.pi/agent/install/current-version" ]; then
@@ -179,17 +77,8 @@ else
   pi update --extensions
 fi
 
-# Use the V2 distribution for both installs and updates, independent of old shims.
-curl -fsSL https://opencode.ai/v2/install | bash -s -- --no-modify-path
-
 # Without --binary, the OMP installer prefers a global Bun install.
-if [ -x "$HOME/.local/bin/omp" ]; then
-  omp update
-else
-  curl -fsSL https://omp.sh/install | sh -s -- --binary
-fi
-
-amp update
+if [ -x "$HOME/.local/bin/omp" ]; then omp update; else curl -fsSL https://omp.sh/install | sh -s -- --binary; fi
 '''
 run_windows = "mise run ai:install:windows"
 
@@ -203,117 +92,42 @@ function Invoke-Native([scriptblock]$Command) {
   if ($LASTEXITCODE) { throw "Command failed: $Command" }
 }
 
-if (Get-Command amp -ErrorAction SilentlyContinue) {
-  Invoke-Native { amp update }
-} else {
-  irm https://ampcode.com/install.ps1 | iex
-}
+if (Get-Command amp -ErrorAction SilentlyContinue) { Invoke-Native { amp update } } else { irm https://ampcode.com/install.ps1 | iex }
 
-Invoke-Native { mise install }
-
-# Codex, PI, and OMP use standalone installs; OpenCode V2 uses its Bun package.
-# `bun remove -g` drops the package but leaves its launchers in ~/.bun/bin, and a
-# stale launcher makes the PI installer refuse to install and the Codex installer
-# warn about an ambiguous second copy. Read each package's bin names first, then
-# delete whatever survives the removal.
-$globalModules = Join-Path $HOME ".bun\install\global\node_modules"
-$bunBin = Join-Path $HOME ".bun\bin"
-foreach ($pkg in @("@openai/codex", "@earendil-works/pi-coding-agent", "@oh-my-pi/pi-coding-agent", "opencode-ai", "@opencode-ai/cli")) {
-  $pkgRoot = Join-Path $globalModules $pkg
-  if (-not (Test-Path -LiteralPath $pkgRoot)) { continue }
-
-  # npm semantics: "bin" is either a name->path map or a bare path, which means the
-  # package's own (unscoped) name. Asking the package keeps this correct if it
-  # renames or adds a launcher.
-  $shims = @()
-  $manifest = Join-Path $pkgRoot "package.json"
-  if (Test-Path -LiteralPath $manifest) {
-    $bin = (Get-Content -Raw -LiteralPath $manifest | ConvertFrom-Json).bin
-    if ($bin -is [string]) {
-      $shims = @(($pkg -split "/")[-1])
-    } elseif ($bin) {
-      $shims = @($bin.PSObject.Properties.Name)
-    }
-  }
-
-  Invoke-Native { bun remove -g $pkg }
-
-  foreach ($name in $shims) {
-    foreach ($leaf in @($name, "$name.exe", "$name.bunx", "$name.cmd", "$name.ps1")) {
-      $shim = Join-Path $bunBin $leaf
-      if (Test-Path -LiteralPath $shim) { Remove-Item -LiteralPath $shim -Force }
-    }
-  }
-}
-
-Invoke-Native { bun pm cache rm -g }
-Invoke-Native { bun install -g agent-browser@latest }
-
-Invoke-Native { bun install -g --trust @opencode/cli@latest }
-
-# Claude Code also updates itself in the background.
 $claude = Join-Path $HOME ".local\bin\claude.exe"
-if (Test-Path -LiteralPath $claude) {
-  Invoke-Native { & $claude update }
-} else {
-  irm https://claude.ai/install.ps1 | iex
-}
+if (Test-Path -LiteralPath $claude) { Invoke-Native { & $claude update } } else { irm https://claude.ai/install.ps1 | iex }
 
-# The Codex installer upgrades an existing standalone install in place.
 $env:CODEX_NON_INTERACTIVE = "1"
 irm https://chatgpt.com/codex/install.ps1 | iex
+
+# OpenCode V2 has no Windows standalone installer yet.
+Invoke-Native { bun install -g --trust @opencode/cli@latest }
 
 # A first PI install asks for one keypress when a terminal is attached.
 $pi = Join-Path $HOME ".pi\agent\bin\pi.cmd"
 if (Test-Path -LiteralPath (Join-Path $HOME ".pi\agent\install\current-version")) {
   Invoke-Native { & $pi update --all }
 } else {
-  # install.ps1 completes the install and then throws refreshing PATH, because
-  # $script:PiPathRefreshEntries is unset when it runs through `irm | iex`. Tolerate
-  # a failure after the binary exists, but still fail if the install never happened.
-  try {
-    irm https://pi.dev/install.ps1 | iex
-  } catch {
-    if (-not (Test-Path -LiteralPath $pi)) { throw }
-    Write-Host "PI installed; ignoring installer PATH step: $($_.Exception.Message)"
-  }
+  # install.ps1 finishes the install, then throws refreshing PATH under `irm | iex`.
+  # Tolerate that, but still fail if the binary never appeared.
+  try { irm https://pi.dev/install.ps1 | iex } catch { if (-not (Test-Path -LiteralPath $pi)) { throw } }
   Invoke-Native { & $pi update --extensions }
 }
 
 # Without -Binary, the OMP installer prefers a global Bun install.
 $omp = Join-Path $env:LOCALAPPDATA "omp\omp.exe"
-if (Test-Path -LiteralPath $omp) {
-  Invoke-Native { & $omp update }
-} else {
-  & ([scriptblock]::Create((irm https://omp.sh/install.ps1))) -Binary
-}
-
+if (Test-Path -LiteralPath $omp) { Invoke-Native { & $omp update } } else { & ([scriptblock]::Create((irm https://omp.sh/install.ps1))) -Binary }
 '''
-
-[tasks."ai:link"]
-description = "Configure the Codex browser MCP"
-run = "codex mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest --no-usage-statistics --browserUrl http://127.0.0.1:9222"
 
 [tasks."ai:doctor"]
 description = "Check AI agent binaries on PATH"
 run = '''
 #!/usr/bin/env bash
-bins=(amp claude opencode codex pi omp)
+export PATH="$HOME/.local/bin:$HOME/.opencode/bin:$PATH"
 missing=0
-for bin in "${bins[@]}"; do
-  if path="$(command -v "$bin" 2>/dev/null)"; then
-    printf "%s -> %s\n" "$bin" "$path"
-  else
-    printf "%s -> NOT FOUND\n" "$bin" >&2
-    missing=1
-  fi
+for bin in amp claude opencode codex pi omp; do
+  if path="$(command -v "$bin")"; then echo "$bin -> $path"; else echo "$bin -> NOT FOUND" >&2; missing=1; fi
 done
-if [ "$missing" -eq 0 ]; then
-  if ! version="$(opencode --version)" || [[ "$version" != "opencode v2."* ]]; then
-    printf "OpenCode V2 required; found: %s\n" "$version" >&2
-    missing=1
-  fi
-fi
 exit "$missing"
 '''
 run_windows = "mise run ai:doctor:windows"
@@ -322,54 +136,36 @@ run_windows = "mise run ai:doctor:windows"
 hide = true
 shell = "pwsh -NoProfile -Command"
 run = '''
-$paths = @(
-  (Join-Path $HOME ".amp\bin"),
-  (Join-Path $HOME ".local\bin"),
-  (Join-Path $HOME ".bun\bin"),
-  (Join-Path $HOME ".pi\agent\bin"),
-  (Join-Path $env:LOCALAPPDATA "Programs\OpenAI\Codex\bin"),
-  (Join-Path $env:LOCALAPPDATA "omp")
-)
-$env:Path = (($paths + ($env:Path -split ";")) | Where-Object { $_ } | Select-Object -Unique) -join ";"
-
-foreach ($bin in @("amp", "claude", "opencode", "codex", "pi", "omp")) {
-  $cmd = Get-Command $bin -ErrorAction SilentlyContinue
-  if ($cmd) {
-    Write-Output "$bin -> $($cmd.Source)"
-  } else {
-    Write-Output "$bin -> NOT FOUND"
-    $missing += $bin
-  }
+# Fresh installs are not on this session's PATH yet.
+$env:Path = @(
+  (Join-Path $HOME ".local\bin"), (Join-Path $HOME ".amp\bin"), (Join-Path $HOME ".bun\bin"),
+  (Join-Path $HOME ".pi\agent\bin"), (Join-Path $env:LOCALAPPDATA "Programs\OpenAI\Codex\bin"),
+  (Join-Path $env:LOCALAPPDATA "omp"), $env:Path
+) -join ";"
+$missing = @("amp", "claude", "opencode", "codex", "pi", "omp") | Where-Object {
+  $cmd = Get-Command $_ -ErrorAction SilentlyContinue
+  Write-Host "$_ ->$(if ($cmd) { $cmd.Source } else { 'NOT FOUND' })"
+  -not $cmd
 }
 if ($missing) { throw "Missing AI agents: $($missing -join ', ')" }
-$version = & opencode --version
-if ($LASTEXITCODE -ne 0 -or "$version" -notmatch '^opencode v2\.') {
-  throw "OpenCode V2 required; found: $version"
-}
 '''
 
-[tasks."ai:sync"]
-description = "Install agents, configure Codex MCP, and verify binaries"
-run = [
-  { task = "ai:install" },
-  { task = "ai:link" },
-  { task = "ai:doctor" },
-]
-
-# Tracking must be declared globally so the watcher sees it from any directory.
+# Never push history on its own, even after `mise dot origin set`: older
+# checkpoints recorded these app-written files as shared.
 [settings]
-experimental = true
 history.sync = "manual"
 
-# App-written settings stay live and machine-local. Repo-owned files use Git.
+# Tracking must be declared globally so the watcher sees it from any directory.
+# App-written settings: local history only, never shared. Repo-owned keys in
+# Amp and Codex are merged in by the dotfiles repo's mise.toml.
 [dotfiles]
-"~/.config/amp/settings.json" = { mode = "track" }
-"~/.config/btop/btop.conf" = { mode = "track" }
-"~/.config/opencode/cli.json" = { mode = "track" }
-"~/.omp/agent/config.yml" = { mode = "track" }
-"~/.codex/config.toml" = { mode = "track" }
-"~/.pi/agent/settings.json" = { mode = "track" }
-"~/.claude/settings.json" = { mode = "track" }
+"~/.config/amp/settings.json" = { mode = "track-local" }
+"~/.config/btop/btop.conf" = { mode = "track-local" }
+"~/.config/opencode/cli.json" = { mode = "track-local" }
+"~/.omp/agent/config.yml" = { mode = "track-local" }
+"~/.codex/config.toml" = { mode = "track-local" }
+"~/.pi/agent/settings.json" = { mode = "track-local" }
+"~/.claude/settings.json" = { mode = "track-local" }
 
 [bootstrap.services.mise-history]
 builtin = "history-watch"

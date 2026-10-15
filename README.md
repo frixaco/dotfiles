@@ -1,144 +1,70 @@
 # My dotfiles, managed by [`mise`](https://mise.jdx.dev)
 
-Repo-owned configs and templates live in [`home/`](home/), mirroring `$HOME`. Mise links those configs, renders templates, and saves app-written settings in local history.
+Configs and templates live in [`home/`](home/), mirroring `$HOME`. mise links them into place, renders templates, merges repo-owned keys into app-written settings, and keeps local history of those settings.
 
-## Existing installer
+## New machine
 
 ```bash
 curl -fsSL https://dotfiles.frixaco.com | bash
-cd ~/.dotfiles
 ```
 
-Requires mise 2026.9.2 or newer. Update an older installation with `mise self-update` before setup. The installer installs mise if missing, clones the repo, and runs bootstrap.
-Personal settings are the default; see [per-machine config](#per-machine-config) for work settings. App-written settings are machine-local: configure them in the app or restore a backup on a new machine. Their `home/` snapshots are references and are not deployed.
+Installs mise if missing (2026.10.7 or newer; run `mise self-update` on an older install), clones this repo to `~/.dotfiles`, and runs `mise bootstrap`: packages, dotfiles, tools, then the `bootstrap` task (workspace layout and AI agents). Run `omp` once afterwards to authenticate.
 
-## Daily workflow
+Windows has no installer script: install mise with Scoop, clone to `~/.dotfiles`, then `mise trust` and `mise bootstrap --force-dotfiles --yes` from inside it.
 
-Edit repo-owned configs and template sources in `home/`. After editing or pulling repository updates, run from `~/.dotfiles`:
+## Daily use
 
-```bash
-mise run sync
-```
+| Command                 | Does                                                                         |
+| ----------------------- | ---------------------------------------------------------------------------- |
+| `upall` (`mise run up`) | Sync dotfiles, then update mise, packages, `[tools]`, and AI agents; keeps going after a failed step and lists failures at the end |
+| `mise run sync`         | Apply dotfiles, remove ones deleted from `home/`, start the history watcher |
+| `mise up`               | Update `[tools]` only                                                        |
+| `mise bootstrap status` | Check packages, dotfiles, and tools                                          |
 
-`sync` applies native file links and templates, restores sensitive permissions, ensures the history service is running, and fails if deployment is incomplete. It repairs missing links, overwrites conflicting files at managed targets, and includes new repo-owned files automatically. OMP and PI share the repo-owned MCP config, and all five agents share `AGENTS.md`.
+Run `mise` commands for this repo from `~/.dotfiles` (or with `mise -C ~/.dotfiles`).
 
-The linked global mise config keeps tool declarations and tasks current too. Updating installed tools is separate: use `ai:sync` or `lsp:sync` below. Sync cannot fix configuration keys changed by a future app release; those source changes still need review.
+Edit sources in `home/`, then `mise run sync`. On macOS most files are symlinks, so edits through `~` land in the repo too. Windows copies every file (except directory links), so always edit the repo source there. Use `ef` to edit your shell config's source.
 
-The Windows PowerShell profile lives in `home/.config/powershell/profile.ps1`. On Windows only, sync and bootstrap copy it to `~/.config/powershell/profile.ps1` and install a one-line loader at `$PROFILE.CurrentUserAllHosts`, respecting the actual Documents location and requiring no symlink privileges. Unix machines skip both. Use `ef` to edit the repo source, run `mise run sync` to deploy it, then `sf` to reload. Machine-specific environment settings stay in the untracked `~/.config/powershell/env.ps1`.
+eza, tokei, and resvg have no upstream macOS binaries, so they are `brew:` packages on macOS and `scoop:` packages on Windows, both in `mise.toml`.
 
-Edit app-written settings through the app or their live file. The global mise config tracks Amp settings, btop settings, OpenCode CLI settings, OMP settings, Codex settings, and PI settings. Sync preserves those files and never deploys their repository snapshots. Git handles repo-owned configs; the `mise-history` user service handles these local settings.
+Homebrew is optional now: mise installs the `brew:` and `brew-cask:` packages in `mise.toml` itself. `upall` doesn't run `brew upgrade`, so anything you installed by hand with brew needs its own `brew upgrade`.
 
-Inspect or restore app settings with:
+## Layout
 
-```bash
-mise bootstrap dotfiles history --path ~/.pi/agent/settings.json
-mise bootstrap dotfiles rollback ~/.pi/agent/settings.json --dry-run
-mise bootstrap dotfiles rollback ~/.pi/agent/settings.json
-mise bootstrap dotfiles undo
-```
+- [`mise.toml`](mise.toml): macOS packages, the `home` dotfile group (everything in `home/` deploys automatically), templates, shared agent files, merge edits, and tasks.
+- [`home/.config/mise/config.toml`](home/.config/mise/config.toml): the global config, linked into place. It holds `[tools]` (runtimes, CLI tools, language servers, the same on macOS and Windows), AI agent tasks, history tracking, and the watcher service.
+- `mise.local.toml` (gitignored): per-machine variables, e.g. `[vars] work = true` for the Vbrato Git identity and rbenv.
 
-To track another live file:
+### What deploys how
 
-```bash
-mise bootstrap dotfiles track ~/.config/example.conf
-```
+- **Everything in `home/`**: linked file by file (copied on Windows). Deleting a file from `home/` removes its link on the next `sync`.
+- **Templates**: `.zshrc` (Unix only), `.gitconfig`, fish `config.fish`, Ghostty config, `.gitconfig-vbrato`, and 1Password's `agent.toml` (mode 0600; on Windows it goes under `AppData/Local/1Password`).
+- **Shared agent files**: one `AGENTS.md` is linked to Claude, Codex, OpenCode, Amp, PI, and OMP. PI and OMP share `.pi/agent/mcp.json`.
+- **Merge edits**: Claude Code, Amp, and Codex rewrite `~/.claude.json`, `~/.config/amp/settings.json`, and `~/.codex/config.toml`. mise owns only the keys in the repo copies (the Chrome DevTools MCP server, plus Amp's remote threads) and leaves the rest to the app.
+- **Not deployed**: `home/.claude/settings.json` is a reference snapshot; the live file belongs to Claude Code and is only tracked.
+- **Local history**: the global config tracks the app-written settings with `track-local`, so the watcher saves every edit on this machine and never shares it. Inspect with `mise dot --local history` and restore with `mise dot rollback <path>`.
 
-Tracking declarations must be in the global mise config, not project `mise.toml`. Edit its linked source at `home/.config/mise/config.toml`. If a new app-written snapshot is added under `home/`, also exclude it from the root `symlink-each` mapping before running sync.
+### Windows notes
 
-Check or start the background service with:
-
-```bash
-mise bootstrap services status
-mise bootstrap services apply --yes
-```
-
-No history origin is connected; nothing is uploaded automatically. Connecting an origin can publish earlier checkpoints as well as future edits.
-
-## Packages and tools
-
-```bash
-mise bootstrap --only packages  # install missing formulae and applications
-mise run ai:sync                # install agents, configure browser MCP, verify
-mise run lsp:sync                # install + verify language tools
-mise bootstrap status --missing # check dotfiles, packages, and tools
-mise bootstrap --dry-run        # preview a full machine setup
-```
-
-Use `mise bootstrap --force-dotfiles --yes` when you also want packages, tools, and the final bootstrap task. The installer uses these flags to replace conflicting files at managed targets.
-
-On other Macs, import [Vorssaint Settings.plist](<Vorssaint Settings.plist>) in Vorssaint under Settings → Advanced → Import settings.
-
-## Per-machine config
-
-`mise.local.toml` is gitignored and holds machine-specific variables:
-
-```toml
-[vars]
-work = true # enables the Vbrato Git identity and rbenv
-```
-
-The work identity file is a shared mapping. The `work` variable only controls
-whether `~/.gitconfig` includes it. Apply profile changes with `mise run sync`.
+- The PowerShell profile sets `XDG_CONFIG_HOME`, `YAZI_CONFIG_HOME`, and `LG_CONFIG_FILE`, so nvim, yazi, and lazygit read `~/.config` like on macOS. Apps started outside PowerShell don't see these variables.
+- `upall` runs `scoop update` and `scoop update --all` (which updates mise) before `mise run up`, because Scoop can't update mise while a mise task is running.
+- The post-dotfiles hook makes `$PROFILE.CurrentUserAllHosts` dot-source `~/.dotfiles/home/.config/powershell/profile.ps1` directly, so profile edits need no sync. `sf` reloads environment variables only; open a new session to pick up changed functions and aliases. Machine-specific settings go in the untracked `~/.config/powershell/env.ps1`.
+- OpenCode V2 has no Windows standalone installer, so it's installed as the `@opencode/cli` Bun package there.
 
 ## AI agents
 
-A single `~/.config/AGENTS.md` is shared across the configured AI tools. This setup does not install or share skills or workflows.
+`mise run ai:install` installs or updates Claude Code, Codex, OpenCode V2, PI, OMP, and Amp with their standalone installers; `mise run ai:doctor` checks they're on `PATH`. The browser MCP for every agent points at Helium's debugging endpoint, `http://127.0.0.1:9222`: start Helium with `--remote-debugging-port=9222`.
 
-`ai:install` installs missing agents and upgrades installed ones on every run. Claude Code, Codex, PI, OMP, and Amp use their standalone installers on every platform; `claude update`, a rerun of the Codex installer, `pi update --all`, `omp update`, and `amp update` handle upgrades. OMP installs its prebuilt binary, not the Bun package its installer prefers. A first PI install asks for one keypress when a terminal is attached.
+Amp model and effort pins are account settings: set them in [Settings → Mode Dial → Tune Modes](https://ampcode.com/docs/the-dial#tune-the-modes).
 
-OpenCode V2 reruns its official curl installer on macOS and Linux. Windows continues to use `bun install -g --trust @opencode/cli@latest`. Both platforms remove old V1 and beta Bun packages; Unix also removes the V2 Bun package before using the standalone installer. agent-browser stays a global Bun package. `ai:doctor` requires OpenCode V2 on both platforms.
+## Misc
 
-Model and reasoning preferences live in each agent's settings; OMP has separate model roles. App-written agent settings have local mise history. OpenCode's main config is repo-owned and uses the native V2 format; its CLI settings (`cli.json`, which replaced V1's `tui.json`) are local. Authentication, conversations, and generated databases remain machine-local. V2 starts its shared background service automatically. After an update, restart it with `opencode service restart` when existing sessions can be interrupted. See the [V2 announcement](https://anoma.ly/notes/opencode-2-0/) and [migration guide](https://opencode.ai/v2/docs/migrate-v1/).
-
-`ai:link` configures Codex’s Chrome DevTools MCP connection to the same browser endpoint used by PI, OMP, Amp, and OpenCode: `http://127.0.0.1:9222`. Start Helium with `--remote-debugging-port=9222` using the existing signed-in profile. Restart the Codex session after changing its MCP configuration. The connection requires Helium to be running; setup does not restart the browser.
-
-Amp model and effort pins are account settings, not local dotfiles. In [Settings → Mode Dial → Tune Modes](https://ampcode.com/docs/the-dial#tune-the-modes), select Astra with medium reasoning for Main Agent, Oracle, and Subagents in each mode, then save. These pins still need to be applied through a signed-in Amp session.
-
-Run `omp` on each new machine to complete provider authentication.
-
-## Theme
-
-Supported terminal and TUI configs use Cyberdream dark. For Fish, run `fish_config theme save cyberdream`.
-
-## Personal workspace
-
-`mise run layout` creates the same workspace on Windows, macOS, and Linux:
-
-```text
-~/stuff/
-├── code/
-├── music/
-├── 2d/
-├── 3d/
-└── dump/
-```
-
-Vbrato repositories live under `~/stuff/code/vbrato/`, next to the deployed
-`.gitconfig-vbrato`. A full bootstrap creates the layout before dotfiles;
-`mise run sync` does the same for existing machines.
-
-## Architecture
-
-[`mise.toml`](mise.toml) owns file mappings, tasks, and hooks. Its native `symlink-each` mapping links individual repo-owned files without replacing their parent directories or unrelated files. Neovim's Lua files use the same per-file links; templates and app-written snapshots are excluded. `mise.local.toml` adds machine settings. The linked global mise config owns tools, agent/LSP tasks, local tracking, and the history service.
-
-The `secure` hook restores `0600` on the 1Password source and rendered target because Git cannot preserve those permissions. On Windows it restricts access with `icacls`, then the post-dotfiles hook installs the PowerShell loader. Windows file symlinks can fall back to copies when link privileges are unavailable; automatic edit-through requires an actual link.
-
-## Bootstrap lifecycle
-
-`mise run sync` force-applies dotfiles, overwriting conflicting files at managed targets, applies services, then checks dotfile status. `layout` runs once before dotfile apply, and `secure` runs once afterward. Full bootstrap runs:
-
-1. Shared Homebrew packages and macOS extras from `Brewfile.macos`.
-2. `layout` to create workspace directories.
-3. Dotfile apply to link, copy, or render each target.
-4. `secure` to restore sensitive permissions.
-5. `mise install` for configured tools.
-6. `ai:sync` and `lsp:sync` to install and verify agents and language tools.
+- Workspace: `mise run layout` creates `~/stuff/{code,music,2d,3d,dump}`. Vbrato repos live in `~/stuff/code/vbrato/`.
+- On other Macs, import [Vorssaint Settings.plist](<Vorssaint Settings.plist>) in Vorssaint under Settings → Advanced → Import settings.
 
 ## Installer hosting
 
-Vercel manages DNS for `dotfiles.frixaco.com`. Railway runs the redirect service from [`installer/`](installer/) and checks [`/healthz`](https://dotfiles.frixaco.com/healthz) during deployment. The root URL returns a temporary redirect to the copy of [`setup.sh`](setup.sh) on GitHub, so the short command always uses the script from the `main` branch.
-
-Verify the public endpoint without running the installer:
+Vercel manages DNS for `dotfiles.frixaco.com`. Railway runs the redirect service in [`installer/`](installer/), health-checked at [`/healthz`](https://dotfiles.frixaco.com/healthz). The root URL redirects to [`setup.sh`](setup.sh) on `main`.
 
 ```bash
 curl -fsS https://dotfiles.frixaco.com/healthz
