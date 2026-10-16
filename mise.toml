@@ -42,7 +42,9 @@ work = false
 "brew-cask:kitty" = { os = "macos" }
 "brew-cask:macpacker" = { os = "macos" }
 "brew-cask:orbstack" = { os = "macos" }
+"brew-cask:t3-code" = { os = "macos" }
 "brew-cask:zulu@17" = { os = "macos" }
+"scoop:extras/t3code" = "latest"
 
 [bootstrap.hooks]
 post-dotfiles = "{% if os() == 'windows' %}mise run powershell:profile{% else %}true{% endif %}"

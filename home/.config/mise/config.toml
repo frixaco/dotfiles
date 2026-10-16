@@ -58,7 +58,7 @@ taplo = 'latest'
 
 # Standalone installers; each one installs or upgrades in place.
 [tasks."ai:install"]
-description = "Install or update AI coding agents"
+description = "Install or update AI coding agents and the T3 Code CLI"
 run = '''
 #!/usr/bin/env bash
 set -euo pipefail
@@ -79,6 +79,9 @@ fi
 
 # Without --binary, the OMP installer prefers a global Bun install.
 if [ -x "$HOME/.local/bin/omp" ]; then omp update; else curl -fsSL https://omp.sh/install | sh -s -- --binary; fi
+
+# T3 Code CLI; the desktop app is a package in the dotfiles repo's mise.toml.
+if [ -x "$HOME/.local/bin/t3" ]; then t3 update --yes; else curl -fsSL https://t3.codes/install.sh | sh; fi
 '''
 run_windows = "mise run ai:install:windows"
 
@@ -117,6 +120,10 @@ if (Test-Path -LiteralPath (Join-Path $HOME ".pi\agent\install\current-version")
 # Without -Binary, the OMP installer prefers a global Bun install.
 $omp = Join-Path $env:LOCALAPPDATA "omp\omp.exe"
 if (Test-Path -LiteralPath $omp) { Invoke-Native { & $omp update } } else { & ([scriptblock]::Create((irm https://omp.sh/install.ps1))) -Binary }
+
+# T3 Code CLI; the desktop app is a package in the dotfiles repo's mise.toml.
+$t3 = Join-Path $HOME ".local\bin\t3.cmd"
+if (Test-Path -LiteralPath $t3) { Invoke-Native { & $t3 update --yes } } else { irm https://t3.codes/install.ps1 | iex }
 '''
 
 [tasks."ai:doctor"]
@@ -125,7 +132,7 @@ run = '''
 #!/usr/bin/env bash
 export PATH="$HOME/.local/bin:$HOME/.opencode/bin:$PATH"
 missing=0
-for bin in amp claude opencode codex pi omp; do
+for bin in amp claude opencode codex pi omp t3; do
   if path="$(command -v "$bin")"; then echo "$bin -> $path"; else echo "$bin -> NOT FOUND" >&2; missing=1; fi
 done
 exit "$missing"
@@ -142,7 +149,7 @@ $env:Path = @(
   (Join-Path $HOME ".pi\agent\bin"), (Join-Path $env:LOCALAPPDATA "Programs\OpenAI\Codex\bin"),
   (Join-Path $env:LOCALAPPDATA "omp"), $env:Path
 ) -join ";"
-$missing = @("amp", "claude", "opencode", "codex", "pi", "omp") | Where-Object {
+$missing = @("amp", "claude", "opencode", "codex", "pi", "omp", "t3") | Where-Object {
   $cmd = Get-Command $_ -ErrorAction SilentlyContinue
   Write-Host "$_ ->$(if ($cmd) { $cmd.Source } else { 'NOT FOUND' })"
   -not $cmd

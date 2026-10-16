@@ -39,8 +39,8 @@ alias c="clear"
 alias ef="nvim ~/.dotfiles/home/.config/fish/config.fish"
 alias oc="opencode"
 alias se="source .venv/bin/activate.fish"
-alias cx="codex"
-alias cl="claude --dangerously-skip-permissions"
+alias cx="codex --yolo"
+alias cl="claude --permission-mode bypassPermissions"
 
 function upall --description 'Update mise, packages, tools, agents, and dotfiles'
     mise -C ~/.dotfiles run up
