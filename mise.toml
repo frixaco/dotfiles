@@ -30,7 +30,7 @@ work = false
 "brew:mpv" = "latest"
 "brew:poppler" = "latest"
 "brew:postgresql@18" = "latest"
-"brew:tw93/tap/mole" = "latest"
+"brew:mole" = { os = "macos" }
 # TODO: kitty and Ghostty use "Paper Mono" (installed by hand); install it here or switch the configs to this font.
 "brew-cask:font-blex-mono-nerd-font" = "latest"
 "brew-cask:ghostty" = "latest"
@@ -118,7 +118,7 @@ for step in "mise run sync" "mise self-update --yes" "mise bootstrap packages up
   # Stop if the user interrupts; otherwise note the failure and continue.
   case $status in 0) ;; 130|143) exit "$status" ;; *) failed+=("$step") ;; esac
 done
-if [ ${#failed[@]} -gt 0 ]; then printf '\nFailed: %s\n' "${failed[@]}" >&2; exit 1; fi
+if [ -n "${failed[*]}" ]; then printf '\nFailed: %s\n' "${failed[@]}" >&2; exit 1; fi
 '''
 run_windows = "mise run up:windows"
 

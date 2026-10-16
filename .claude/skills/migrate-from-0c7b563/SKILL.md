@@ -180,7 +180,11 @@ the theme entry. Leave nvim's Cyberdream alone.
    `script -q /dev/null fish -i -c 'yes | fish_config theme save catppuccin-mocha'`.
    The error can still print; check that `~/.config/fish/fish_variables` has
    `fish_color_normal:cdd6f4` and `fish_color_command:89b4fa`, and no `cyberdream`.
-   Skip this if fish isn't installed (for example on Windows).
+   Skip this if fish isn't installed (for example on Windows). Over ssh the save still fails, because
+   no terminal answers fish's color query. There, `set -Ue` the old `fish_color_*` and
+   `fish_pager_color_*` variables and copy the `SETUVAR fish_color_*` and `fish_pager_color_*` lines
+   from a migrated machine's `fish_variables` (same fish version). Pass `</dev/null` to `script` in
+   heredocs, because it reads the rest of stdin.
 4. Run the searches from 1 again; only nvim (`init.lua`, `nvim-pack-lock.json`, undo history) may
    still mention Cyberdream.
 
