@@ -90,10 +90,13 @@ function ccd {
 }
 
 function upall {
-    # Scoop owns mise on Windows and can't update it while a mise task runs.
+    # Scoop owns mise on Windows and can't replace mise.exe while any mise runs,
+    # including the history watcher, so pause the watcher's scheduled task around it.
     if ($IsWindows) {
+        schtasks /end /tn 'mise\mise-history' *> $null
         scoop update
         scoop update --all
+        schtasks /run /tn 'mise\mise-history' *> $null
     }
     mise -C (Join-Path $HOME ".dotfiles") run up
 }
