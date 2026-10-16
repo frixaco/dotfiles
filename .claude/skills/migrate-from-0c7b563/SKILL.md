@@ -64,6 +64,15 @@ These came from the PC run, where OpenSSH logs admin accounts in elevated, in se
   each junction from the elevated session with the same target: `attrib -R /L`, delete the link, run
   `mklink /J`, then `attrib +R /L` if it was read-only, as Scoop's are. Save every path and target to a
   CSV in `~` first, and check afterwards that each one still resolves to its old target.
+- Everything an elevated session writes is owned by `BUILTIN\Administrators`. mise also writes its
+  private history files (`~/.local/state/mise/history`) with an empty access list. In the desktop
+  session, git then rejects the history repo with "not a git repository", and the `mise\mise-history`
+  task exits with code 1. Before finishing:
+  - return ownership of every Administrators-owned item created since the run started, using
+    `icacls <topmost path> /setowner COMPUTER\user /T /C /L /Q`;
+  - run `icacls <file> /reset` on each file under `~/.local/state` whose access list is empty;
+  - restart the task, and check from the desktop session (through a one-off scheduled task) that
+    `mise bootstrap status --missing` exits 0 and `mise dot history` works.
 - The 1Password SSH agent only serves the desktop session, so `ssh-add -l` over ssh always fails. To
   check it, run `ssh-add -l` once from a scheduled task (`schtasks /create … /it /ru COMPUTER\user`,
   then `/run`, read its output file, then `/delete`).
