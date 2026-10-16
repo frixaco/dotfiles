@@ -89,6 +89,11 @@ report progress briefly between steps.
    - The first PI install may wait for one keypress when a terminal is attached.
    - If an installer fails on a transient network error (the Codex one once failed with a TLS
      handshake), rerun `mise run ai:install`.
+   - Some casks run a `.pkg` installer that needs sudo, which fails over ssh with no TTY. That happened
+     with `zulu@17` on workmac. Don't hand the user the `sudo installer` command from the error; mise
+     doesn't record an install done that way, and it keeps reporting the cask as missing. Instead,
+     have the user run `! ssh -t <host> 'cd ~/.dotfiles && ~/.local/bin/mise bootstrap packages apply --yes'`,
+     then run `mise run bootstrap` to finish the bootstrap task.
    - A failing package stops bootstrap before the bootstrap task runs, even though `[tools]` may
      already be installed. Make sure `ai:doctor` output appears and the exit code is 0. If a package
      fails, find out why before rerunning. The VPS failed because `tw93/tap/mole` had moved to
