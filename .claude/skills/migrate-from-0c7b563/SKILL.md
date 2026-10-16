@@ -1,6 +1,6 @@
 ---
 name: migrate-from-0c7b563
-description: Temporary. Bring a macOS, Linux, or Windows machine whose ~/.dotfiles is at 0c7b563 up to date with the next two commits (28e3838 "major cleanup", 123bda0 "simplify setup"), then remove everything those commits made obsolete. Delete this skill once every machine is migrated.
+description: Temporary. Bring a macOS, Linux, or Windows machine still set up as of 0c7b563 up to date with the next two commits (28e3838 "major cleanup", 123bda0 "simplify setup"), then remove everything those commits made obsolete. Delete this skill once every machine is migrated.
 disable-model-invocation: true
 ---
 
@@ -41,13 +41,23 @@ report progress briefly between steps.
   the main Mac, so a single yes per step is enough.
 - Never delete anything you didn't confirm belongs to the old setup. Packages the user installed for
   other reasons stay, so ask when unsure.
-- Don't commit or push. At the end, list any scratch files you created and delete them.
+- Don't commit or push. If the repo itself is broken on this platform, show the fix and ask before
+  changing, committing, or pushing it. At the end, list any scratch files you created, including logs
+  of long runs, and delete them.
+- Commands that look read-only but change state:
+  - `mise run <task> --dry-run` runs the task, because mise passes arguments after the task name to it.
+    Use `mise tasks info <task>` to inspect a task.
+  - In fish, `set -U <var>` with no values empties the variable. Query with `set -q` or `set -S`.
+- Run long steps (`mise bootstrap`, `upall`) with output going to a log file, and check the exit code.
+  Never rely on only the tail of the output.
 
 ## 1. Preflight
 
-1. `git -C ~/.dotfiles status --short` must be empty, and `git rev-parse HEAD` must be `0c7b563…`
-   (or `28e3838…`). If the tree is dirty, stop and ask.
-2. `git pull --ff-only`, then confirm `git log --oneline -3` includes `123bda0`.
+1. `git -C ~/.dotfiles status --short` must be empty; if the tree is dirty, stop and ask. HEAD may
+   already be past `123bda0`, because pulling doesn't migrate anything. Decide from the machine's state
+   instead. The machine needs migrating if `mise ls --missing` lists tools or if old installs from
+   step 3 are present. If neither is true, report that and stop.
+2. `git pull --ff-only`, then confirm HEAD includes `6fcedef`, which fixed `upall` and the mole package.
 3. Update mise to 2026.10.7 or newer (`mise.toml` sets `min_version`):
    - Windows: `scoop update; scoop update mise`.
    - Otherwise: `mise self-update --yes`.
@@ -58,7 +68,9 @@ report progress briefly between steps.
    - Windows: `scoop list`.
    - `bun pm ls -g`, `uv tool list`, and the contents of `$(go env GOPATH)/bin` and `$(mise where go)/bin`.
    - `ls -la ~/.local/bin`.
-6. Ask the user to quit running agent sessions other than this one; the installers replace their binaries.
+6. The installers replace agent binaries. Look for running agent processes other than this session,
+   including long-running servers such as `opencode serve` and `codex app-server`:
+   `ps -eo pid,etime,args`, or `Get-Process` on Windows. Show them and ask whether to stop them.
 
 ## 2. Apply the new config
 
@@ -71,6 +83,10 @@ report progress briefly between steps.
    - The first PI install may wait for one keypress when a terminal is attached.
    - If an installer fails on a transient network error (the Codex one once failed with a TLS
      handshake), rerun `mise run ai:install`.
+   - A failing package stops bootstrap before the bootstrap task runs, even though `[tools]` may
+     already be installed. Make sure `ai:doctor` output appears and the exit code is 0. If a package
+     fails, find out why before rerunning. The VPS failed because `tw93/tap/mole` had moved to
+     homebrew-core and has no Linux build.
 3. `mise ls --missing` must print nothing.
 
 ## 3. Remove superseded installs
@@ -84,6 +100,9 @@ removing it.
   tree-sitter-cli yazi zoxide railway modem-dev/tap/hunk`. Skip any that aren't installed.
 - Run `brew untap modem-dev/tap`.
 - Keep eza, tokei, resvg, and the Brewfile casks; mise treats casks Homebrew installed as installed.
+- Uninstalling can autoremove dependencies nothing else needs. List them in the report.
+- If `brew list --versions <f>` shows two versions after mise upgraded `<f>`, run `brew update` before
+  `brew cleanup <f>`. A stale index makes cleanup treat the older version as current.
 - Without `brew` on Linux, mise installed these formulae itself. Run
   `mise bootstrap packages prune --manager brew --dry-run`, show the list, and prune only after the
   user confirms it holds nothing else.
@@ -108,7 +127,8 @@ removing it.
   far more than the kept packages, rebuild the folder:
   1. Move `node_modules` aside.
   2. Rewrite `package.json` with only the kept packages, and drop the stale `trustedDependencies`.
-  3. `bun install` (add `--trust` for `@opencode/cli` on Windows).
+  3. `bun install` (add `--trust` for `@opencode/cli` on Windows). `bun` may be a mise tool rather
+     than `~/.bun/bin/bun`; `mise which bun` finds it.
   4. Check that each kept command runs, then delete the old folder.
 - Delete launchers in `~/.bun/bin` for removed packages.
 
@@ -134,8 +154,10 @@ resvg.
   delete what it finds. On Windows, `sync --prune` removes copies mise wrote; delete any remaining copy
   under `~/.config` whose source no longer exists in `home/`.
 - **Agent launchers** in `~/.local/bin`: delete dangling links, and OMP's `omp.*.bak` and `omp.lock`
-  when OMP isn't running. If PI's installer put a second `pi` launcher in `/opt/homebrew/bin` that
-  points at the same `~/.pi/agent/bin/pi`, delete that one.
+  when OMP isn't running. If PI's installer put a second `pi` launcher in Homebrew's `bin`
+  (`/opt/homebrew/bin` or `/home/linuxbrew/.linuxbrew/bin`) or elsewhere on PATH, and it points at the
+  same `~/.pi/agent/bin/pi`, delete that one. On Windows, look for a second `pi` with
+  `Get-Command pi -All`.
 - **fish**: `set -Ue fish_user_paths`. The old config added paths there permanently; the new one sets
   them per session. Afterwards `fish -c 'echo $PATH'` should start with the mise paths, then
   `~/.local/bin`.
@@ -196,6 +218,8 @@ the theme entry. Leave nvim's Cyberdream alone.
 3. `claude mcp list` shows `chrome-devtools` (it connects only while Helium runs with
    `--remote-debugging-port=9222`).
 4. Open a new shell and run `upall` once. It must finish, listing any failed steps at the end.
-5. Report the before/after inventory, everything deleted, anything skipped or still open with its
+   Before `6fcedef` it failed straight away with "Closing comment tag `#}` not found".
+5. For a second opinion, have a fresh read-only agent audit sections 3–6 against this machine.
+6. Report the before/after inventory, everything deleted, anything skipped or still open with its
    output, and that nothing was committed. Once every machine is migrated, the user deletes
    `.claude/skills/migrate-from-0c7b563/`.
