@@ -74,6 +74,12 @@ report progress briefly between steps.
 
 ## 2. Apply the new config
 
+0. `~/stuff/code/vbrato/.gitconfig-vbrato` is now deployed only where `mise.local.toml` asks for it,
+   and sync prunes it everywhere else. Ask the user whether this is a work machine; `workmac` is one,
+   and so is the VPS. On a work machine, set `work = true` under `[vars]` in `mise.local.toml`, and add
+   the `[dotfiles]` entry shown in the comment at the top of `mise.toml` before syncing. On any other
+   machine, make sure `work` isn't `true`, and remove `~/stuff/code/vbrato` once sync has pruned the
+   file, if nothing else is in it.
 1. `mise run sync`, then `mise run sync` again. The first run can remove `~/.pi/agent/mcp.json` while
    migrating the old symlink-each state; the second run restores it. Both runs must end with
    `status --missing` passing.

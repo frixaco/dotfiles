@@ -3,8 +3,12 @@ min_version = "2026.10.7"
 [settings]
 dotfiles.root = "~/.dotfiles/home"
 
-# Default machine profile. Override per-machine in mise.local.toml (gitignored),
-# e.g. `[vars]\nwork = true`.
+# Default machine profile. Override per-machine in mise.local.toml (gitignored).
+# Work machines also deploy the vbrato git identity that ~/.gitconfig includes:
+#   [vars]
+#   work = true
+#   [dotfiles]
+#   "~/stuff/code/vbrato/.gitconfig-vbrato" = { source = "home/stuff/code/vbrato/.gitconfig-vbrato", mode = "template" }
 [vars]
 work = false
 
@@ -53,6 +57,7 @@ exclude = [
   "/.config/amp/settings.json",          # merge sources below
   "/.codex/config.toml",
   "/.config/powershell/profile.ps1",     # Windows loads it straight from the repo
+  "/stuff/code/vbrato/.gitconfig-vbrato", # work only: mise.local.toml deploys it
 ]
 
 [dotfile_groups.home.entries]
@@ -60,7 +65,6 @@ exclude = [
 "~/.gitconfig" = { mode = "template" }
 "~/.config/fish/config.fish" = { mode = "template" }
 "~/.config/ghostty/config" = { mode = "template" }
-"~/stuff/code/vbrato/.gitconfig-vbrato" = { mode = "template" }
 "~/.config/1Password/ssh/agent.toml" = { mode = "template", permissions = "0600", variants = [
   { os = "windows", target = "~/AppData/Local/1Password/config/ssh/agent.toml" },
   { default = true },
