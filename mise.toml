@@ -36,13 +36,13 @@ work = false
 "brew:postgresql@18" = "latest"
 "brew:mole" = { os = "macos" }
 # TODO: kitty and Ghostty use "Paper Mono" (installed by hand); install it here or switch the configs to this font.
-"brew-cask:font-blex-mono-nerd-font" = "latest"
-"brew-cask:ghostty" = "latest"
-"brew-cask:keycastr" = "latest"
-"brew-cask:kitty" = "latest"
-"brew-cask:macpacker" = "latest"
-"brew-cask:orbstack" = "latest"
-"brew-cask:zulu@17" = "latest"
+"brew-cask:font-blex-mono-nerd-font" = { os = "unix" }
+"brew-cask:ghostty" = { os = "macos" }
+"brew-cask:keycastr" = { os = "macos" }
+"brew-cask:kitty" = { os = "macos" }
+"brew-cask:macpacker" = { os = "macos" }
+"brew-cask:orbstack" = { os = "macos" }
+"brew-cask:zulu@17" = { os = "macos" }
 
 [bootstrap.hooks]
 post-dotfiles = "{% if os() == 'windows' %}mise run powershell:profile{% else %}true{% endif %}"

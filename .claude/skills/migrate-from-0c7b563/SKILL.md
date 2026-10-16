@@ -51,6 +51,23 @@ report progress briefly between steps.
 - Run long steps (`mise bootstrap`, `upall`) with output going to a log file, and check the exit code.
   Never rely on only the tail of the output.
 
+## Windows over ssh
+
+These came from the PC run, where OpenSSH logs admin accounts in elevated, in session 0:
+- Pass scripts as `pwsh -NoProfile -NonInteractive -EncodedCommand <base64 UTF-16LE>`. The remote shell
+  is already PowerShell and expands `$` in a quoted command line.
+- Set `$env:USERDOMAIN = $env:COMPUTERNAME` first. ssh sessions report `WORKGROUP`, and then
+  `mise bootstrap services apply` fails with "No mapping between account names and security IDs".
+- "The path cannot be traversed because it contains an untrusted mount point" (os error 448) means an
+  elevated process won't follow a junction that a normal-user process created. Scoop's `current`
+  folders, mise installs, Bun's global modules and uv's `cpython-3.x` folders all hit this. Recreate
+  each junction from the elevated session with the same target: `attrib -R /L`, delete the link, run
+  `mklink /J`, then `attrib +R /L` if it was read-only, as Scoop's are. Save every path and target to a
+  CSV in `~` first, and check afterwards that each one still resolves to its old target.
+- The 1Password SSH agent only serves the desktop session, so `ssh-add -l` over ssh always fails. To
+  check it, run `ssh-add -l` once from a scheduled task (`schtasks /create … /it /ru COMPUTER\user`,
+  then `/run`, read its output file, then `/delete`).
+
 ## 1. Preflight
 
 1. `git -C ~/.dotfiles status --short` must be empty; if the tree is dirty, stop and ask. HEAD may
