@@ -121,7 +121,7 @@ if (Test-Path -LiteralPath (Join-Path $HOME ".pi\agent\install\current-version")
 $omp = Join-Path $env:LOCALAPPDATA "omp\omp.exe"
 if (Test-Path -LiteralPath $omp) { Invoke-Native { & $omp update } } else { & ([scriptblock]::Create((irm https://omp.sh/install.ps1))) -Binary }
 
-# T3 Code CLI; the desktop app is a package in the dotfiles repo's mise.toml.
+# T3 Code CLI only; Windows skips the desktop app.
 $t3 = Join-Path $HOME ".local\bin\t3.cmd"
 if (Test-Path -LiteralPath $t3) { Invoke-Native { & $t3 update --yes } } else { irm https://t3.codes/install.ps1 | iex }
 '''

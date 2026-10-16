@@ -53,7 +53,7 @@ Homebrew is optional now: mise installs the `brew:` and `brew-cask:` packages in
 
 ## AI agents
 
-`mise run ai:install` installs or updates Claude Code, Codex, OpenCode V2, PI, OMP, Amp, and the T3 Code CLI (`t3`) with their standalone installers; `mise run ai:doctor` checks they're on `PATH`. The T3 Code desktop app is a package in `mise.toml`: the `t3-code` cask on macOS and `extras/t3code` from Scoop on Windows. Linux gets the CLI only. The browser MCP for every agent points at Helium's debugging endpoint, `http://127.0.0.1:9222`: start Helium with `--remote-debugging-port=9222`.
+`mise run ai:install` installs or updates Claude Code, Codex, OpenCode V2, PI, OMP, Amp, and the T3 Code CLI (`t3`) with their standalone installers; `mise run ai:doctor` checks they're on `PATH`. The T3 Code desktop app is the `t3-code` cask in `mise.toml`, macOS only; Linux and Windows get the CLI only. The browser MCP for every agent points at Helium's debugging endpoint, `http://127.0.0.1:9222`: start Helium with `--remote-debugging-port=9222`.
 
 Amp model and effort pins are account settings: set them in [Settings → Mode Dial → Tune Modes](https://ampcode.com/docs/the-dial#tune-the-modes).
 
