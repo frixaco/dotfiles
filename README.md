@@ -25,6 +25,8 @@ Run `mise` commands for this repo from `~/.dotfiles` (or with `mise -C ~/.dotfil
 
 Edit sources in `home/`, then `mise run sync`. On macOS most files are symlinks, so edits through `~` land in the repo too. Windows copies every file (except directory links), so always edit the repo source there. Use `ef` to edit your shell config's source.
 
+The 1Password CLI (`op`) is the `1password` tool in `[tools]`, so `upall` updates it everywhere; the Homebrew `1password-cli` cask isn't used.
+
 eza, tokei, and resvg have no upstream macOS binaries, so they are `brew:` packages on macOS and `scoop:` packages on Windows, both in `mise.toml`.
 
 Homebrew is optional now: mise installs the `brew:` and `brew-cask:` packages in `mise.toml` itself. `upall` doesn't run `brew upgrade`, so anything you installed by hand with brew needs its own `brew upgrade`.

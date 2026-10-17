@@ -11,6 +11,8 @@ rust = { version = 'latest', mr_boxington = true, components = ['rust-analyzer']
 mr-boxington = 'latest'
 
 # CLI tools, same on macOS and Windows.
+# 1Password CLI (`op`), from AgileBits' signed release zips.
+"1password" = 'latest'
 bat = 'latest'
 delta = 'latest'
 difftastic = 'latest'
