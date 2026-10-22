@@ -9,6 +9,12 @@
         "--browserUrl",
         "http://127.0.0.1:9222"
       ]
+    },
+    "paper": {
+      "command": "/Users/frixa/.paper/bin/paper",
+      "args": [
+        "mcp"
+      ]
     }
   },
   "amp.remoteThreadCreation.enabled": true

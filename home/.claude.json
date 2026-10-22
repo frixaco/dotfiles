@@ -11,6 +11,14 @@
         "http://127.0.0.1:9222"
       ],
       "env": {}
+    },
+    "paper": {
+      "type": "stdio",
+      "command": "/Users/frixa/.paper/bin/paper",
+      "args": [
+        "mcp"
+      ],
+      "env": {}
     }
   }
 }
