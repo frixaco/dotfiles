@@ -13,14 +13,6 @@
           "http://127.0.0.1:9222"
         ],
         "disabled": false
-      },
-      "paper": {
-        "type": "local",
-        "command": [
-          "/Users/frixa/.paper/bin/paper",
-          "mcp"
-        ],
-        "disabled": false
       }
     }
   }
