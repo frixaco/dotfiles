@@ -57,6 +57,7 @@ taplo = 'latest'
 "npm:oxlint" = 'latest'
 "npm:oxfmt" = 'latest'
 "npm:prettier" = 'latest'
+aube = { version = "latest", workflow = ["release-plz.yml@refs/heads/main", "release.yml@refs/heads/main"] }
 
 # Standalone installers; each one installs or upgrades in place.
 [tasks."ai:install"]
