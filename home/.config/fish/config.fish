@@ -129,7 +129,7 @@ if status is-interactive
     command -q fzf; and fzf --fish | source
 end
 {% if vars.work and os() == "macos" -%}
-rbenv init - fish | source
+command -q rbenv; and rbenv init - fish | source
 {%- endif -%}
 
 {%- if os() == "macos" %}
