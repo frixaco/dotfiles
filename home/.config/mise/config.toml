@@ -58,6 +58,7 @@ taplo = 'latest'
 "npm:oxfmt" = 'latest'
 "npm:prettier" = 'latest'
 aube = { version = "latest", workflow = ["release-plz.yml@refs/heads/main", "release.yml@refs/heads/main"] }
+"npm:agent-desktop" = { version = "latest", allow_builds = ["agent-desktop"] }
 
 # Standalone installers; each one installs or upgrades in place.
 [tasks."ai:install"]

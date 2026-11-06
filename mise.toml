@@ -147,3 +147,6 @@ if ($failed) { Write-Error "Failed: $($failed -join ', ')"; exit 1 }
 [tasks.bootstrap]
 description = "Create the workspace, then install and verify AI agents"
 run = [{ task = "layout" }, { task = "ai:install" }, { task = "ai:doctor" }]
+
+[tools]
+"npm:agent-desktop" = "latest"
