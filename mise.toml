@@ -149,4 +149,5 @@ description = "Create the workspace, then install and verify AI agents"
 run = [{ task = "layout" }, { task = "ai:install" }, { task = "ai:doctor" }]
 
 [tools]
-"npm:agent-desktop" = "latest"
+# Its postinstall links the native binary; without it every call goes through Node.
+"npm:agent-desktop" = { version = "latest", allow_builds = ["agent-desktop"] }
